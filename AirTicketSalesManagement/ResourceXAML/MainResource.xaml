@@ -1,0 +1,168 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:viewmodel="clr-namespace:AirTicketSalesManagement.ViewModel"
+                    xmlns:viewmodelLG="clr-namespace:AirTicketSalesManagement.ViewModel.Login"
+                    xmlns:viewsLG="clr-namespace:AirTicketSalesManagement.View.Login"
+                    xmlns:viewmodelCUST="clr-namespace:AirTicketSalesManagement.ViewModel.Customer"
+                    xmlns:viewsCUST="clr-namespace:AirTicketSalesManagement.View.Customer"
+                    xmlns:viewmodelSTAFF="clr-namespace:AirTicketSalesManagement.ViewModel.Staff"
+                    xmlns:viewsSTAFF="clr-namespace:AirTicketSalesManagement.View.Staff"
+                    xmlns:viewmodelBOOKING="clr-namespace:AirTicketSalesManagement.ViewModel.Booking"
+                    xmlns:viewmodelADMIN="clr-namespace:AirTicketSalesManagement.ViewModel.Admin"
+                    xmlns:viewmodelMANAGE="clr-namespace:AirTicketSalesManagement.ViewModel.CustomerManagement"
+                    xmlns:viewsADMIN="clr-namespace:AirTicketSalesManagement.View.Admin"                    
+                    xmlns:viewsNotify="clr-namespace:AirTicketSalesManagement.View.Notification">
+    
+    <!-- Login -->
+    <viewmodelLG:AuthViewModel x:Key="AuthVM"/>
+    <viewmodelLG:LoginViewModel x:Key="LoginVM"/>
+    <viewmodelLG:RegisterViewModel x:Key="RegisterVM"/>
+    <viewmodelLG:ForgotPasswordViewModel x:Key="ForgotPasswordVM"/>
+    <viewmodel:MainViewModel x:Key="MainVM"/>
+    <viewmodelLG:ResetPasswordViewModel x:Key="ResetPasswordVM"/>
+
+    <!-- Customer -->
+
+    <viewmodelCUST:CustomerViewModel x:Key="CustomerVM"/>
+    <viewmodelCUST:HomePageViewModel x:Key="HomePageVM"/>
+    <viewmodelCUST:CustomerProfileViewModel x:Key="CustomerProfileVM"/>
+    <viewmodelCUST:BookingHistoryViewModel x:Key="BookingHistoryVM"/>
+
+
+    <!-- Booking -->
+
+    <viewmodelBOOKING:PassengerInformationViewModel x:Key="PassengerInformationVM"/>
+    <viewmodelBOOKING:PaymentConfirmationViewModel x:Key="PaymentConfirmationVM"/>
+
+    <viewmodelBOOKING:FlightScheduleSearchViewModel x:Key="FlightScheduleSearchVM"/>
+
+
+    <!-- Staff -->
+    <viewmodelSTAFF:StaffViewModel x:Key="StaffVM"/>
+    <viewmodelSTAFF:HomePageViewModel x:Key="StaffHomePageVM"/>
+    <viewmodelSTAFF:StaffProfileViewModel x:Key="StaffProfileVM"/>
+    <viewmodelSTAFF:TicketManagementViewModel x:Key="TicketManagementVM"/>
+    <viewmodelSTAFF:TicketManagementDetailViewModel x:Key="TicketManagementDetailVM"/>
+
+
+    <!-- Admin -->
+    <viewmodelADMIN:AdminViewModel x:Key="AdminVM"/>
+    <viewmodelADMIN:AdminProfileViewModel x:Key="AdminProfileVM"/>
+    <viewmodelADMIN:ReportViewModel x:Key="ReportVM"/>
+    <viewmodelADMIN:RegulationManagementViewModel x:Key="RegulationManagementVM"/>
+    <viewmodelADMIN:FlightManagementViewModel x:Key="FlightManagementVM"/>
+    <viewmodelADMIN:ScheduleManagementViewModel x:Key="ScheduleManagementVM"/>
+    <viewmodelADMIN:AccountManagementViewModel x:Key="AccountManagementVM"/>
+    
+    <!-- Cutomer Management -->
+    <viewmodelMANAGE:CustomerManagementViewModel x:Key="CustomerManagementVM"/>
+
+
+    <!-- Notification -->
+    <viewmodel:ToastViewModel x:Key="ToastVM"/>
+
+
+
+
+    <!-- DataTemplates -->
+
+    <!-- Login -->
+    <DataTemplate DataType="{x:Type viewmodelLG:LoginViewModel}">
+        <viewsLG:LoginView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelLG:RegisterViewModel}">
+        <viewsLG:RegisterView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelLG:ForgotPasswordViewModel}">
+        <viewsLG:ForgotPasswordView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelLG:ResetPasswordViewModel}">
+        <viewsLG:ResetPasswordView />
+    </DataTemplate>
+
+
+    <!-- Customer -->
+    <DataTemplate DataType="{x:Type viewmodelCUST:HomePageViewModel}">
+        <viewsCUST:HomePageView />
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type viewmodelCUST:CustomerProfileViewModel}">
+        <viewsCUST:CustomerProfileView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type viewmodelCUST:BookingHistoryViewModel}">
+        <viewsCUST:BookingHistoryView />
+    </DataTemplate>
+
+    <!-- Booking -->
+
+    <DataTemplate DataType="{x:Type viewmodelBOOKING:FlightScheduleSearchViewModel}">
+        <viewsCUST:FlightScheduleSearchView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type viewmodelBOOKING:PassengerInformationViewModel}">
+        <viewsCUST:PassengerInformationView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelCUST:BookingHistoryDetailViewModel}">
+        <viewsCUST:BookingHistoryDetailView/>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelBOOKING:PaymentConfirmationViewModel}">
+        <viewsCUST:PaymentConfirmationView/>
+    </DataTemplate>
+
+    <!-- Staff -->
+    <DataTemplate DataType="{x:Type viewmodelSTAFF:HomePageViewModel}">
+        <viewsSTAFF:HomePageView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelSTAFF:StaffProfileViewModel}">
+        <viewsSTAFF:StaffProfileView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelSTAFF:TicketManagementViewModel}">
+        <viewsSTAFF:Staff_TicketManagementView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelSTAFF:TicketManagementDetailViewModel}">
+        <viewsSTAFF:Staff_TicketManagementDetailView />
+    </DataTemplate>
+
+
+    <!-- Admin -->
+    <DataTemplate DataType="{x:Type viewmodelADMIN:AdminProfileViewModel}">
+        <viewsADMIN:AdminProfileView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelADMIN:FlightManagementViewModel}">
+        <viewsADMIN:FlightManagementView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelADMIN:ScheduleManagementViewModel}">
+        <viewsADMIN:ScheduleManagementView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelADMIN:RegulationManagementViewModel}">
+        <viewsADMIN:RegulationManagementView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelADMIN:AccountManagementViewModel}">
+        <viewsADMIN:AccountManagementView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodelADMIN:ReportViewModel}">
+        <viewsADMIN:ReportView />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodel:ToastViewModel}">
+        <viewsNotify:ToastView/>
+    </DataTemplate>
+    
+    <!-- Customer Management -->
+    <DataTemplate DataType="{x:Type viewmodelMANAGE:CustomerManagementViewModel}">
+        <viewsSTAFF:CustomerManagementView/>
+    </DataTemplate>
+
+</ResourceDictionary>
