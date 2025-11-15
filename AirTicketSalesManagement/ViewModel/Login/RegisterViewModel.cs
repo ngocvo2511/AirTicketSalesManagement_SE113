@@ -215,8 +215,8 @@ namespace AirTicketSalesManagement.ViewModel.Login
             {
                 await AddCustomer();
                 if (isFailed) return;
-                ResetFields();
                 await Toast.ShowToastAsync("Đăng kí thành công. Vui lòng đăng nhập.", Brushes.Green);
+                _auth.NavigateToLogin();
             }
             else
             {
