@@ -205,6 +205,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
         [RelayCommand]
         private async Task ConfirmOtp()
         {
+            ClearErrors(nameof(OtpCode));
             if (string.IsNullOrWhiteSpace(OtpCode))
             {
                 AddError(nameof(OtpCode), "Mã OTP không được để trống.");
