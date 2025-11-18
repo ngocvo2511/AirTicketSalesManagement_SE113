@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AirTicketSalesManagement.Services.EmailServices
 {
-    public class EmailTemplateService
+    public class EmailTemplateService : IEmailTemplateService
     {
         
         public string BuildBookingCash(string soHieuCB, DateTime departureTime, DateTime time, decimal price)
