@@ -68,7 +68,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
         }
 
         [RelayCommand]
-        private async Task LoginAsync()
+        private async Task Login()
         {
             await ValidateAsync();
             if (HasErrors) return;

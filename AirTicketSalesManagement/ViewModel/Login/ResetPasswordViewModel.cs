@@ -76,25 +76,25 @@ namespace AirTicketSalesManagement.ViewModel.Login
         }
         [RelayCommand]        
 
-        private async Task CheckCode()
+        private Task CheckCode()
         {
             ClearErrors(nameof(Code));
             if (IsCodeExpired)
             {
                 AddError(nameof(Code), "Mã xác nhận đã hết hạn. Vui lòng gửi lại mã mới.");
-                return;
+                return Task.CompletedTask;
             }
 
             if (Email == null)
             {
                 AddError(nameof(Email), "Email không được để trống.");
-                return;
+                return Task.CompletedTask;
             }
 
             if (string.IsNullOrWhiteSpace(Code))
             {
                 AddError(nameof(Code), "Mã xác nhận không được để trống.");
-                return;
+                return Task.CompletedTask;
             }
 
             bool isValid = _otpService.VerifyOtp(Email,Code);
@@ -107,6 +107,8 @@ namespace AirTicketSalesManagement.ViewModel.Login
                 AddError(nameof(Code), "Mã xác nhận không hợp lệ hoặc đã hết hạn.");
                 IsCodeValid = false;
             }
+
+            return Task.CompletedTask;
         }
 
         [RelayCommand]
