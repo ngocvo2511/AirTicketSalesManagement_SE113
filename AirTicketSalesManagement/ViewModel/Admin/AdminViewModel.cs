@@ -8,6 +8,8 @@ using System.Windows.Media.Animation;
 using System.Windows;
 using AirTicketSalesManagement.ViewModel.CustomerManagement;
 using AirTicketSalesManagement.Services.EmailServices;
+using AirTicketSalesManagement.Services.Customer;
+using AirTicketSalesManagement.Services.Notification;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
@@ -51,7 +53,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [RelayCommand]
         private void NavigateToCustomerManagement()
         {
-            CurrentViewModel = new CustomerManagementViewModel();
+            CurrentViewModel = new CustomerManagementViewModel(new CustomerService(), new NotificationService(new NotificationViewModel()));
         }
 
         [RelayCommand]

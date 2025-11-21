@@ -1,5 +1,7 @@
 ﻿using AirTicketSalesManagement.Data;
 using AirTicketSalesManagement.Models;
+using AirTicketSalesManagement.Services.Customer;
+using AirTicketSalesManagement.Services.Notification;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,8 @@ namespace AirTicketSalesManagement.ViewModel.CustomerManagement
 {
     public partial class CustomerManagementViewModel : BaseViewModel
     {
+        private readonly ICustomerService _customerService;
+        private readonly INotificationService _notification;
         private ObservableCollection<Khachhang> _customers = new();
         [ObservableProperty]
         private string searchName;
@@ -43,24 +47,24 @@ namespace AirTicketSalesManagement.ViewModel.CustomerManagement
 
         public NotificationViewModel Notification { get; set; } = new NotificationViewModel();
 
-        public CustomerManagementViewModel()
+        public CustomerManagementViewModel(ICustomerService customerService, INotificationService notification)
         {
-            _ = LoadCustomers();
+            _customerService = customerService;
+            _notification = notification;
         }
+        [RelayCommand]
         public async Task LoadCustomers()
         {
             try
             {
-                using (var context = new AirTicketDbContext())
-                {
-                    var result = await context.Khachhangs.ToListAsync();
-                    _customers = new ObservableCollection<Khachhang>(result);
-                    Customers = new ObservableCollection<Khachhang>(result);
-                }
+                var result = await _customerService.GetAllAsync();
+                _customers = new ObservableCollection<Khachhang>(result);
+                Customers = new ObservableCollection<Khachhang>(result);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                // Handle exception (optional logging or user notification)
+                // Có thể log, hoặc show thông báo
+                await _notification.ShowNotificationAsync("Lỗi tải dữ liệu khách hàng", NotificationType.Error);
             }
         }
         [RelayCommand]
@@ -119,41 +123,24 @@ namespace AirTicketSalesManagement.ViewModel.CustomerManagement
         [RelayCommand]
         public async Task SaveEditCustomer()
         {
-            if (string.IsNullOrWhiteSpace(EditName))
+            if (SelectedCustomer == null)
             {
-                await Notification.ShowNotificationAsync(
-                    "Tên không được để trống",
+                await _notification.ShowNotificationAsync(
+                    "Chưa chọn khách hàng để cập nhật.",
                     NotificationType.Warning);
                 return;
             }
-            if (!string.IsNullOrWhiteSpace(EditPhone) && !IsValidPhone(EditPhone))
+            string? validationError = ValidateEditCustomer();
+            if (validationError != null)
             {
                 await Notification.ShowNotificationAsync(
-                    "Số điện thoại không hợp lệ!",
+                    validationError,
                     NotificationType.Warning);
                 return;
-            }
-            if (!string.IsNullOrWhiteSpace(EditCccd) && (EditCccd.Length != 12 || !EditCccd.All(char.IsDigit)))
-            {
-                await Notification.ShowNotificationAsync(
-                    "Số căn cước công dân không hợp lệ!",
-                    NotificationType.Warning);
-                return;
-            }
-            if (EditBirthDate.HasValue)
-            {
-                if (EditBirthDate.Value.Date >= DateTime.Today)
-                {
-                    await Notification.ShowNotificationAsync(
-                        "Ngày sinh không hợp lệ!",
-                        NotificationType.Warning);
-                    return;
-                }
             }
             try
             {
-                await using var context = new AirTicketDbContext();
-                var customer = await context.Khachhangs.FindAsync(SelectedCustomer.MaKh);
+                var customer = await _customerService.GetByIdAsync(SelectedCustomer.MaKh);
 
                 if (customer is null)
                 {
@@ -170,7 +157,7 @@ namespace AirTicketSalesManagement.ViewModel.CustomerManagement
                 customer.SoDt = EditPhone;
                 customer.NgaySinh = EditBirthDate.HasValue ? DateOnly.FromDateTime(EditBirthDate.Value) : null;
 
-                await context.SaveChangesAsync();
+                await _customerService.UpdateAsync(customer);
 
                 await Notification.ShowNotificationAsync(
                     "Cập nhật khách hàng thành công!",
@@ -190,6 +177,28 @@ namespace AirTicketSalesManagement.ViewModel.CustomerManagement
         private bool IsValidPhone(string phone)
         {
             return System.Text.RegularExpressions.Regex.IsMatch(phone, @"^0\d{9}$");
+        }
+        public string? ValidateEditCustomer()
+        {
+            if (string.IsNullOrWhiteSpace(EditName))
+                return "Tên không được để trống";
+
+            if (!string.IsNullOrWhiteSpace(EditPhone) && !IsValidPhone(EditPhone))
+                return "Số điện thoại không hợp lệ!";
+
+            if (!string.IsNullOrWhiteSpace(EditCccd))
+            {
+                if (EditCccd.Length != 12 || !EditCccd.All(char.IsDigit))
+                    return "Số căn cước công dân không hợp lệ!";
+            }
+
+            if (EditBirthDate.HasValue)
+            {
+                if (EditBirthDate.Value.Date >= DateTime.Today)
+                    return "Ngày sinh không hợp lệ!";
+            }
+
+            return null; // hợp lệ
         }
     }
 }

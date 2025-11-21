@@ -17,6 +17,8 @@ using AirTicketSalesManagement.ViewModel.Customer;
 using AirTicketSalesManagement.ViewModel.CustomerManagement;
 using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Messages;
+using AirTicketSalesManagement.Services.Customer;
+using AirTicketSalesManagement.Services.Notification;
 
 namespace AirTicketSalesManagement.ViewModel.Staff
 {
@@ -124,7 +126,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         {
             WeakReferenceMessenger.Default.Send(new WebViewClearCacheMessage());
             IsWebViewVisible = false;
-            CurrentViewModel = new CustomerManagementViewModel();
+            CurrentViewModel = new CustomerManagementViewModel(new CustomerService(), new NotificationService(new NotificationViewModel()));
         }
 
         [RelayCommand]
