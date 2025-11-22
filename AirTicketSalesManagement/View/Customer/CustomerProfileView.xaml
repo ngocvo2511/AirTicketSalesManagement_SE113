@@ -1254,7 +1254,7 @@
 
                             <!-- Xác nhận mật khẩu -->
                             <StackPanel Margin="20,20,20,16">
-                                <TextBlock Text="Mật khẩu mới" Style="{StaticResource EditFieldLabel}"/>
+                                <TextBlock Text="Nhập lại mật khẩu mới" Style="{StaticResource EditFieldLabel}"/>
                                 <Grid>
                                     <TextBox Text="{Binding ConfirmPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
                                              Style="{StaticResource EditInputField}"
