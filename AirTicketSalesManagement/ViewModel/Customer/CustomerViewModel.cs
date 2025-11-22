@@ -11,6 +11,10 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using System.Windows;
 using System.Windows.Media.Animation;
 using AirTicketSalesManagement.Messages;
+using AirTicketSalesManagement.Services.DbContext;
+using AirTicketSalesManagement.Services.PaymentGateway;
+using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.Services.Session;
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
@@ -56,7 +60,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
                 }
                 else if (viewModelType == typeof(BookingHistoryViewModel))
                 {
-                    CurrentViewModel = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService());
+                    CurrentViewModel = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService(), new AirTicketDbService(), new VnpayPaymentGateway(), new UserSessionService(), new NotificationService(new NotificationViewModel()));
                 }
                 else if (viewModelType == typeof(FlightScheduleSearchViewModel))
                 {
@@ -89,7 +93,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
                 if (CurrentViewModel is PaymentConfirmationViewModel paymentConfirmationViewModel)
                 {
                     paymentConfirmationViewModel.HandlePaymentSuccess();
-                    CurrentViewModel = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService());
+                    CurrentViewModel = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService(), new AirTicketDbService(), new VnpayPaymentGateway(), new UserSessionService(), new NotificationService(new NotificationViewModel()));
                 }
                 else if (CurrentViewModel is BookingHistoryViewModel bookingHistoryViewModel)
                 {
@@ -120,7 +124,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         {
             WeakReferenceMessenger.Default.Send(new WebViewClearCacheMessage());
             IsWebViewVisible = false;
-            CurrentViewModel = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService());
+            CurrentViewModel = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService(), new AirTicketDbService(), new VnpayPaymentGateway(), new UserSessionService(), new NotificationService(new NotificationViewModel()));
         }
 
         [RelayCommand]

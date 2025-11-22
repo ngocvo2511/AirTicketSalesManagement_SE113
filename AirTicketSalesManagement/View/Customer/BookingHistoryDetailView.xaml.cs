@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using AirTicketSalesManagement.Services;
+using AirTicketSalesManagement.ViewModel.Customer;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +27,13 @@ namespace AirTicketSalesManagement.View.Customer
         {
             InitializeComponent();
         }
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is BookingHistoryDetailViewModel vm)
+            {
+                await vm.LoadData();
+            }
+        }
+        
     }
 }

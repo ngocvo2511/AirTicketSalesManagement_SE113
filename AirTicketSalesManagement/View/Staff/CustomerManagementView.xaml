@@ -9,7 +9,8 @@
              xmlns:behaviors="clr-namespace:AirTicketSalesManagement.Behaviors"
              mc:Ignorable="d" 
              xmlns:notification="clr-namespace:AirTicketSalesManagement.View.Notification"
-             d:DesignHeight="700" d:DesignWidth="1200">
+             d:DesignHeight="700" d:DesignWidth="1200"
+             Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <!-- Custom Card Style -->
         <Style x:Key="CardStyle" TargetType="Border">

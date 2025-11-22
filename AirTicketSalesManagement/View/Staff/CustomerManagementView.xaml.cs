@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AirTicketSalesManagement.ViewModel.CustomerManagement;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,11 @@ namespace AirTicketSalesManagement.View.Staff
         public CustomerManagementView()
         {
             InitializeComponent();
+        }
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is CustomerManagementViewModel vm)
+                await vm.LoadCustomersCommand.ExecuteAsync(null);
         }
     }
 }
