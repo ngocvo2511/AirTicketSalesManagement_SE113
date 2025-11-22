@@ -1,17 +1,19 @@
 ﻿using AirTicketSalesManagement.Data;
 using AirTicketSalesManagement.Models;
+using AirTicketSalesManagement.Models.UIModels;
+using AirTicketSalesManagement.Services.DbContext;
+using AirTicketSalesManagement.Services.Notification;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using OfficeOpenXml;
-using LicenseContext = OfficeOpenXml.LicenseContext;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Windows;
-using Microsoft.EntityFrameworkCore;
-using AirTicketSalesManagement.Models.UIModels;
-using System.Globalization;
+using LicenseContext = OfficeOpenXml.LicenseContext;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
@@ -97,11 +99,18 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         partial void OnDiemDiChanged(string value) => OnPropertyChanged(nameof(DiemDenList));
         partial void OnDiemDenChanged(string value) => OnPropertyChanged(nameof(DiemDiList));
 
-        // Notification
-        public NotificationViewModel Notification { get; set; } = new NotificationViewModel();
+        private readonly IAirTicketDbContextService _db;
+        private readonly INotificationService _notify;
 
-        public ScheduleManagementViewModel()
+        // Notification
+        public NotificationViewModel Notification { get; }
+
+        public ScheduleManagementViewModel(IAirTicketDbContextService db, INotificationService notify)
         {
+            _db = db;
+            _notify = notify;
+            Notification = (notify as NotificationService)?.ViewModel
+                       ?? new NotificationViewModel();
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
                 LoadSanBay();
@@ -112,7 +121,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
         public void LoadSanBay()
         {
-            using var context = new AirTicketDbContext();
+            using var context = _db.CreateDbContext();
             var danhSach = context.Sanbays
                 .AsEnumerable()
                 .Select(sb => $"{sb.ThanhPho} ({sb.MaSb}), {sb.QuocGia}")
@@ -123,7 +132,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
         public void LoadSoHieuCB()
         {
-            using (var context = new AirTicketDbContext())
+            using (var context = _db.CreateDbContext())
             {
                 var list = context.Chuyenbays
                                   .Select(cb => cb.SoHieuCb)
@@ -140,7 +149,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
         public void LoadHangVe()
         {
-            using (var context = new AirTicketDbContext())
+            using (var context = _db.CreateDbContext())
             {
                 var list = context.Hangves
                                   .Select(cb => cb.TenHv)
@@ -151,49 +160,39 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
         public void LoadFlightSchedule()
         {
-            using var context = new AirTicketDbContext();
+            using var context = _db.CreateDbContext();
             var now = DateTime.Now;
 
-            var danhSach = context.Lichbays
+            var list = context.Lichbays
                 .Include(lb => lb.SoHieuCbNavigation).ThenInclude(cb => cb.SbdiNavigation)
                 .Include(lb => lb.SoHieuCbNavigation).ThenInclude(cb => cb.SbdenNavigation)
-                .Include(lb => lb.Hangvetheolichbays)
-                    .ThenInclude(hv => hv.MaHvNavigation)
+                .Include(lb => lb.Hangvetheolichbays).ThenInclude(hv => hv.MaHvNavigation)
                 .ToList();
 
-            bool hasChanged = false;
+            bool dirty = false;
 
-            foreach (var lb in danhSach)
+            foreach (var lb in list)
             {
-                // Đảm bảo không null
                 lb.SoHieuCbNavigation ??= new Chuyenbay();
                 lb.SoHieuCbNavigation.SbdiNavigation ??= new Sanbay();
                 lb.SoHieuCbNavigation.SbdenNavigation ??= new Sanbay();
 
-                // Cập nhật tình trạng
-                if (lb.GioDi <= now && lb.GioDen > now)
+                if (lb.GioDi <= now && lb.GioDen > now && lb.TtlichBay != "Đã cất cánh")
                 {
-                    if (lb.TtlichBay != "Đã cất cánh")
-                    {
-                        lb.TtlichBay = "Đã cất cánh";
-                        hasChanged = true;
-                    }
+                    lb.TtlichBay = "Đã cất cánh";
+                    dirty = true;
                 }
-                else if (lb.GioDen <= now)
+                else if (lb.GioDen <= now && lb.TtlichBay != "Hoàn thành")
                 {
-                    if (lb.TtlichBay != "Hoàn thành")
-                    {
-                        lb.TtlichBay = "Hoàn thành";
-                        hasChanged = true;
-                    }
+                    lb.TtlichBay = "Hoàn thành";
+                    dirty = true;
                 }
             }
 
-            // Chỉ SaveChanges nếu có thay đổi
-            if (hasChanged)
+            if (dirty)
                 context.SaveChanges();
 
-            FlightSchedule = new ObservableCollection<Lichbay>(danhSach);
+            FlightSchedule = new ObservableCollection<Lichbay>(list);
         }
 
         [RelayCommand] public void Refresh() => LoadFlightSchedule();
@@ -210,7 +209,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         public void Search()
         {
             FlightSchedule.Clear();
-            using var context = new AirTicketDbContext();
+            using var context = _db.CreateDbContext();
             var query = context.Lichbays.Include(lb => lb.SoHieuCbNavigation)
                 .ThenInclude(cb => cb.SbdiNavigation)
                 .Include(lb => lb.SoHieuCbNavigation).ThenInclude(cb => cb.SbdenNavigation)
@@ -268,7 +267,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 var worksheet = package.Workbook.Worksheets[0];
                 if (worksheet == null || worksheet.Dimension == null || worksheet.Dimension.Rows < 2)
                 {
-                    await Notification.ShowNotificationAsync("File Excel không chứa dữ liệu hoặc thiếu dòng dữ liệu.", NotificationType.Error);
+                    await _notify.ShowNotificationAsync("File Excel không chứa dữ liệu hoặc thiếu dòng dữ liệu.", NotificationType.Error);
                     return;
                 }
 
@@ -278,12 +277,12 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 {
                     if (worksheet.Cells[1, i + 1].Text?.Trim() != expectedHeaders[i])
                     {
-                        await Notification.ShowNotificationAsync($"Tiêu đề cột {i + 1} không đúng. Yêu cầu: '{expectedHeaders[i]}'.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Tiêu đề cột {i + 1} không đúng. Yêu cầu: '{expectedHeaders[i]}'.", NotificationType.Error);
                         return;
                     }
                 }
 
-                using var context = new AirTicketDbContext();
+                using var context = _db.CreateDbContext();
                 var culture = System.Globalization.CultureInfo.InvariantCulture;
 
                 // Dictionary để nhóm lịch bay và hạng vé
@@ -309,7 +308,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                         string.IsNullOrWhiteSpace(slVeKTText) || string.IsNullOrWhiteSpace(giaVeText) ||
                         string.IsNullOrWhiteSpace(ttLichBay))
                     {
-                        await Notification.ShowNotificationAsync($"Dữ liệu không hợp lệ tại dòng {row}. Vui lòng kiểm tra các ô trống.", NotificationType.Warning);
+                        await _notify.ShowNotificationAsync($"Dữ liệu không hợp lệ tại dòng {row}. Vui lòng kiểm tra các ô trống.", NotificationType.Warning);
                         continue;
                     }
 
@@ -317,7 +316,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     var chuyenBay = context.Chuyenbays.FirstOrDefault(cb => cb.SoHieuCb == soHieuCB);
                     if (chuyenBay == null)
                     {
-                        await Notification.ShowNotificationAsync($"Số hiệu chuyến bay '{soHieuCB}' tại dòng {row} không tồn tại.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Số hiệu chuyến bay '{soHieuCB}' tại dòng {row} không tồn tại.", NotificationType.Error);
                         continue;
                     }
 
@@ -325,34 +324,34 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     if (!DateTime.TryParse(gioDiText, culture, DateTimeStyles.None, out DateTime gioDi) ||
                         !DateTime.TryParse(gioDenText, culture, DateTimeStyles.None, out DateTime gioDen))
                     {
-                        await Notification.ShowNotificationAsync($"Định dạng ngày giờ tại dòng {row} không hợp lệ. Yêu cầu: yyyy-MM-dd HH:mm.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Định dạng ngày giờ tại dòng {row} không hợp lệ. Yêu cầu: yyyy-MM-dd HH:mm.", NotificationType.Error);
                         continue;
                     }
 
                     if (gioDen <= gioDi)
                     {
-                        await Notification.ShowNotificationAsync($"Thời gian đến tại dòng {row} phải sau thời gian đi.", NotificationType.Warning);
+                        await _notify.ShowNotificationAsync($"Thời gian đến tại dòng {row} phải sau thời gian đi.", NotificationType.Warning);
                         continue;
                     }
 
                     // Kiểm tra số lượng vé khai thác
                     if (!int.TryParse(slVeKTText, out int slVeKT) || slVeKT <= 0)
                     {
-                        await Notification.ShowNotificationAsync($"Số lượng vé khai thác tại dòng {row} không hợp lệ.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Số lượng vé khai thác tại dòng {row} không hợp lệ.", NotificationType.Error);
                         continue;
                     }
 
                     // Kiểm tra giá vé
                     if (!decimal.TryParse(giaVeText, NumberStyles.Any, culture, out decimal giaVe) || giaVe <= 0)
                     {
-                        await Notification.ShowNotificationAsync($"Giá vé tại dòng {row} không hợp lệ.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Giá vé tại dòng {row} không hợp lệ.", NotificationType.Error);
                         continue;
                     }
 
                     // Kiểm tra tình trạng lịch bay
                     if (!new[] { "Chờ cất cánh", "Đã cất cánh", "Hoàn thành" }.Contains(ttLichBay))
                     {
-                        await Notification.ShowNotificationAsync($"Tình trạng lịch bay tại dòng {row} không hợp lệ. Chỉ nhận: 'Chờ cất cánh', 'Đã cất cánh', 'Hoàn thành'.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Tình trạng lịch bay tại dòng {row} không hợp lệ. Chỉ nhận: 'Chờ cất cánh', 'Đã cất cánh', 'Hoàn thành'.", NotificationType.Error);
                         continue;
                     }
 
@@ -381,21 +380,21 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                         var hangVe = context.Hangves.FirstOrDefault(h => h.TenHv == tenHangVe);
                         if (hangVe == null)
                         {
-                            await Notification.ShowNotificationAsync($"Hạng vé '{tenHangVe}' tại dòng {row} không tồn tại.", NotificationType.Error);
+                            await _notify.ShowNotificationAsync($"Hạng vé '{tenHangVe}' tại dòng {row} không tồn tại.", NotificationType.Error);
                             continue;
                         }
 
                         if (!int.TryParse(slVeToiDaText, out int slVeToiDa) || slVeToiDa <= 0 ||
                             !int.TryParse(slVeConLaiText, out int slVeConLai) || slVeConLai < 0 || slVeConLai > slVeToiDa)
                         {
-                            await Notification.ShowNotificationAsync($"Số lượng vé hạng tại dòng {row} không hợp lệ.", NotificationType.Error);
+                            await _notify.ShowNotificationAsync($"Số lượng vé hạng tại dòng {row} không hợp lệ.", NotificationType.Error);
                             continue;
                         }
 
                         // Chỉ cho phép hạng vé Phổ thông hoặc Thương gia
                         if (tenHangVe != "Phổ thông" && tenHangVe != "Thương gia")
                         {
-                            await Notification.ShowNotificationAsync($"Hạng vé tại dòng {row} chỉ được là 'Phổ thông' hoặc 'Thương gia'.", NotificationType.Error);
+                            await _notify.ShowNotificationAsync($"Hạng vé tại dòng {row} chỉ được là 'Phổ thông' hoặc 'Thương gia'.", NotificationType.Error);
                             continue;
                         }
 
@@ -412,7 +411,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     // Kiểm tra số lượng hạng vé
                     if (hangVes.Any() && hangVes.Select(hv => hv.TenHangVe).Distinct().Count() > 2)
                     {
-                        await Notification.ShowNotificationAsync($"Lịch bay {lichBay.SoHieuCb} lúc {lichBay.GioDi} có quá 2 hạng vé.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Lịch bay {lichBay.SoHieuCb} lúc {lichBay.GioDi} có quá 2 hạng vé.", NotificationType.Error);
                         continue;
                     }
 
@@ -420,14 +419,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     int sumTicket = hangVes.Sum(hv => hv.SLVeToiDa);
                     if (sumTicket != lichBay.SlveKt)
                     {
-                        await Notification.ShowNotificationAsync($"Tổng số vé tối đa của các hạng vé ({sumTicket}) không khớp với số lượng vé khai thác ({lichBay.SlveKt}) cho chuyến bay {lichBay.SoHieuCb} lúc {lichBay.GioDi}.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Tổng số vé tối đa của các hạng vé ({sumTicket}) không khớp với số lượng vé khai thác ({lichBay.SlveKt}) cho chuyến bay {lichBay.SoHieuCb} lúc {lichBay.GioDi}.", NotificationType.Error);
                         continue;
                     }
 
                     // Kiểm tra trùng lịch bay
                     if (context.Lichbays.Any(lb => lb.SoHieuCb == lichBay.SoHieuCb && lb.GioDi == lichBay.GioDi))
                     {
-                        await Notification.ShowNotificationAsync($"Lịch bay {lichBay.SoHieuCb} lúc {lichBay.GioDi} đã tồn tại.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync($"Lịch bay {lichBay.SoHieuCb} lúc {lichBay.GioDi} đã tồn tại.", NotificationType.Error);
                         continue;
                     }
 
@@ -454,12 +453,12 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     context.SaveChanges();
                 }
 
-                await Notification.ShowNotificationAsync("Nhập lịch bay từ Excel thành công!", NotificationType.Information);
+                await _notify.ShowNotificationAsync("Nhập lịch bay từ Excel thành công!", NotificationType.Information);
                 LoadFlightSchedule();
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync($"Lỗi khi đọc file Excel: {ex.Message}. Vui lòng kiểm tra định dạng file và thử lại.", NotificationType.Error);
+                await _notify.ShowNotificationAsync($"Lỗi khi đọc file Excel: {ex.Message}. Vui lòng kiểm tra định dạng file và thử lại.", NotificationType.Error);
             }
         }
 
@@ -509,13 +508,13 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     string.IsNullOrWhiteSpace(AddLoaiMB) || string.IsNullOrWhiteSpace(AddSLVeKT) ||
                     string.IsNullOrWhiteSpace(AddGiaVe) || string.IsNullOrWhiteSpace(AddTTLichBay))
                 {
-                    await Notification.ShowNotificationAsync("Vui lòng điền đầy đủ thông tin lịch bay.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Vui lòng điền đầy đủ thông tin lịch bay.", NotificationType.Warning);
                     return;
                 }
 
                 if (!TimeSpan.TryParse(AddGioDi, out TimeSpan gioDi) || !TimeSpan.TryParse(AddThoiGianBay, out TimeSpan thoiGianBay))
                 {
-                    await Notification.ShowNotificationAsync("Định dạng giờ không hợp lệ. Vui lòng nhập theo định dạng HH:mm.", NotificationType.Error);
+                    await _notify.ShowNotificationAsync("Định dạng giờ không hợp lệ. Vui lòng nhập theo định dạng HH:mm.", NotificationType.Error);
                     return;
                 }
 
@@ -523,14 +522,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                 if (AddDenNgay < AddTuNgay)
                 {
-                    await Notification.ShowNotificationAsync("Ngày kết thúc không được nhỏ hơn ngày bắt đầu.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Ngày kết thúc không được nhỏ hơn ngày bắt đầu.", NotificationType.Warning);
                     return;
                 }
 
                 int slVeKT = int.Parse(AddSLVeKT);
                 if (slVeKT <= 0)
                 {
-                    await Notification.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
                     return;
                 }
 
@@ -542,11 +541,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                 if (sumTicket != int.Parse(AddSLVeKT))
                 {
-                    await Notification.ShowNotificationAsync("Tổng số lượng vé của các hạng ghế phải bằng số lượng vé khai thác.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Tổng số lượng vé của các hạng ghế phải bằng số lượng vé khai thác.", NotificationType.Warning);
                     return;
                 }
 
-                using (var context = new AirTicketDbContext())
+                using (var context = _db.CreateDbContext())
                 {
                     TimeSpan thoiGianBayToiThieu = TimeSpan.Zero;
                     var quyDinh = context.Quydinhs.FirstOrDefault();
@@ -562,7 +561,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                     if (thoiGianBay <= thoiGianDung)
                     {
-                        await Notification.ShowNotificationAsync(
+                        await _notify.ShowNotificationAsync(
                             $"Thời gian bay ({thoiGianBay}) phải lớn hơn tổng thời gian dừng tại các sân bay trung gian ({thoiGianDung}).",
                             NotificationType.Warning);
                         return;
@@ -570,7 +569,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                     if (thoiGianBay < thoiGianDung + thoiGianBayToiThieu)
                     {
-                        await Notification.ShowNotificationAsync(
+                        await _notify.ShowNotificationAsync(
                             $"Thời gian bay tối thiểu là {thoiGianBayToiThieu}",
                             NotificationType.Warning);
                         return;
@@ -630,19 +629,19 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                     if (soLichBayTao > 0)
                     {
-                        await Notification.ShowNotificationAsync($"Đã thêm {soLichBayTao} lịch bay thành công!", NotificationType.Information);
+                        await _notify.ShowNotificationAsync($"Đã thêm {soLichBayTao} lịch bay thành công!", NotificationType.Information);
                         IsAddSchedulePopupOpen = false;
                         LoadFlightSchedule();
                     }
                     else
                     {
-                        await Notification.ShowNotificationAsync("Không có lịch bay nào được thêm do dữ liệu không hợp lệ.", NotificationType.Warning);
+                        await _notify.ShowNotificationAsync("Không có lịch bay nào được thêm do dữ liệu không hợp lệ.", NotificationType.Warning);
                     }
                 }
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Có lỗi xảy ra khi thêm lịch bay: " + ex.Message, NotificationType.Error);
+                await _notify.ShowNotificationAsync("Có lỗi xảy ra khi thêm lịch bay: " + ex.Message, NotificationType.Error);
             }
         }
 
@@ -650,7 +649,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         public async void AddTicketClass()
         {
 
-            using (var context = new AirTicketDbContext())
+            using (var context = _db.CreateDbContext())
             {
                 int soHangVe = 0;
                 var quyDinh = context.Quydinhs.FirstOrDefault();
@@ -661,7 +660,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 }
                 if (TicketClassForScheduleList.Count >= soHangVe)
                 {
-                    await Notification.ShowNotificationAsync($"Số hạng vé tối đa là: {soHangVe}", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync($"Số hạng vé tối đa là: {soHangVe}", NotificationType.Warning);
                     return;
                 }
             }
@@ -687,7 +686,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             catch (Exception ex)
             {
                 // Xử lý lỗi
-                await Notification.ShowNotificationAsync($"Lỗi khi thêm sân bay trung gian: {ex.Message}", NotificationType.Error);
+                await _notify.ShowNotificationAsync($"Lỗi khi thêm sân bay trung gian: {ex.Message}", NotificationType.Error);
             }
         }
 
@@ -724,12 +723,12 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             {
                 if (ticketClass == null)
                 {
-                    await Notification.ShowNotificationAsync("Không tìm thấy hạng ghế để xóa!", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Không tìm thấy hạng ghế để xóa!", NotificationType.Warning);
                     return;
                 }
 
                 // Hiển thị hộp thoại xác nhận
-                bool confirmed = await Notification.ShowNotificationAsync(
+                bool confirmed = await _notify.ShowNotificationAsync(
                     $"Bạn có chắc chắn muốn xóa hạng ghế?",
                     NotificationType.Warning,
                     isConfirmation: true);
@@ -749,7 +748,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             catch (Exception ex)
             {
                 // Xử lý lỗi
-                await Notification.ShowNotificationAsync($"Lỗi khi xóa sân bay trung gian: {ex.Message}", NotificationType.Error);
+                await _notify.ShowNotificationAsync($"Lỗi khi xóa sân bay trung gian: {ex.Message}", NotificationType.Error);
             }
         }
 
@@ -783,7 +782,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         {
             EditID = selectedLichBay?.MaLb ?? 0;
 
-            using (var context = new AirTicketDbContext())
+            using (var context = _db.CreateDbContext())
             {
                 var schedule = context.Lichbays
                     .Include(lb => lb.Datves)
@@ -792,23 +791,23 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                 if (schedule == null)
                 {
-                    await Notification.ShowNotificationAsync("Không tìm thấy lịch bay trong cơ sở dữ liệu.", NotificationType.Error);
+                    await _notify.ShowNotificationAsync("Không tìm thấy lịch bay trong cơ sở dữ liệu.", NotificationType.Error);
                     return;
                 }
 
                 if (schedule.Datves.Any())
                 {
-                    await Notification.ShowNotificationAsync("Không thể sửa lịch bay đã có người đặt vé.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Không thể sửa lịch bay đã có người đặt vé.", NotificationType.Warning);
                     return;
                 }
                 else if (schedule.TtlichBay == "Đã cất cánh")
                 {
-                    await Notification.ShowNotificationAsync("Không thể sửa lịch bay đã cất cánh.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Không thể sửa lịch bay đã cất cánh.", NotificationType.Warning);
                     return;
                 }
                 else if (schedule.TtlichBay == "Hoàn thành")
                 {
-                    await Notification.ShowNotificationAsync("Không thể sửa lịch bay đã hoàn thành.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Không thể sửa lịch bay đã hoàn thành.", NotificationType.Warning);
                     return;
                 }
             }
@@ -823,11 +822,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         {
             if (selectedLichBay == null)
             {
-                await Notification.ShowNotificationAsync("Vui lòng chọn một lịch bay để xóa.", NotificationType.Warning);
+                await _notify.ShowNotificationAsync("Vui lòng chọn một lịch bay để xóa.", NotificationType.Warning);
                 return;
             }
 
-            bool confirmed = await Notification.ShowNotificationAsync(
+            bool confirmed = await _notify.ShowNotificationAsync(
                 $"Bạn có chắc chắn muốn xóa lịch bay {selectedLichBay.SoHieuCb} (Mã: {selectedLichBay.MaLb})?",
                 NotificationType.Warning,
                 isConfirmation: true);
@@ -837,7 +836,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
             try
             {
-                using (var context = new AirTicketDbContext())
+                using (var context = _db.CreateDbContext())
                 {
                     var schedule = context.Lichbays
                         .Include(lb => lb.Datves)
@@ -846,23 +845,23 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                     if (schedule == null)
                     {
-                        await Notification.ShowNotificationAsync("Không tìm thấy lịch bay trong cơ sở dữ liệu.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync("Không tìm thấy lịch bay trong cơ sở dữ liệu.", NotificationType.Error);
                         return;
                     }
 
                     if (schedule.Datves.Any())
                     {
-                        await Notification.ShowNotificationAsync("Không thể xóa lịch bay đã có người đặt vé.", NotificationType.Warning);
+                        await _notify.ShowNotificationAsync("Không thể xóa lịch bay đã có người đặt vé.", NotificationType.Warning);
                         return;
                     }
                     else if (schedule.TtlichBay == "Đã cất cánh")
                     {
-                        await Notification.ShowNotificationAsync("Không thể xóa lịch bay đã cất cánh.", NotificationType.Warning);
+                        await _notify.ShowNotificationAsync("Không thể xóa lịch bay đã cất cánh.", NotificationType.Warning);
                         return;
                     }
                     else if (schedule.TtlichBay == "Hoàn thành")
                     {
-                        await Notification.ShowNotificationAsync("Không thể xóa lịch bay đã hoàn thành.", NotificationType.Warning);
+                        await _notify.ShowNotificationAsync("Không thể xóa lịch bay đã hoàn thành.", NotificationType.Warning);
                         return;
                     }
 
@@ -873,7 +872,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     context.Lichbays.Remove(schedule);
                     context.SaveChanges();
 
-                    await Notification.ShowNotificationAsync("Đã xóa lịch bay thành công!", NotificationType.Information);
+                    await _notify.ShowNotificationAsync("Đã xóa lịch bay thành công!", NotificationType.Information);
 
                     // Làm mới danh sách
                     LoadFlightSchedule();
@@ -881,7 +880,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Đã xảy ra lỗi khi xóa lịch bay: " + ex.Message, NotificationType.Error);
+                await _notify.ShowNotificationAsync("Đã xảy ra lỗi khi xóa lịch bay: " + ex.Message, NotificationType.Error);
             }
         }
 
@@ -936,14 +935,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     string.IsNullOrWhiteSpace(EditLoaiMB) || string.IsNullOrWhiteSpace(EditSLVeKT) ||
                     string.IsNullOrWhiteSpace(EditGiaVe) || string.IsNullOrWhiteSpace(EditTTLichBay))
                 {
-                    await Notification.ShowNotificationAsync("Vui lòng điền đầy đủ thông tin lịch bay.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Vui lòng điền đầy đủ thông tin lịch bay.", NotificationType.Warning);
                     return;
                 }
 
                 // Ghép giờ đi và ngày đi thành DateTime
                 if (!TimeSpan.TryParse(EditGioDi, out TimeSpan gioDi) || !TimeSpan.TryParse(EditGioDen, out TimeSpan gioDen))
                 {
-                    await Notification.ShowNotificationAsync("Định dạng giờ không hợp lệ. Vui lòng nhập theo định dạng HH:mm.", NotificationType.Error);
+                    await _notify.ShowNotificationAsync("Định dạng giờ không hợp lệ. Vui lòng nhập theo định dạng HH:mm.", NotificationType.Error);
                     return;
                 }
 
@@ -953,14 +952,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                 if (ngayGioDen <= ngayGioDi)
                 {
-                    await Notification.ShowNotificationAsync("Thời gian đến phải sau thời gian đi.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Thời gian đến phải sau thời gian đi.", NotificationType.Warning);
                     return;
                 }
 
                 int slVeKT = int.Parse(EditSLVeKT);
                 if (slVeKT <= 0)
                 {
-                    await Notification.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
                     return;
                 }
 
@@ -971,13 +970,13 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 }
                 if (sumTicket != int.Parse(EditSLVeKT))
                 {
-                    await Notification.ShowNotificationAsync("Tổng số lượng vé của các hạng ghế phải bằng số lượng vé khai thác.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Tổng số lượng vé của các hạng ghế phải bằng số lượng vé khai thác.", NotificationType.Warning);
                     return;
                 }
 
 
 
-                using (var context = new AirTicketDbContext())
+                using (var context = _db.CreateDbContext())
                 {
                     var schedule = context.Lichbays
                .Include(lb => lb.Hangvetheolichbays)
@@ -985,7 +984,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                     if (schedule == null)
                     {
-                        await Notification.ShowNotificationAsync("Không tìm thấy lịch bay để chỉnh sửa.", NotificationType.Error);
+                        await _notify.ShowNotificationAsync("Không tìm thấy lịch bay để chỉnh sửa.", NotificationType.Error);
                         return;
                     }
 
@@ -1003,7 +1002,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     var thoiGianBay = ngayGioDen - ngayGioDi;
                     if (thoiGianBay <= thoiGianDung)
                     {
-                        await Notification.ShowNotificationAsync(
+                        await _notify.ShowNotificationAsync(
                             $"Thời gian bay ({thoiGianBay}) phải lớn hơn tổng thời gian dừng tại các sân bay trung gian ({thoiGianDung}).",
                             NotificationType.Warning);
                         return;
@@ -1011,7 +1010,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                     if (thoiGianBay < thoiGianDung + thoiGianBayToiThieu)
                     {
-                        await Notification.ShowNotificationAsync(
+                        await _notify.ShowNotificationAsync(
                             $"Thời gian bay tối thiểu là {thoiGianBayToiThieu}",
                             NotificationType.Warning);
                         return;
@@ -1048,7 +1047,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     }
 
                     context.SaveChanges();
-                    await Notification.ShowNotificationAsync("Lịch bay đã được cập nhật thành công!", NotificationType.Information);
+                    await _notify.ShowNotificationAsync("Lịch bay đã được cập nhật thành công!", NotificationType.Information);
 
                     // Đóng popup và reload danh sách lịch bay
                     IsEditSchedulePopupOpen = false;
@@ -1057,14 +1056,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Đã xảy ra lỗi khi cập nhật lịch bay: " + ex.Message, NotificationType.Error);
+                await _notify.ShowNotificationAsync("Đã xảy ra lỗi khi cập nhật lịch bay: " + ex.Message, NotificationType.Error);
             }
         }
 
         [RelayCommand]
         public async Task EditTicketClass()
         {
-            using (var context = new AirTicketDbContext())
+            using (var context = _db.CreateDbContext())
             {
                 int soHangVe = 0;
                 var quyDinh = context.Quydinhs.FirstOrDefault();
@@ -1075,7 +1074,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 }
                 if (TicketClassForScheduleList.Count >= soHangVe)
                 {
-                    await Notification.ShowNotificationAsync($"Số hạng vé tối đa là: {soHangVe}", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync($"Số hạng vé tối đa là: {soHangVe}", NotificationType.Warning);
                     return;
                 }
             }
@@ -1102,7 +1101,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             catch (Exception ex)
             {
                 // Xử lý lỗi
-                await Notification.ShowNotificationAsync($"Lỗi khi thêm sân bay trung gian: {ex.Message}", NotificationType.Error);
+                await _notify.ShowNotificationAsync($"Lỗi khi thêm sân bay trung gian: {ex.Message}", NotificationType.Error);
             }
         }
 
@@ -1113,12 +1112,12 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             {
                 if (ticketClass == null)
                 {
-                    await Notification.ShowNotificationAsync("Không tìm thấy hạng ghế để xóa!", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Không tìm thấy hạng ghế để xóa!", NotificationType.Warning);
                     return;
                 }
 
                 // Hiển thị hộp thoại xác nhận
-                bool confirmed = await Notification.ShowNotificationAsync(
+                bool confirmed = await _notify.ShowNotificationAsync(
                     $"Bạn có chắc chắn muốn xóa hạng ghế?",
                     NotificationType.Warning,
                     isConfirmation: true);
@@ -1138,7 +1137,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             catch (Exception ex)
             {
                 // Xử lý lỗi
-                await Notification.ShowNotificationAsync($"Lỗi khi xóa sân bay trung gian: {ex.Message}", NotificationType.Error);
+                await _notify.ShowNotificationAsync($"Lỗi khi xóa sân bay trung gian: {ex.Message}", NotificationType.Error);
             }
         }
 

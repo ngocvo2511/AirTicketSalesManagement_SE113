@@ -6,11 +6,19 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
+using System.Linq;
+using AirTicketSalesManagement.Services.DbContext;
+using AirTicketSalesManagement.Services.Notification;
+using System.Threading.Tasks;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
     public partial class FlightManagementViewModel : BaseViewModel
     {
+        // --- Dependencies (injected for testability) ---
+        private readonly IAirTicketDbContextService _dbContextService;
+        private readonly INotificationService _notificationService;
+
         [ObservableProperty]
         private string diemDi;
 
@@ -65,7 +73,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [ObservableProperty]
         private string addTTKhaiThac;
         [ObservableProperty]
-        private ObservableCollection<SBTG> danhSachSBTG;
+        private ObservableCollection<SBTG> danhSachSBTG = new();
 
         public ObservableCollection<string> AddDiemDiList =>
             new(SanBayList.Where(s => s != AddDiemDen));
@@ -129,25 +137,24 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             OnPropertyChanged(nameof(SBTGList));
             CapNhatSBTGList();
         }
+        public NotificationViewModel Notification { get; }
 
-        // Notification
-        public NotificationViewModel Notification { get; set; } = new NotificationViewModel();
-
-        public void LoadSanBay()
+        // Parameterless ctor kept for runtime compatibility (concrete services)
+        public FlightManagementViewModel()
+            : this(new AirTicketDbService(), new NotificationService(new NotificationViewModel()))
         {
-            using (var context = new AirTicketDbContext()) // Hoặc dùng SqlConnection nếu ADO.NET
-            {
-                var danhSach = context.Sanbays
-                            .AsEnumerable() // chuyển sang LINQ to Objects
-                            .Select(sb => $"{sb.ThanhPho} ({sb.MaSb}), {sb.QuocGia}")
-                            .OrderBy(display => display)
-                            .ToList();
-                SanBayList = new ObservableCollection<string>(danhSach);
-            }
         }
 
-        public FlightManagementViewModel()
+        // DI ctor - use in unit tests to inject fakes/mocks
+        public FlightManagementViewModel(IAirTicketDbContextService dbContextService, INotificationService notificationService)
         {
+            _dbContextService = dbContextService ?? throw new System.ArgumentNullException(nameof(dbContextService));
+            _notificationService = notificationService;
+
+            // keep Notification property for UI binding if the view binds to it
+            Notification = (notificationService as NotificationService)?.ViewModel
+                       ?? new NotificationViewModel();
+
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
                 LoadSanBay();
@@ -155,15 +162,26 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        public void LoadSanBay()
+        {
+            using var context = _dbContextService.CreateDbContext();
+            var danhSach = context.Sanbays
+                        .AsEnumerable()
+                        .Select(sb => $"{sb.ThanhPho} ({sb.MaSb}), {sb.QuocGia}")
+                        .OrderBy(display => display)
+                        .ToList();
+            SanBayList = new ObservableCollection<string>(danhSach);
+        }
+
         public void LoadFlights()
         {
-            using var context = new AirTicketDbContext();
+            using var context = _dbContextService.CreateDbContext();
             var danhSach = context.Chuyenbays
                 .Include(cb => cb.SbdiNavigation)
                 .Include(cb => cb.SbdenNavigation)
                 .Include(cb => cb.Sanbaytrunggians)
                     .ThenInclude(sbtg => sbtg.MaSbtgNavigation)
-                .AsEnumerable() // chuyển sang LINQ to Objects
+                .AsEnumerable()
                 .Select(cb =>
                 {
                     cb.SbdiNavigation ??= new Sanbay();
@@ -197,51 +215,42 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         {
             Flights.Clear();
 
-            using (var context = new AirTicketDbContext())
+            using var context = _dbContextService.CreateDbContext();
+            var query = context.Chuyenbays
+                .Include(cb => cb.SbdiNavigation)
+                .Include(cb => cb.SbdenNavigation)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(DiemDi))
             {
-                // Truy vấn chuyến bay, bao gồm liên kết sân bay đi, đến
-                var query = context.Chuyenbays
-                    .Include(cb => cb.SbdiNavigation)
-                    .Include(cb => cb.SbdenNavigation)
-                    .AsQueryable();
+                var maSBDi = ExtractMaSB(DiemDi);
+                query = query.Where(cb => cb.SbdiNavigation.MaSb == maSBDi);
+            }
 
-                // Lọc theo điểm đi
-                if (!string.IsNullOrWhiteSpace(DiemDi))
-                {
-                    var maSBDi = ExtractMaSB(DiemDi);
-                    query = query.Where(cb => cb.SbdiNavigation.MaSb == maSBDi);
-                }
+            if (!string.IsNullOrWhiteSpace(DiemDen))
+            {
+                var maSBDen = ExtractMaSB(DiemDen);
+                query = query.Where(cb => cb.SbdenNavigation.MaSb == maSBDen);
+            }
 
-                // Lọc theo điểm đến
-                if (!string.IsNullOrWhiteSpace(DiemDen))
-                {
-                    var maSBDen = ExtractMaSB(DiemDen);
-                    query = query.Where(cb => cb.SbdenNavigation.MaSb == maSBDen);
-                }
+            if (!string.IsNullOrWhiteSpace(SoHieuCB))
+            {
+                query = query.Where(cb => cb.SoHieuCb.Contains(SoHieuCB));
+            }
 
-                // Lọc theo số hiệu chuyến bay
-                if (!string.IsNullOrWhiteSpace(SoHieuCB))
-                {
-                    query = query.Where(cb => cb.SoHieuCb.Contains(SoHieuCB));
-                }
+            if (!string.IsNullOrWhiteSpace(TrangThai) && TrangThai != "Tất cả")
+            {
+                query = query.Where(cb => cb.TtkhaiThac == TrangThai);
+            }
 
-                // Lọc theo trạng thái
-                if (!string.IsNullOrWhiteSpace(TrangThai) && TrangThai != "Tất cả")
-                {
-                    query = query.Where(cb => cb.TtkhaiThac == TrangThai);
-                }
+            if (!string.IsNullOrWhiteSpace(HangHangKhong) && HangHangKhong != "Tất cả")
+            {
+                query = query.Where(cb => cb.HangHangKhong == HangHangKhong);
+            }
 
-                // Lọc theo hãng hàng không
-                if (!string.IsNullOrWhiteSpace(HangHangKhong) && HangHangKhong != "Tất cả")
-                {
-                    query = query.Where(cb => cb.HangHangKhong == HangHangKhong);
-                }
-
-                // Lấy kết quả và đưa vào ObservableCollection
-                foreach (var cb in query.ToList())
-                {
-                    Flights.Add(cb);
-                }
+            foreach (var cb in query.ToList())
+            {
+                Flights.Add(cb);
             }
         }
 
@@ -287,42 +296,37 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [RelayCommand]
         public async void AddIntermediateAirport()
         {
-            using (var context = new AirTicketDbContext())
+            using var context = _dbContextService.CreateDbContext();
+            int soSBTG = 0;
+            var quyDinh = context.Quydinhs.FirstOrDefault();
+            if (quyDinh != null)
             {
-                int soSBTG = 0;
-                var quyDinh = context.Quydinhs.FirstOrDefault();
-
-                if (quyDinh != null)
-                {
-                    soSBTG = quyDinh.SoSanBayTgtoiDa.Value;
-                }
-                if (DanhSachSBTG.Count >= soSBTG)
-                {
-                    await Notification.ShowNotificationAsync($"Số sân bay trung gian tối đa là: {soSBTG}", NotificationType.Warning);
-                    return;
-                }
+                soSBTG = quyDinh.SoSanBayTgtoiDa.GetValueOrDefault();
             }
+            if (DanhSachSBTG.Count >= soSBTG)
+            {
+                await _notification_service_fallback($"Số sân bay trung gian tối đa là: {soSBTG}", NotificationType.Warning);
+                return;
+            }
+
             try
             {
-                // Tạo sân bay trung gian mới với STT tự động tăng
                 var sbtg = new SBTG()
                 {
-                    STT = DanhSachSBTG.Count + 1, // Tự động tăng STT
-                    MaSBTG = string.Empty, // Mã sân bay trung gian sẽ được nhập sau
-                    ThoiGianDung = 0, // Thời gian dừng mặc định là 0
-                    GhiChu = string.Empty, // Ghi chú mặc định là rỗng
+                    STT = DanhSachSBTG.Count + 1,
+                    MaSBTG = string.Empty,
+                    ThoiGianDung = 0,
+                    GhiChu = string.Empty,
                     SbtgList = new ObservableCollection<string>(SBTGList),
                     OnMaSBTGChangedCallback = CapNhatSBTGList
                 };
 
-                // Thêm vào collection
                 DanhSachSBTG.Add(sbtg);
                 CapNhatSBTGList();
-                System.Diagnostics.Debug.WriteLine($"Đã thêm sân bay trung gian thứ {sbtg.STT}");
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                await Notification.ShowNotificationAsync($"Lỗi khi thêm sân bay trung gian: {ex.Message}", NotificationType.Error);
+                await _notification_service_fallback($"Lỗi khi thêm sân bay trung gian: {ex.Message}", NotificationType.Error);
             }
         }
 
@@ -333,34 +337,26 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             {
                 if (addSBTG == null)
                 {
-                    await Notification.ShowNotificationAsync("Không tìm thấy sân bay trung gian để xóa!", NotificationType.Warning);
+                    await _notification_service_fallback("Không tìm thấy sân bay trung gian để xóa!", NotificationType.Warning);
                     return;
                 }
 
-                // Hiển thị hộp thoại xác nhận
-                bool confirmed = await Notification.ShowNotificationAsync(
+                bool confirmed = await _notification_service_fallback(
                     $"Bạn có chắc chắn muốn xóa sân bay trung gian thứ {addSBTG.STT}?",
+
                     NotificationType.Warning,
                     isConfirmation: true);
 
                 if (confirmed)
                 {
-                    // Lưu STT của sân bay bị xóa
                     int removedSTT = addSBTG.STT;
-
-                    // Xóa khỏi collection
                     DanhSachSBTG.Remove(addSBTG);
-
-                    // Cập nhật lại STT cho các sân bay sau sân bay bị xóa
                     UpdateSTTAfterRemoval(removedSTT);
-
-                    // Log hoặc thông báo thành công
-                    System.Diagnostics.Debug.WriteLine($"Đã xóa sân bay trung gian thứ {removedSTT}");
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                await Notification.ShowNotificationAsync($"Lỗi khi xóa sân bay trung gian: {ex.Message}", NotificationType.Error);
+                await _notification_service_fallback($"Lỗi khi xóa sân bay trung gian: {ex.Message}", NotificationType.Error);
             }
         }
 
@@ -368,13 +364,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         {
             try
             {
-                // Cập nhật STT cho các sân bay có STT lớn hơn sân bay bị xóa
                 foreach (var airport in DanhSachSBTG.Where(a => a.STT > removedSTT))
                 {
                     airport.STT--;
                 }
 
-                // Sắp xếp lại collection theo STT để đảm bảo thứ tự
                 var sortedList = DanhSachSBTG.OrderBy(a => a.STT).ToList();
                 DanhSachSBTG.Clear();
 
@@ -383,7 +377,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     DanhSachSBTG.Add(airport);
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Lỗi khi cập nhật STT: {ex.Message}");
             }
@@ -395,12 +389,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             {
                 return;
             }
-            // Danh sách cơ bản loại bỏ điểm đi và điểm đến
+
             var danhSachCoBan = SanBayList
                 .Where(s => s != AddDiemDi && s != AddDiemDen)
                 .ToList();
 
-            // Lấy danh sách mã sân bay đã được chọn ở các item khác
             foreach (var item in DanhSachSBTG)
             {
                 var daChon = DanhSachSBTG
@@ -425,89 +418,86 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     string.IsNullOrWhiteSpace(AddSoHieuCB) || string.IsNullOrWhiteSpace(AddHangHangKhong) ||
                     string.IsNullOrWhiteSpace(AddTTKhaiThac))
                 {
-                    await Notification.ShowNotificationAsync("Vui lòng điền đầy đủ thông tin chuyến bay.", NotificationType.Warning);
+                    await _notification_service_fallback("Vui lòng điền đầy đủ thông tin chuyến bay.", NotificationType.Warning);
                     return;
                 }
-                using (var context = new AirTicketDbContext())
+
+                using var context = _dbContextService.CreateDbContext();
+
+                bool isDuplicate = context.Chuyenbays.Any(cb => cb.SoHieuCb == AddSoHieuCB);
+                if (isDuplicate)
                 {
-                    // Kiểm tra trùng số hiệu chuyến bay
-                    bool isDuplicate = context.Chuyenbays.Any(cb => cb.SoHieuCb == AddSoHieuCB);
-                    if (isDuplicate)
-                    {
-                        await Notification.ShowNotificationAsync("Số hiệu chuyến bay đã tồn tại. Vui lòng nhập số hiệu khác.", NotificationType.Warning);
-                        return;
-                    }
-
-                    int thoiGianDungMin = 0;
-                    int thoiGianDungMax = int.MaxValue;
-                    var quyDinh = context.Quydinhs.FirstOrDefault();
-
-                    if (quyDinh != null)
-                    {
-                        thoiGianDungMin = quyDinh.TgdungMin.Value;
-                        thoiGianDungMax = quyDinh.TgdungMax.Value;
-                    }
-
-                    foreach (var sbtg in DanhSachSBTG)
-                    {
-                        if (!string.IsNullOrWhiteSpace(sbtg.MaSBTG))
-                        {
-                            if (thoiGianDungMin > sbtg.ThoiGianDung)
-                            {
-                                await Notification.ShowNotificationAsync($"Thời gian dừng tối thiểu là: {thoiGianDungMin} phút", NotificationType.Warning);
-                                return;
-                            }
-                            else if (thoiGianDungMax < sbtg.ThoiGianDung)
-                            {
-                                await Notification.ShowNotificationAsync($"Thời gian dừng tối đa là: {thoiGianDungMax} phút", NotificationType.Warning);
-                                return;
-                            }
-                        }
-                    }
-
-                    // Tạo chuyến bay mới
-                    var newFlight = new Chuyenbay
-                    {
-                        SoHieuCb = AddSoHieuCB,
-                        SbdiNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(AddDiemDi)),
-                        SbdenNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(AddDiemDen)),
-                        HangHangKhong = AddHangHangKhong,
-                        TtkhaiThac = AddTTKhaiThac,
-                    };
-
-                    context.Chuyenbays.Add(newFlight);
-                    context.SaveChanges();
-                    // Thêm các sân bay trung gian
-                    foreach (var sbtg in DanhSachSBTG)
-                    {
-                        if (!string.IsNullOrWhiteSpace(sbtg.MaSBTG))
-                        {
-                            var sb = context.Sanbays.FirstOrDefault(s => s.MaSb == ExtractMaSB(sbtg.MaSBTG));
-                            if (sb != null)
-                            {
-                                var sbtg1 = new Sanbaytrunggian
-                                {
-                                    Stt = sbtg.STT,
-                                    SoHieuCb = newFlight.SoHieuCb,
-                                    MaSbtg = sb.MaSb,
-                                    ThoiGianDung = sbtg.ThoiGianDung,
-                                    GhiChu = sbtg.GhiChu
-                                };
-                                context.Sanbaytrunggians.Add(sbtg1); // 👈 Bắt buộc để EF thực sự lưu nó
-                            }
-                        }
-                    }
-                    // Lưu vào cơ sở dữ liệu
-                    context.SaveChanges();
-                    await Notification.ShowNotificationAsync("Chuyến bay đã được thêm thành công!", NotificationType.Information);
-                    // Đóng popup và làm mới danh sách chuyến bay
-                    IsAddPopupOpen = false;
-                    LoadFlights();
+                    await _notification_service_fallback("Số hiệu chuyến bay đã tồn tại. Vui lòng nhập số hiệu khác.", NotificationType.Warning);
+                    return;
                 }
+
+                int thoiGianDungMin = 0;
+                int thoiGianDungMax = int.MaxValue;
+                var quyDinh = context.Quydinhs.FirstOrDefault();
+
+                if (quyDinh != null)
+                {
+                    thoiGianDungMin = quyDinh.TgdungMin.GetValueOrDefault();
+                    thoiGianDungMax = quyDinh.TgdungMax.GetValueOrDefault(int.MaxValue);
+                }
+
+                foreach (var sbtg in DanhSachSBTG)
+                {
+                    if (!string.IsNullOrWhiteSpace(sbtg.MaSBTG))
+                    {
+                        if (thoiGianDungMin > sbtg.ThoiGianDung)
+                        {
+                            await _notification_service_fallback($"Thời gian dừng tối thiểu là: {thoiGianDungMin} phút", NotificationType.Warning);
+                            return;
+                        }
+                        else if (thoiGianDungMax < sbtg.ThoiGianDung)
+                        {
+                            await _notification_service_fallback($"Thời gian dừng tối đa là: {thoiGianDungMax} phút", NotificationType.Warning);
+                            return;
+                        }
+                    }
+                }
+
+                var newFlight = new Chuyenbay
+                {
+                    SoHieuCb = AddSoHieuCB,
+                    SbdiNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(AddDiemDi)),
+                    SbdenNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(AddDiemDen)),
+                    HangHangKhong = AddHangHangKhong,
+                    TtkhaiThac = AddTTKhaiThac,
+                };
+
+                context.Chuyenbays.Add(newFlight);
+                context.SaveChanges();
+
+                foreach (var sbtg in DanhSachSBTG)
+                {
+                    if (!string.IsNullOrWhiteSpace(sbtg.MaSBTG))
+                    {
+                        var sb = context.Sanbays.FirstOrDefault(s => s.MaSb == ExtractMaSB(sbtg.MaSBTG));
+                        if (sb != null)
+                        {
+                            var sbtg1 = new Sanbaytrunggian
+                            {
+                                Stt = sbtg.STT,
+                                SoHieuCb = newFlight.SoHieuCb,
+                                MaSbtg = sb.MaSb,
+                                ThoiGianDung = sbtg.ThoiGianDung,
+                                GhiChu = sbtg.GhiChu
+                            };
+                            context.Sanbaytrunggians.Add(sbtg1);
+                        }
+                    }
+                }
+
+                context.SaveChanges();
+                await _notification_service_fallback("Chuyến bay đã được thêm thành công!", NotificationType.Information);
+                IsAddPopupOpen = false;
+                LoadFlights();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                await Notification.ShowNotificationAsync("Đã xảy ra lỗi khi thêm chuyến bay: " + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Đã xảy ra lỗi khi thêm chuyến bay: " + ex.Message, NotificationType.Error);
             }
         }
 
@@ -536,7 +526,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 {
                     STT = sbtg.Stt,
                     MaSBTG = $"{sbtg.MaSbtgNavigation.ThanhPho} ({sbtg.MaSbtgNavigation.MaSb}), {sbtg.MaSbtgNavigation.QuocGia}",
-                    ThoiGianDung = sbtg.ThoiGianDung.Value,
+                    ThoiGianDung = sbtg.ThoiGianDung.GetValueOrDefault(),
                     GhiChu = sbtg.GhiChu,
                     SbtgList = new ObservableCollection<string>(EditSBTGList),
                     OnMaSBTGChangedCallback = CapNhatSBTGList
@@ -550,11 +540,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         {
             if (SelectedFlight == null)
             {
-                await Notification.ShowNotificationAsync("Vui lòng chọn một chuyến bay để xóa.", NotificationType.Warning);
+                await _notification_service_fallback("Vui lòng chọn một chuyến bay để xóa.", NotificationType.Warning);
                 return;
             }
 
-            bool confirmed = await Notification.ShowNotificationAsync(
+            bool confirmed = await _notification_service_fallback(
                 $"Bạn có chắc chắn muốn xóa chuyến bay {SelectedFlight.SoHieuCb}?",
                 NotificationType.Warning,
                 isConfirmation: true);
@@ -564,41 +554,34 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
             try
             {
-                using (var context = new AirTicketDbContext())
+                using var context = _dbContextService.CreateDbContext();
+                var flight = context.Chuyenbays
+                    .Include(cb => cb.Lichbays)
+                    .Include(cb => cb.Sanbaytrunggians)
+                    .FirstOrDefault(cb => cb.SoHieuCb == SelectedFlight.SoHieuCb);
+
+                if (flight == null)
                 {
-                    var flight = context.Chuyenbays
-                        .Include(cb => cb.Lichbays)
-                        .Include(cb => cb.Sanbaytrunggians)
-                        .FirstOrDefault(cb => cb.SoHieuCb == SelectedFlight.SoHieuCb);
-
-                    if (flight == null)
-                    {
-                        await Notification.ShowNotificationAsync("Không tìm thấy chuyến bay trong hệ thống.", NotificationType.Error);
-                        return;
-                    }
-
-                    if (flight.Lichbays.Any())
-                    {
-                        await Notification.ShowNotificationAsync("Không thể xóa chuyến bay đã có lịch bay.", NotificationType.Warning);
-                        return;
-                    }
-
-                    // Xóa các sân bay trung gian liên quan trước (nếu có)
-                    context.Sanbaytrunggians.RemoveRange(flight.Sanbaytrunggians);
-
-                    // Sau đó xóa chuyến bay
-                    context.Chuyenbays.Remove(flight);
-                    context.SaveChanges();
-
-                    await Notification.ShowNotificationAsync("Đã xóa chuyến bay thành công!", NotificationType.Information);
-
-                    // Làm mới danh sách
-                    LoadFlights();
+                    await _notification_service_fallback("Không tìm thấy chuyến bay trong hệ thống.", NotificationType.Error);
+                    return;
                 }
+
+                if (flight.Lichbays.Any())
+                {
+                    await _notification_service_fallback("Không thể xóa chuyến bay đã có lịch bay.", NotificationType.Warning);
+                    return;
+                }
+
+                context.Sanbaytrunggians.RemoveRange(flight.Sanbaytrunggians);
+                context.Chuyenbays.Remove(flight);
+                context.SaveChanges();
+
+                await _notification_service_fallback("Đã xóa chuyến bay thành công!", NotificationType.Information);
+                LoadFlights();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                await Notification.ShowNotificationAsync("Đã xảy ra lỗi khi xóa chuyến bay: " + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Đã xảy ra lỗi khi xóa chuyến bay: " + ex.Message, NotificationType.Error);
             }
         }
 
@@ -623,116 +606,104 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     string.IsNullOrWhiteSpace(EditSoHieuCB) || string.IsNullOrWhiteSpace(EditHangHangKhong) ||
                     string.IsNullOrWhiteSpace(EditTTKhaiThac))
                 {
-                    await Notification.ShowNotificationAsync("Vui lòng điền đầy đủ thông tin chuyến bay.", NotificationType.Warning);
+                    await _notification_service_fallback("Vui lòng điền đầy đủ thông tin chuyến bay.", NotificationType.Warning);
                     return;
                 }
 
-                using (var context = new AirTicketDbContext())
+                using var context = _dbContextService.CreateDbContext();
+                var existingFlight = context.Chuyenbays
+                    .Include(cb => cb.Lichbays)
+                    .Include(cb => cb.Sanbaytrunggians)
+                    .FirstOrDefault(cb => cb.SoHieuCb == EditSoHieuCB);
+
+                if (existingFlight == null)
                 {
-                    // Tìm chuyến bay cần chỉnh sửa
-                    var existingFlight = context.Chuyenbays
-                        .Include(cb => cb.Lichbays)
-                        .Include(cb => cb.Sanbaytrunggians)
-                        .FirstOrDefault(cb => cb.SoHieuCb == EditSoHieuCB);
+                    await _notification_service_fallback("Không tìm thấy chuyến bay để chỉnh sửa.", NotificationType.Error);
+                    return;
+                }
 
-                    if (existingFlight == null)
+                if (existingFlight.Lichbays.Any())
+                {
+                    await _notification_service_fallback("Không thể chỉnh sửa chuyến bay đã có lịch bay.", NotificationType.Warning);
+                    return;
+                }
+
+                existingFlight.SbdiNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDi));
+                existingFlight.SbdenNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDen));
+                existingFlight.Sbdi = existingFlight.SbdiNavigation?.MaSb;
+                existingFlight.Sbden = existingFlight.SbdenNavigation?.MaSb;
+                existingFlight.HangHangKhong = EditHangHangKhong;
+                existingFlight.TtkhaiThac = EditTTKhaiThac;
+
+                context.Sanbaytrunggians.RemoveRange(existingFlight.Sanbaytrunggians);
+
+                foreach (var sbtg in DanhSachSBTG)
+                {
+                    if (!string.IsNullOrWhiteSpace(sbtg.MaSBTG))
                     {
-                        await Notification.ShowNotificationAsync("Không tìm thấy chuyến bay để chỉnh sửa.", NotificationType.Error);
-                        return;
-                    }
-
-                    if (existingFlight.Lichbays.Any())
-                    {
-                        await Notification.ShowNotificationAsync("Không thể chỉnh sửa chuyến bay đã có lịch bay.", NotificationType.Warning);
-                        return;
-                    }
-
-                    // Cập nhật thông tin chuyến bay
-                    existingFlight.SbdiNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDi));
-                    existingFlight.SbdenNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDen));
-                    existingFlight.Sbdi = existingFlight.SbdiNavigation?.MaSb;
-                    existingFlight.Sbden = existingFlight.SbdenNavigation?.MaSb;
-                    existingFlight.HangHangKhong = EditHangHangKhong;
-                    existingFlight.TtkhaiThac = EditTTKhaiThac;
-
-                    // Xóa sân bay trung gian cũ
-                    context.Sanbaytrunggians.RemoveRange(existingFlight.Sanbaytrunggians);
-
-                    // Thêm lại sân bay trung gian mới
-                    foreach (var sbtg in DanhSachSBTG)
-                    {
-                        if (!string.IsNullOrWhiteSpace(sbtg.MaSBTG))
+                        var sb = context.Sanbays.FirstOrDefault(s => s.MaSb == ExtractMaSB(sbtg.MaSBTG));
+                        if (sb != null)
                         {
-                            var sb = context.Sanbays.FirstOrDefault(s => s.MaSb == ExtractMaSB(sbtg.MaSBTG));
-                            if (sb != null)
+                            var sbtgEntity = new Sanbaytrunggian
                             {
-                                var sbtgEntity = new Sanbaytrunggian
-                                {
-                                    Stt = sbtg.STT,
-                                    SoHieuCb = existingFlight.SoHieuCb,
-                                    MaSbtg = sb.MaSb,
-                                    ThoiGianDung = sbtg.ThoiGianDung,
-                                    GhiChu = sbtg.GhiChu
-                                };
-                                context.Sanbaytrunggians.Add(sbtgEntity);
-                            }
+                                Stt = sbtg.STT,
+                                SoHieuCb = existingFlight.SoHieuCb,
+                                MaSbtg = sb.MaSb,
+                                ThoiGianDung = sbtg.ThoiGianDung,
+                                GhiChu = sbtg.GhiChu
+                            };
+                            context.Sanbaytrunggians.Add(sbtgEntity);
                         }
                     }
-
-                    context.SaveChanges();
-
-                    await Notification.ShowNotificationAsync("Chuyến bay đã được cập nhật thành công!", NotificationType.Information);
-
-                    // Đóng popup và làm mới danh sách
-                    IsEditPopupOpen = false;
-                    LoadFlights();
                 }
+
+                context.SaveChanges();
+
+                await _notification_service_fallback("Chuyến bay đã được cập nhật thành công!", NotificationType.Information);
+                IsEditPopupOpen = false;
+                LoadFlights();
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                await Notification.ShowNotificationAsync("Đã xảy ra lỗi khi cập nhật chuyến bay: " + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Đã xảy ra lỗi khi cập nhật chuyến bay: " + ex.Message, NotificationType.Error);
             }
         }
 
         [RelayCommand]
         public async Task EditIntermediateAirportAsync()
         {
-            using (var context = new AirTicketDbContext())
-            {
-                int soSBTG = 0;
-                var quyDinh = context.Quydinhs.FirstOrDefault();
+            using var context = _dbContextService.CreateDbContext();
+            int soSBTG = 0;
+            var quyDinh = context.Quydinhs.FirstOrDefault();
 
-                if (quyDinh != null)
-                {
-                    soSBTG = quyDinh.SoSanBayTgtoiDa.Value;
-                }
-                if (DanhSachSBTG.Count >= soSBTG)
-                {
-                    await Notification.ShowNotificationAsync($"Số sân bay trung gian tối đa là: {soSBTG}", NotificationType.Warning);
-                    return;
-                }
+            if (quyDinh != null)
+            {
+                soSBTG = quyDinh.SoSanBayTgtoiDa.GetValueOrDefault();
             }
+            if (DanhSachSBTG.Count >= soSBTG)
+            {
+                await _notification_service_fallback($"Số sân bay trung gian tối đa là: {soSBTG}", NotificationType.Warning);
+                return;
+            }
+
             try
             {
-                // Tạo sân bay trung gian mới với STT tự động tăng
                 var sbtg = new SBTG()
                 {
-                    STT = DanhSachSBTG.Count + 1, // Tự động tăng STT
-                    MaSBTG = string.Empty, // Mã sân bay trung gian sẽ được nhập sau
-                    ThoiGianDung = 0, // Thời gian dừng mặc định là 0
-                    GhiChu = string.Empty, // Ghi chú mặc định là rỗng
+                    STT = DanhSachSBTG.Count + 1,
+                    MaSBTG = string.Empty,
+                    ThoiGianDung = 0,
+                    GhiChu = string.Empty,
                     SbtgList = new ObservableCollection<string>(SBTGList),
                     OnMaSBTGChangedCallback = CapNhatSBTGList
                 };
 
-                // Thêm vào collection
                 DanhSachSBTG.Add(sbtg);
                 CapNhatSBTGList();
-                System.Diagnostics.Debug.WriteLine($"Đã thêm sân bay trung gian thứ {sbtg.STT}");
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                await Notification.ShowNotificationAsync($"Lỗi khi thêm sân bay trung gian: {ex.Message}", NotificationType.Error);
+                await _notification_service_fallback($"Lỗi khi thêm sân bay trung gian: {ex.Message}", NotificationType.Error);
             }
         }
 
@@ -743,34 +714,25 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             {
                 if (editSBTG == null)
                 {
-                    await Notification.ShowNotificationAsync("Không tìm thấy sân bay trung gian để xóa!", NotificationType.Warning);
+                    await _notification_service_fallback("Không tìm thấy sân bay trung gian để xóa!", NotificationType.Warning);
                     return;
                 }
 
-                // Hiển thị hộp thoại xác nhận
-                bool confirmed = await Notification.ShowNotificationAsync(
+                bool confirmed = await _notification_service_fallback(
                     $"Bạn có chắc chắn muốn xóa sân bay trung gian thứ {editSBTG.STT}?",
                     NotificationType.Warning,
                     isConfirmation: true);
 
                 if (confirmed)
                 {
-                    // Lưu STT của sân bay bị xóa
                     int removedSTT = editSBTG.STT;
-
-                    // Xóa khỏi collection
                     DanhSachSBTG.Remove(editSBTG);
-
-                    // Cập nhật lại STT cho các sân bay sau sân bay bị xóa
                     UpdateSTTAfterRemoval(removedSTT);
-
-                    // Log hoặc thông báo thành công
-                    System.Diagnostics.Debug.WriteLine($"Đã xóa sân bay trung gian thứ {removedSTT}");
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                await Notification.ShowNotificationAsync($"Lỗi khi xóa sân bay trung gian: {ex.Message}", NotificationType.Error);
+                await _notification_service_fallback($"Lỗi khi xóa sân bay trung gian: {ex.Message}", NotificationType.Error);
             }
         }
 
@@ -786,5 +748,17 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             IsSearchExpanded = !IsSearchExpanded;
         }
 
+        // Prefer _notificationService, fallback to Notification VM if service fails
+        private async Task<bool> _notification_service_fallback(string message, NotificationType type, bool isConfirmation = false)
+        {
+            try
+            {
+                return await _notificationService.ShowNotificationAsync(message, type, isConfirmation);
+            }
+            catch
+            {
+                return await Notification.ShowNotificationAsync(message, type, isConfirmation);
+            }
+        }
     }
 }

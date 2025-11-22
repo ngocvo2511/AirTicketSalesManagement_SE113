@@ -10,6 +10,7 @@ using AirTicketSalesManagement.ViewModel.CustomerManagement;
 using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Services.Customer;
 using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.Services.DbContext;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
@@ -71,7 +72,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [RelayCommand]
         private void NavigateToScheduleManagement()
         {
-            CurrentViewModel = new ScheduleManagementViewModel();
+            CurrentViewModel = new ScheduleManagementViewModel(new AirTicketDbService(), new NotificationService(new NotificationViewModel()));
         }
 
         [RelayCommand]

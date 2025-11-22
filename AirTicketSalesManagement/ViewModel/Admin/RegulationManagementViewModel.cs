@@ -1,5 +1,7 @@
 ﻿using AirTicketSalesManagement.Data;
 using AirTicketSalesManagement.Models;
+using AirTicketSalesManagement.Services.DbContext;
+using AirTicketSalesManagement.Services.Notification;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,10 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 {
     public partial class RegulationManagementViewModel : BaseViewModel
     {
+        // injected services for testability
+        private readonly IAirTicketDbContextService _dbContextService;
+        private readonly INotificationService _notificationService;
+
         // Quy định hiện tại
         [ObservableProperty]
         private int maxAirports;
@@ -99,20 +105,36 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [NotifyDataErrorInfo]
         private int editChildAge;
 
-        // Notification
-        public NotificationViewModel Notification { get; set; } = new NotificationViewModel();
+        // Notification (kept for binding fallback)
+        public NotificationViewModel Notification { get; }
 
+        // Parameterless ctor (runtime compatibility) - uses concrete services
         public RegulationManagementViewModel()
+            : this(new AirTicketDbService(), new NotificationService(new NotificationViewModel()))
         {
-            // Giả lập dữ liệu, thực tế nên load từ DB
+        }
+
+        // DI ctor - inject services to make unit testing possible
+        public RegulationManagementViewModel(IAirTicketDbContextService dbContextService, INotificationService notificationService)
+        {
+            _dbContextService = dbContextService ?? throw new ArgumentNullException(nameof(dbContextService));
+            _notificationService = notificationService;
+
+            // keep Notification property for UI binding if view binds to it
+            Notification = (notificationService as NotificationService)?.ViewModel
+                       ?? new NotificationViewModel();
+
+            // load initial data (fire-and-forget is OK for UI)
             _ = LoadRegulationAsync();
         }
 
-        private async Task LoadRegulationAsync()
+        private AirTicketDbContext CreateContext() => _dbContextService.CreateDbContext();
+
+        public async Task LoadRegulationAsync()
         {
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
 
                 var regulation = await context.Quydinhs
                                               .AsNoTracking()
@@ -159,15 +181,16 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                // Hiển thị lỗi lên giao diện
-                await Notification.ShowNotificationAsync("Không thể kết nối đến cơ sở dữ liệu.\n" + ex.Message, NotificationType.Error);
+                // Hiển thị lỗi lên giao diện (use injected notification)
+                await _notification_service_fallback("Không thể kết nối đến cơ sở dữ liệu.\n" + ex.Message, NotificationType.Error);
 
                 // Log lỗi
                 Debug.WriteLine("Lỗi khi load regulation: " + ex);
             }
         }
 
-        private bool CanSave()
+        // Exposed for tests
+        public bool CanSave()
         {
             ValidateAllProperties();
             return !HasErrors;
@@ -180,8 +203,10 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditMaxAirports = MaxAirports;
             IsEditingMaxAirports = true;
         }
+
+        // made public Task for testability (RelayCommand still generates SaveMaxAirportsCommand)
         [RelayCommand]
-        public async void SaveMaxAirports()
+        public async Task SaveMaxAirports()
         {
             if (!CanSave()) return;
             if (MaxAirports == EditMaxAirports)
@@ -192,11 +217,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 int currentAirportCount = await context.Sanbays.CountAsync();
                 if (currentAirportCount > EditMaxAirports)
                 {
-                    await Notification.ShowNotificationAsync(
+                    await _notification_service_fallback(
                         $"Hiện có {currentAirportCount} sân bay, lớn hơn giới hạn mới ({EditMaxAirports}).\n" +
                         "Vui lòng xóa bớt sân bay hoặc đặt giới hạn lớn hơn.",
                         NotificationType.Warning);
@@ -221,10 +246,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelMaxAirports()
         {
@@ -238,8 +264,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditMinFlightTime = MinFlightTime;
             IsEditingMinFlightTime = true;
         }
+
         [RelayCommand]
-        private async void SaveMinFlightTime()
+        public async Task SaveMinFlightTime()
         {
             if (!CanSave()) return;
 
@@ -251,7 +278,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
 
                 if (regulation is null)
@@ -270,10 +297,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelMinFlightTime()
         {
@@ -287,8 +315,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditMaxStopover = MaxStopover;
             IsEditingMaxStopover = true;
         }
+
         [RelayCommand]
-        private async void SaveMaxStopover()
+        public async Task SaveMaxStopover()
         {
             if (!CanSave()) return;
 
@@ -300,7 +329,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
 
                 if (regulation is null)
@@ -319,10 +348,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelMaxStopover()
         {
@@ -336,8 +366,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditMinStopTime = MinStopTime;
             IsEditingMinStopTime = true;
         }
+
         [RelayCommand]
-        private async void SaveMinStopTime()
+        public async Task SaveMinStopTime()
         {
             if (!CanSave()) return;
             if (MinStopTime == EditMinStopTime)
@@ -347,7 +378,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
 
                 if (regulation is null)
@@ -366,10 +397,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelMinStopTime()
         {
@@ -383,8 +415,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditMaxStopTime = MaxStopTime;
             IsEditingMaxStopTime = true;
         }
+
         [RelayCommand]
-        private async void SaveMaxStopTime()
+        public async Task SaveMaxStopTime()
         {
             if (!CanSave()) return;
 
@@ -395,7 +428,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
 
                 if (regulation is null)
@@ -414,10 +447,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelMaxStopTime()
         {
@@ -431,8 +465,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditBookingTime = BookingTime;
             IsEditingBookingTime = true;
         }
+
         [RelayCommand]
-        private async void SaveBookingTime()
+        public async Task SaveBookingTime()
         {
             if (!CanSave()) return;
 
@@ -443,7 +478,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
 
                 if (regulation is null)
@@ -462,10 +497,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelBookingTime()
         {
@@ -479,8 +515,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditCancelTime = CancelTime;
             IsEditingCancelTime = true;
         }
+
         [RelayCommand]
-        private async void SaveCancelTime()
+        public async Task SaveCancelTime()
         {
             if (!CanSave()) return;
 
@@ -491,7 +528,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
 
                 if (regulation is null)
@@ -510,10 +547,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelCancelTime()
         {
@@ -526,8 +564,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditTicketClassCount = TicketClassCount;
             IsEditingTicketClassCount = true;
         }
+
         [RelayCommand]
-        private async void SaveTicketClassCount()
+        public async Task SaveTicketClassCount()
         {
             if (!CanSave()) return;
 
@@ -538,7 +577,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
 
                 if (regulation is null)
@@ -557,10 +596,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelTicketClassCount()
         {
@@ -573,8 +613,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditInfantAge = InfantAge;
             IsEditingInfantAge = true;
         }
+
         [RelayCommand]
-        private async void SaveInfantAge()
+        public async Task SaveInfantAge()
         {
             if (!CanSave()) return;
             if (InfantAge == EditInfantAge)
@@ -584,7 +625,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
 
                 if (regulation is null)
@@ -597,7 +638,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     int currentChildAge = regulation.TuoiToiDaTreEm ?? 12;
                     if (EditInfantAge >= currentChildAge)
                     {
-                        await Notification.ShowNotificationAsync(
+                        await _notification_service_fallback(
                             "Tuổi tối đa của trẻ sơ sinh phải nhỏ hơn tuổi tối đa của trẻ em.\n" +
                             $"Hiện tại, tuổi tối đa của trẻ em là {currentChildAge}.",
                             NotificationType.Warning);
@@ -612,10 +653,11 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelInfantAge()
         {
@@ -628,8 +670,9 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditChildAge = ChildAge;
             IsEditingChildAge = true;
         }
+
         [RelayCommand]
-        private async void SaveChildAge()
+        public async Task SaveChildAge()
         {
             if (!CanSave()) return;
             if (ChildAge == EditChildAge)
@@ -639,7 +682,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             try
             {
-                await using var context = new AirTicketDbContext();
+                await using var context = CreateContext();
                 var regulation = await context.Quydinhs.FirstOrDefaultAsync();
                 if (regulation is null)
                 {
@@ -651,7 +694,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     int currentInfantAge = regulation.TuoiToiDaSoSinh ?? 2;
                     if (EditChildAge <= currentInfantAge)
                     {
-                        await Notification.ShowNotificationAsync(
+                        await _notification_service_fallback(
                             "Tuổi tối đa của trẻ em phải lớn hơn tuổi tối đa của trẻ sơ sinh.\n" +
                             $"Hiện tại, tuổi tối đa của trẻ sơ sinh là {currentInfantAge}.",
                             NotificationType.Warning);
@@ -665,14 +708,28 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
+                await _notification_service_fallback("Không lưu được quy định.\n" + ex.Message, NotificationType.Error);
                 Debug.WriteLine(ex);
             }
         }
+
         [RelayCommand]
         private void CancelChildAge()
         {
             IsEditingChildAge = false;
+        }
+
+        // prefer _notificationService, fallback to Notification VM if service fails
+        private async Task<bool> _notification_service_fallback(string message, NotificationType type, bool isConfirmation = false)
+        {
+            try
+            {
+                return await _notificationService.ShowNotificationAsync(message, type, isConfirmation);
+            }
+            catch
+            {
+                return await Notification.ShowNotificationAsync(message, type, isConfirmation);
+            }
         }
     }
 }
