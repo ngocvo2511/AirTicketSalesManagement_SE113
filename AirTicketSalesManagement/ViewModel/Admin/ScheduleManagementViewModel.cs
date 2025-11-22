@@ -533,12 +533,6 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     return;
                 }
 
-                int slVeKT = int.Parse(AddSLVeKT);
-                if(slVeKT <= 0)
-                {
-                    await Notification.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
-                    return;
-                }
                 int sumTicket = 0;
                 foreach (var hv in TicketClassForScheduleList)
                 {
@@ -968,13 +962,6 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 if (slVeKT <= 0)
                 {
                     await _notify.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
-                    return;
-                }
-
-                int slVeKT = int.Parse(EditSLVeKT);
-                if (slVeKT <= 0)
-                {
-                    await Notification.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
                     return;
                 }
 
