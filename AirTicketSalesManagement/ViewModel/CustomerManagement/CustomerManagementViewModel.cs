@@ -45,13 +45,21 @@ namespace AirTicketSalesManagement.ViewModel.CustomerManagement
         [ObservableProperty]
         private DateTime? editBirthDate;
 
-        public NotificationViewModel Notification { get; set; } = new NotificationViewModel();
+        public NotificationViewModel Notification { get; }
 
-        public CustomerManagementViewModel(ICustomerService customerService, INotificationService notification)
+        public CustomerManagementViewModel(ICustomerService customerService,
+                                           INotificationService notification)
         {
             _customerService = customerService;
             _notification = notification;
+
+            // Lấy ViewModel chung từ NotificationService (nếu có)
+            if (notification is NotificationService ns)
+                Notification = ns.ViewModel;
+            else
+                Notification = new NotificationViewModel(); // fallback
         }
+
         [RelayCommand]
         public async Task LoadCustomers()
         {

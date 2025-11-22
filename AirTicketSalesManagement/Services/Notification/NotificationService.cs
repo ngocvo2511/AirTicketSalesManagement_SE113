@@ -10,7 +10,7 @@ namespace AirTicketSalesManagement.Services.Notification
     public class NotificationService : INotificationService
     {
         private readonly NotificationViewModel _notificationViewModel;
-
+        public NotificationViewModel ViewModel => _notificationViewModel;
         public NotificationService(NotificationViewModel notificationViewModel)
         {
             _notificationViewModel = notificationViewModel;

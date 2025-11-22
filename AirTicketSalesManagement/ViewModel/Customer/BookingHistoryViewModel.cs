@@ -64,20 +64,18 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         private ObservableCollection<KQLichSuDatVe>? historyBooking = new();
         [ObservableProperty]
         private bool isEmpty;
-
-        [ObservableProperty]
-        private NotificationViewModel notification = new();
+        public NotificationViewModel Notification { get; }
 
         public BookingHistoryViewModel() { }
         public BookingHistoryViewModel(
-        int? idCustomer,
-        CustomerViewModel parent,
-        IEmailService emailService,
-        EmailTemplateService templateService,
-        IAirTicketDbContextService dbContextFactory,
-        IPaymentGateway paymentGateway,
-        IUserSessionService userSession,
-        INotificationService notificationService)
+             int? idCustomer,
+             CustomerViewModel parent,
+             IEmailService emailService,
+             EmailTemplateService templateService,
+             IAirTicketDbContextService dbContextFactory,
+             IPaymentGateway paymentGateway,
+             IUserSessionService userSession,
+             INotificationService notificationService)
         {
             this.parent = parent;
             _emailService = emailService;
@@ -87,8 +85,15 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             _userSession = userSession;
             _notificationService = notificationService;
 
+            // Lấy đúng ViewModel NOTIFICATION dùng chung
+            if (notificationService is NotificationService ns)
+                Notification = ns.ViewModel;        // <--- IMPORTANT
+            else
+                Notification = new NotificationViewModel(); // fallback
+
             ClearExpiredHolds();
         }
+
         public async Task LoadData(int? idCustomer)
         {
             try
@@ -219,7 +224,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         [RelayCommand]
         private void ShowDetailHistory(KQLichSuDatVe lichSuDatVe)
         {
-            parent.CurrentViewModel = new BookingHistoryDetailViewModel(lichSuDatVe, parent, _emailService, _templateService, _dbContextFactory, _userSession, Notification, _notificationService);
+            parent.CurrentViewModel = new BookingHistoryDetailViewModel(lichSuDatVe, parent, _emailService, _templateService, _dbContextFactory, _userSession, _notificationService);
         }
         public IEnumerable<KQLichSuDatVe> ApplyFilter(IEnumerable<KQLichSuDatVe> source)
         {

@@ -56,35 +56,44 @@ namespace AirTicketSalesManagement.ViewModel.Booking
         public ThongTinChuyenBayDuocChon ThongTinChuyenBayDuocChon { get; set; }
 
         // UI notification view model (kept for binding). Use _notificationService to show messages (injectable).
-        public NotificationViewModel Notification { get; set; } = new NotificationViewModel();
+        public NotificationViewModel Notification { get;}
 
         // Default ctor - safe for designer / tests (uses null/default services)
         public PassengerInformationViewModel()
-            : this(null, null, null, null)
+            : this(null, new AirTicketDbService(),
+                   null,
+                   new NotificationViewModel(),
+                   null)
         {
         }
 
+
         // Backwards-compatible ctor used in the app (keeps original behavior)
-        public PassengerInformationViewModel(ThongTinChuyenBayDuocChon selectedFlightInfo)
-            : this(selectedFlightInfo,
-                   dbContextService: new AirTicketDbService(),
-                   notificationService: new NotificationService(new NotificationViewModel()),
-                   navigateBackAction: null)
+        public PassengerInformationViewModel(ThongTinChuyenBayDuocChon flight)
+            : this(
+                flight,
+                new AirTicketDbService(),
+                null,
+                new NotificationViewModel(),
+                null)
         {
         }
+
+
 
         // New DI-friendly ctor for unit tests and DI containers
         public PassengerInformationViewModel(
             ThongTinChuyenBayDuocChon? selectedFlightInfo,
             IAirTicketDbContextService? dbContextService,
             INotificationService? notificationService,
+            NotificationViewModel notificationVm,
             Action? navigateBackAction)
         {
             // Provide test-friendly defaults (do not throw)
             _dbContextService = dbContextService ?? new AirTicketDbService();
-            _notificationService = notificationService ?? new NotificationService(new NotificationViewModel());
+            _notificationService = notificationService ?? new NotificationService(notificationVm);
             _navigateBackAction = navigateBackAction ?? (() => NavigationService.NavigateBack());
-
+            Notification = notificationVm;
             if (selectedFlightInfo == null)
                 return;
 
@@ -129,7 +138,7 @@ namespace AirTicketSalesManagement.ViewModel.Booking
         }
 
         public PassengerInformationViewModel(ThongTinHanhKhachVaChuyenBay thongTinHanhKhachVaChuyenBay)
-            : this(thongTinHanhKhachVaChuyenBay.FlightInfo, null, null, null)
+            : this(thongTinHanhKhachVaChuyenBay.FlightInfo,new AirTicketDbService(), null, new NotificationViewModel(), null)
         {
             AddExistingInformation(thongTinHanhKhachVaChuyenBay);
         }

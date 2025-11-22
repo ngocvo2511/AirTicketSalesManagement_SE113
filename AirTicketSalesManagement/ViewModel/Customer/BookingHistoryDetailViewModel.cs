@@ -23,10 +23,6 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         private readonly IUserSessionService _userSession;
         private readonly INotificationService _notificationService;
 
-        // ✔ property duy nhất cho Notification
-        [ObservableProperty]
-        private NotificationViewModel notification;
-
         [ObservableProperty]
         private KQLichSuDatVe lichSuDatVe;
 
@@ -39,6 +35,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         [ObservableProperty]
         private bool canCancle;
 
+        public NotificationViewModel Notification { get; }
 
         // Constructor dùng cho DI / runtime
         public BookingHistoryDetailViewModel(
@@ -47,8 +44,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             IEmailService emailService,
             EmailTemplateService templateService,
             IAirTicketDbContextService dbContextFactory,
-            IUserSessionService userSession,
-            NotificationViewModel notificationVm,  
+            IUserSessionService userSession,  
             INotificationService notificationService)      
         {
             LichSuDatVe = lichSuDatVe;
@@ -58,9 +54,12 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             _dbContextFactory = dbContextFactory;
             _userSession = userSession;
             _notificationService = notificationService;
+            // Lấy đúng ViewModel NOTIFICATION dùng chung
+            if (notificationService is NotificationService ns)
+                Notification = ns.ViewModel;        // <--- IMPORTANT
+            else
+                Notification = new NotificationViewModel(); // fallback
 
-            // gán đúng property auto-generated
-            Notification = notificationVm;
         }
 
         // Constructor default (dùng cho designer hoặc test)
