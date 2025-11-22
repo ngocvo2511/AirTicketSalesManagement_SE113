@@ -1,5 +1,8 @@
 ﻿using AirTicketSalesManagement.Data;
 using AirTicketSalesManagement.Services.EmailServices;
+using AirTicketSalesManagement.Services.ForgotPassword;
+using AirTicketSalesManagement.Services.ResetPassword;
+using AirTicketSalesManagement.Services.Timer;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -15,93 +18,67 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AirTicketSalesManagement.ViewModel.Login
 {
-    public partial class ForgotPasswordViewModel : BaseViewModel, INotifyDataErrorInfo
+    public partial class ForgotPasswordViewModel : ValidationBase
     {
         private readonly AuthViewModel _auth;
-        private readonly Dictionary<string, List<string>> _errors = new();
-        public ToastViewModel Toast { get; } = new ToastViewModel();
+        public ToastViewModel Toast { get; }
+        private readonly IForgotPasswordService _forgotPasswordService;
         [ObservableProperty]
         private string email;
 
         public ForgotPasswordViewModel(){}
 
-        public ForgotPasswordViewModel(AuthViewModel auth)
+        public ForgotPasswordViewModel(AuthViewModel auth, IForgotPasswordService forgotPasswordService, ToastViewModel toast)
         {
             _auth = auth;
+            Toast = toast;
+            _forgotPasswordService = forgotPasswordService;
         }
 
+        public override async Task<bool> ValidateAsync()
+        {
+            ClearErrors(nameof(Email));
+
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                AddError(nameof(Email), "Email không được để trống.");
+                return false;
+            }
+            if (!_forgotPasswordService.IsValid(Email))
+            {
+                AddError(nameof(Email), "Email không hợp lệ.");
+                return false;
+            }
+
+            bool exists;
+
+            try
+            {
+                exists = await _forgotPasswordService.EmailExistsAsync(Email);
+            }
+            catch
+            {
+                await Toast.ShowToastAsync("Lỗi kết nối cơ sở dữ liệu.");
+                return false;
+            }
+
+            if (!exists)
+            {
+                AddError(nameof(Email), "Tài khoản không tồn tại.");
+                return false;
+            }
+
+            return true;
+        }
         [RelayCommand]
         private async Task ForgotPasswordAsync()
         {
-            Validate();
-            if (HasErrors)
-            {
+            if (!await ValidateAsync())
                 return;
-            }
-            try
-            {
-                using(var context = new AirTicketDbContext())
-                {
-                    var user = context.Taikhoans.FirstOrDefault(x => x.Email == Email);
-                    if(user == null)
-                    {
-                        AddError(nameof(Email), "Tài khoản không tồn tại");
-                        return;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await Toast.ShowToastAsync("Không thể kết nối đến cơ sở dữ liệu", Brushes.OrangeRed);
-                return;
-            }
-            _auth.CurrentViewModel = new ResetPasswordViewModel(_auth, Email, new EmailService(), new OtpService(), new EmailTemplateService());
+            _auth.CurrentViewModel = new ResetPasswordViewModel(_auth, Email, new ResetPasswordService(new AirTicketDbContext()), new EmailService(), new OtpService(), new EmailTemplateService(), new DispatcherTimerService(), new ToastViewModel());
         }
 
         [RelayCommand]
         private void ShowLogin() => _auth.NavigateToLogin();
-
-        #region Error
-        public void Validate()
-        {
-            ClearErrors(nameof(Email));
-
-            if (string.IsNullOrWhiteSpace(Email) || !Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
-            {
-                AddError(nameof(Email), "Email không hợp lệ");
-                return;
-            }
-        }
-
-        public bool HasErrors => _errors.Any();
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-        public IEnumerable GetErrors(string propertyName)
-        {
-            if (!string.IsNullOrWhiteSpace(propertyName) && _errors.ContainsKey(propertyName))
-                return _errors[propertyName];
-            return null;
-        }
-
-        private void AddError(string propertyName, string error)
-        {
-            if (!_errors.ContainsKey(propertyName))
-                _errors[propertyName] = new List<string>();
-
-            if (!_errors[propertyName].Contains(error))
-            {
-                _errors[propertyName].Add(error);
-                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            }
-        }
-
-        private void ClearErrors(string propertyName)
-        {
-            if (_errors.ContainsKey(propertyName))
-            {
-                _errors.Remove(propertyName);
-                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            }
-        }
-        #endregion
     }
 }

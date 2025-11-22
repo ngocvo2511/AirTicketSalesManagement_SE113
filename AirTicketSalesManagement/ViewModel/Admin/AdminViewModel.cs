@@ -8,6 +8,9 @@ using System.Windows.Media.Animation;
 using System.Windows;
 using AirTicketSalesManagement.ViewModel.CustomerManagement;
 using AirTicketSalesManagement.Services.EmailServices;
+using AirTicketSalesManagement.Services.Customer;
+using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.Services.DbContext;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
@@ -51,7 +54,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [RelayCommand]
         private void NavigateToCustomerManagement()
         {
-            CurrentViewModel = new CustomerManagementViewModel();
+            CurrentViewModel = new CustomerManagementViewModel(new CustomerService(), new NotificationService(new NotificationViewModel()));
         }
 
         [RelayCommand]
@@ -69,7 +72,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [RelayCommand]
         private void NavigateToScheduleManagement()
         {
-            CurrentViewModel = new ScheduleManagementViewModel();
+            CurrentViewModel = new ScheduleManagementViewModel(new AirTicketDbService(), new NotificationService(new NotificationViewModel()));
         }
 
         [RelayCommand]

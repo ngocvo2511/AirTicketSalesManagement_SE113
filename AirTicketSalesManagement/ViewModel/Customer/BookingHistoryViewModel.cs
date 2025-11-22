@@ -3,7 +3,11 @@ using AirTicketSalesManagement.Helper;
 using AirTicketSalesManagement.Interface;
 using AirTicketSalesManagement.Models;
 using AirTicketSalesManagement.Services;
+using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.EmailServices;
+using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.Services.PaymentGateway;
+using AirTicketSalesManagement.Services.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -17,7 +21,11 @@ namespace AirTicketSalesManagement.ViewModel.Customer
     {
         private readonly IEmailService _emailService;
         private readonly EmailTemplateService _templateService;
-        private readonly VnpayPayment vnpayPayment;
+        private readonly IPaymentGateway _paymentGateway;
+        private readonly IAirTicketDbContextService _dbContextFactory;
+        private readonly IUserSessionService _userSession;
+        private readonly INotificationService _notificationService;
+
 
         private readonly CustomerViewModel parent;
         private ObservableCollection<KQLichSuDatVe> rootHistoryBooking;
@@ -56,79 +64,100 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         private ObservableCollection<KQLichSuDatVe>? historyBooking = new();
         [ObservableProperty]
         private bool isEmpty;
-
-        [ObservableProperty]
-        private NotificationViewModel notification = new();
+        public NotificationViewModel Notification { get; }
 
         public BookingHistoryViewModel() { }
-        public BookingHistoryViewModel(int? idCustomer, CustomerViewModel parent, IEmailService emailService, EmailTemplateService templateService)
+        public BookingHistoryViewModel(
+             int? idCustomer,
+             CustomerViewModel parent,
+             IEmailService emailService,
+             EmailTemplateService templateService,
+             IAirTicketDbContextService dbContextFactory,
+             IPaymentGateway paymentGateway,
+             IUserSessionService userSession,
+             INotificationService notificationService)
         {
             this.parent = parent;
-            this._emailService = emailService;
-            this._templateService = templateService;
-            vnpayPayment = new VnpayPayment();
-            _ = LoadData(UserSession.Current.CustomerId);
+            _emailService = emailService;
+            _templateService = templateService;
+            _dbContextFactory = dbContextFactory;
+            _paymentGateway = paymentGateway;
+            _userSession = userSession;
+            _notificationService = notificationService;
+
+            // Lấy đúng ViewModel NOTIFICATION dùng chung
+            if (notificationService is NotificationService ns)
+                Notification = ns.ViewModel;        // <--- IMPORTANT
+            else
+                Notification = new NotificationViewModel(); // fallback
+
             ClearExpiredHolds();
         }
+
         public async Task LoadData(int? idCustomer)
         {
             try
             {
-                using (var context = new AirTicketDbContext())
-                {
-                    var HuyVe = await context.Quydinhs.FirstOrDefaultAsync();
-                    var query = (from datve in context.Datves
-                                 where datve.MaKh == idCustomer
-                                 join lichbay in context.Lichbays on datve.MaLb equals lichbay.MaLb
-                                 join chuyenbay in context.Chuyenbays on lichbay.SoHieuCb equals chuyenbay.SoHieuCb
-                                 join sbDi in context.Sanbays on chuyenbay.Sbdi equals sbDi.MaSb
-                                 join sbDen in context.Sanbays on chuyenbay.Sbden equals sbDen.MaSb
-                                 select new KQLichSuDatVe
-                                 {
-                                     MaVe = datve.MaDv,
-                                     MaDiemDi = chuyenbay.Sbdi,
-                                     MaDiemDen = chuyenbay.Sbden,
-                                     DiemDi = sbDi.ThanhPho + " (" + sbDi.MaSb + "), " + sbDi.QuocGia,
-                                     DiemDen = sbDen.ThanhPho + " (" + sbDen.MaSb + "), " + sbDen.QuocGia,
-                                     HangHangKhong = chuyenbay.HangHangKhong,
-                                     GioDi = lichbay.GioDi,
-                                     GioDen = lichbay.GioDen,
-                                     LoaiMayBay = lichbay.LoaiMb,
-                                     NgayDat = datve.ThoiGianDv,
-                                     TrangThai = datve.TtdatVe,
-                                     SoLuongKhach = datve.Ctdvs.Count,
-                                     QdHuyVe = (HuyVe != null) ? HuyVe.TghuyDatVe : null,
-                                     TongTienTT = datve.TongTienTt.Value
-                                 });
-                    var result = await query.OrderByDescending(x => x.NgayDat).ToListAsync();
-                    rootHistoryBooking = new ObservableCollection<KQLichSuDatVe>(result);
-                    HistoryBooking = new ObservableCollection<KQLichSuDatVe>(result);
-                    IsEmpty = HistoryBooking.Count == 0;
-                    var airlineName = await context.Chuyenbays
-                                    .Select(v => v.HangHangKhong)
-                                    .Distinct()
-                                    .ToListAsync();
-                    HangHangKhongList = new ObservableCollection<string>([.. airlineName]);
-                    var danhSach = context.Sanbays
+                using var context = _dbContextFactory.CreateDbContext();
+
+                var HuyVe = await context.Quydinhs.FirstOrDefaultAsync();
+
+                var query = (from datve in context.Datves
+                             where datve.MaKh == idCustomer
+                             join lichbay in context.Lichbays on datve.MaLb equals lichbay.MaLb
+                             join chuyenbay in context.Chuyenbays on lichbay.SoHieuCb equals chuyenbay.SoHieuCb
+                             join sbDi in context.Sanbays on chuyenbay.Sbdi equals sbDi.MaSb
+                             join sbDen in context.Sanbays on chuyenbay.Sbden equals sbDen.MaSb
+                             select new KQLichSuDatVe
+                             {
+                                 MaVe = datve.MaDv,
+                                 MaDiemDi = chuyenbay.Sbdi,
+                                 MaDiemDen = chuyenbay.Sbden,
+                                 DiemDi = sbDi.ThanhPho + " (" + sbDi.MaSb + "), " + sbDi.QuocGia,
+                                 DiemDen = sbDen.ThanhPho + " (" + sbDen.MaSb + "), " + sbDen.QuocGia,
+                                 HangHangKhong = chuyenbay.HangHangKhong,
+                                 GioDi = lichbay.GioDi,
+                                 GioDen = lichbay.GioDen,
+                                 LoaiMayBay = lichbay.LoaiMb,
+                                 NgayDat = datve.ThoiGianDv,
+                                 TrangThai = datve.TtdatVe,
+                                 SoLuongKhach = datve.Ctdvs.Count,
+                                 QdHuyVe = (HuyVe != null) ? HuyVe.TghuyDatVe : null,
+                                 TongTienTT = datve.TongTienTt.Value
+                             });
+
+                var result = await query.OrderByDescending(x => x.NgayDat).ToListAsync();
+
+                rootHistoryBooking = new ObservableCollection<KQLichSuDatVe>(result);
+                HistoryBooking = new ObservableCollection<KQLichSuDatVe>(result);
+                IsEmpty = HistoryBooking.Count == 0;
+
+                var airlineName = await context.Chuyenbays
+                    .Select(v => v.HangHangKhong)
+                    .Distinct()
+                    .ToListAsync();
+                HangHangKhongList = new ObservableCollection<string>(airlineName);
+
+                var danhSach = context.Sanbays
                     .AsEnumerable()
                     .Select(sb => $"{sb.ThanhPho} ({sb.MaSb}), {sb.QuocGia}")
                     .OrderBy(display => display)
                     .ToList();
-                    SanBayList = new ObservableCollection<string>(danhSach);
-                    BookingStatusList = new ObservableCollection<string>
-                    {
-                        "Tất cả",
-                        "Đã thanh toán",
-                        "Chưa thanh toán (Tiền mặt)",
-                        "Chưa thanh toán (Online)",
-                        "Đã hủy"
-                    };
-                    BookingStatusFilter = "Tất cả";
-                }
-            }
-            catch (Exception e)
-            {
+                SanBayList = new ObservableCollection<string>(danhSach);
 
+                BookingStatusList = new ObservableCollection<string>
+                {
+                    "Tất cả",
+                    "Đã thanh toán",
+                    "Chưa thanh toán (Tiền mặt)",
+                    "Chưa thanh toán (Online)",
+                    "Đã hủy"
+                };
+                BookingStatusFilter = "Tất cả";
+            }
+            catch
+            {
+                // có thể log hoặc dùng _notificationService.ShowAsync(...)
             }
         }
 
@@ -195,117 +224,134 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         [RelayCommand]
         private void ShowDetailHistory(KQLichSuDatVe lichSuDatVe)
         {
-            parent.CurrentViewModel = new BookingHistoryDetailViewModel(lichSuDatVe, parent, _emailService, _templateService);
+            parent.CurrentViewModel = new BookingHistoryDetailViewModel(lichSuDatVe, parent, _emailService, _templateService, _dbContextFactory, _userSession, _notificationService);
         }
+        public IEnumerable<KQLichSuDatVe> ApplyFilter(IEnumerable<KQLichSuDatVe> source)
+        {
+            var filter = source;
+
+            if (!string.IsNullOrWhiteSpace(NoiDiFilter))
+                filter = filter.Where(v => v.DiemDi == NoiDiFilter);
+
+            if (!string.IsNullOrWhiteSpace(NoiDenFilter))
+                filter = filter.Where(v => v.DiemDen == NoiDenFilter);
+
+            if (!string.IsNullOrWhiteSpace(HangHangKhongFilter))
+                filter = filter.Where(v => v.HangHangKhong == HangHangKhongFilter);
+
+            if (NgayDatFilter.HasValue)
+                filter = filter.Where(v => v.NgayDat?.Date == NgayDatFilter.Value.Date);
+
+            if (!string.IsNullOrWhiteSpace(BookingStatusFilter) &&
+                BookingStatusFilter != "Tất cả")
+            {
+                filter = filter.Where(v => v.TrangThai == BookingStatusFilter);
+            }
+
+            return filter;
+        }
+
         [RelayCommand]
         private void SearchHistory()
         {
-            if (rootHistoryBooking == null) return;
-            if (rootHistoryBooking.Count != 0)
-            {
-                var filter = rootHistoryBooking.AsEnumerable();
-                if (!string.IsNullOrWhiteSpace(NoiDiFilter))
-                {
-                    filter = filter.Where(v => v.DiemDi == NoiDiFilter);
-                }
-                if (!string.IsNullOrWhiteSpace(NoiDenFilter))
-                {
-                    filter = filter.Where(v => v.DiemDen == NoiDenFilter);
-                }
-                if (!string.IsNullOrWhiteSpace(HangHangKhongFilter))
-                {
-                    filter = filter.Where(v => v.HangHangKhong == HangHangKhongFilter);
-                }
-                if (NgayDatFilter.HasValue)
-                {
-                    filter = filter.Where(v => v.NgayDat?.Date == NgayDatFilter.Value.Date);
-                }
-                if (!string.IsNullOrWhiteSpace(BookingStatusFilter))
-                {
-                    filter = filter.Where(v => v.TrangThai == BookingStatusFilter || BookingStatusFilter == "Tất cả");
-                }
-                HistoryBooking = new ObservableCollection<KQLichSuDatVe>(filter);
-                IsEmpty = HistoryBooking.Count == 0;
-            }
+            if (rootHistoryBooking == null || rootHistoryBooking.Count == 0)
+                return;
+
+            var filtered = ApplyFilter(rootHistoryBooking);
+            HistoryBooking = new ObservableCollection<KQLichSuDatVe>(filtered);
+            IsEmpty = HistoryBooking.Count == 0;
         }
+
+        public string? ValidateCancelTicket(KQLichSuDatVe ve)
+        {
+            if (ve == null) return "Vé không hợp lệ.";
+
+            if (ve.CanCancel == false)
+                return "Vé không thể hủy vì đã quá thời hạn hủy vé.";
+
+            if (ve.TrangThai == "Đã hủy")
+                return "Vé đã được hủy trước đó.";
+
+            return null;
+        }
+
         [RelayCommand]
         private async Task CancelTicket(KQLichSuDatVe ve)
         {
-            if (ve == null) return;
-            if (ve.CanCancel == false)
+            var error = ValidateCancelTicket(ve);
+            if (error != null)
             {
-                await notification.ShowNotificationAsync(
-                    "Vé không thể hủy vì đã quá thời hạn hủy vé.",
-                    NotificationType.Error);
-                return;
-            }
-            if (ve.TrangThai == "Đã hủy")
-            {
-                await notification.ShowNotificationAsync(
-                    "Vé đã được hủy trước đó.",
-                    NotificationType.Warning);
+                await _notificationService.ShowNotificationAsync(error, NotificationType.Warning);
                 return;
             }
 
-            bool confirm = await notification.ShowNotificationAsync(
+            bool confirm = await _notificationService.ShowNotificationAsync(
                 "Bạn có chắc chắn muốn hủy vé này không?",
                 NotificationType.Information,
-                true);
+                isConfirmation: true);
 
-            if (confirm)
+            if (!confirm) return;
+
+            try
             {
-                try
+                using var context = _dbContextFactory.CreateDbContext();
+
+                var booking = await context.Datves
+                    .Include(b => b.MaLbNavigation)
+                    .FirstOrDefaultAsync(b => b.MaDv == ve.MaVe);
+
+                if (booking == null)
                 {
-                    using (var context = new AirTicketDbContext())
-                    {
-                        var booking = await context.Datves.Include(b => b.MaLbNavigation).FirstOrDefaultAsync(b => b.MaDv == ve.MaVe);
-                        if (booking != null)
-                        {
-                            bool isPaid = booking.TtdatVe == "Đã thanh toán";
-                            string soHieuCb = booking.MaLbNavigation?.SoHieuCb ?? "";
-                            DateTime gioDi = booking.MaLbNavigation?.GioDi ?? DateTime.Now;
-                            var chiTietVe = await context.Ctdvs.Where(ct => ct.MaDv == ve.MaVe).ToListAsync();
-                            var maHvLb = chiTietVe.FirstOrDefault()?.MaHvLb;
-                            if (maHvLb != null)
-                            {
-                                var hangVe = await context.Hangvetheolichbays
-                                    .FirstOrDefaultAsync(h => h.MaHvLb == maHvLb);
-                                if (hangVe != null)
-                                {
-                                    hangVe.SlveConLai += chiTietVe.Count;
-                                }
-                            }
-                            booking.TtdatVe = "Đã hủy";
-                            await context.SaveChangesAsync();
-                            ve.TrangThai = "Đã hủy";
-                            OnPropertyChanged(nameof(HistoryBooking));
-                            await notification.ShowNotificationAsync(
-                                "Hủy vé thành công.",
-                                NotificationType.Information);
-                            if (isPaid)
-                            {
-                                var emailBody = _templateService.BuildBookingCancel(soHieuCb, gioDi, DateTime.Now);
-                                await _emailService.SendEmailAsync(
-                                    booking.Email ?? UserSession.Current.Email,
-                                    $"Huỷ vé chuyến bay {soHieuCb}",
-                                    emailBody);
-                            }
-                            await LoadData(UserSession.Current.CustomerId);
-                        }
-                        else
-                        {
-                            await notification.ShowNotificationAsync(
-                                "Không tìm thấy vé để hủy.",
-                                NotificationType.Error);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await notification.ShowNotificationAsync(
-                        $"Lỗi khi hủy vé: {ex.Message}",
+                    await _notificationService.ShowNotificationAsync(
+                        "Không tìm thấy vé để hủy.",
                         NotificationType.Error);
+                    return;
                 }
+
+                bool isPaid = booking.TtdatVe == "Đã thanh toán";
+                string soHieuCb = booking.MaLbNavigation?.SoHieuCb ?? "";
+                DateTime gioDi = booking.MaLbNavigation?.GioDi ?? DateTime.Now;
+
+                var chiTietVe = await context.Ctdvs
+                    .Where(ct => ct.MaDv == ve.MaVe)
+                    .ToListAsync();
+
+                var maHvLb = chiTietVe.FirstOrDefault()?.MaHvLb;
+                if (maHvLb != null)
+                {
+                    var hangVe = await context.Hangvetheolichbays
+                        .FirstOrDefaultAsync(h => h.MaHvLb == maHvLb);
+
+                    if (hangVe != null)
+                        hangVe.SlveConLai += chiTietVe.Count;
+                }
+
+                booking.TtdatVe = "Đã hủy";
+                await context.SaveChangesAsync();
+
+                ve.TrangThai = "Đã hủy";
+                OnPropertyChanged(nameof(HistoryBooking));
+
+                await _notificationService.ShowNotificationAsync(
+                    "Hủy vé thành công.",
+                    NotificationType.Information);
+
+                if (isPaid)
+                {
+                    var emailBody = _templateService.BuildBookingCancel(soHieuCb, gioDi, DateTime.Now);
+                    await _emailService.SendEmailAsync(
+                        booking.Email ?? _userSession.Email,
+                        $"Huỷ vé chuyến bay {soHieuCb}",
+                        emailBody);
+                }
+
+                await LoadData(_userSession.CustomerId);
+            }
+            catch (Exception ex)
+            {
+                await _notificationService.ShowNotificationAsync(
+                    $"Lỗi khi hủy vé: {ex.Message}",
+                    NotificationType.Error);
             }
         }
 
@@ -314,38 +360,34 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         {
             try
             {
-                // Debug thông tin user session
                 PaymentDebugHelper.LogUserSession();
                 PaymentDebugHelper.ValidateUserSessionForPayment();
-                UserSession.Current.idVe = ve.MaVe.Value;
+
+                _userSession.CurrentTicketId = ve.MaVe.Value;
                 string orderInfo = $"Thanhtoanvemaybay{ve.MaVe}";
 
-                // Tạo URL thanh toán VNPay
-                string paymentUrl = vnpayPayment.CreatePaymentUrl((double)ve.TongTienTT, orderInfo, ve.MaVe.Value);
+                string paymentUrl = _paymentGateway.CreatePaymentUrl(
+                    (double)ve.TongTienTT, orderInfo, ve.MaVe.Value);
 
                 if (!string.IsNullOrEmpty(paymentUrl))
                 {
-                    // Lưu thông tin đặt vé tạm thời với trạng thái "Chờ thanh toán"
                     WeakReferenceMessenger.Default.Send(new PaymentRequestedMessage(paymentUrl));
-                    Debug.WriteLine($"[ProcessVNPayPayment] Payment URL created successfully: {paymentUrl}");
                 }
                 else
                 {
-                    Debug.WriteLine("[ProcessVNPayPayment] Failed to create payment URL");
-                    await Notification.ShowNotificationAsync(
+                    await _notificationService.ShowNotificationAsync(
                         "Không thể tạo URL thanh toán VNPay",
                         NotificationType.Error);
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"[ProcessVNPayPayment] Error: {ex.Message}");
-                Debug.WriteLine($"[ProcessVNPayPayment] Stack trace: {ex.StackTrace}");
-                await Notification.ShowNotificationAsync(
+                await _notificationService.ShowNotificationAsync(
                     $"Lỗi xử lý thanh toán VNPay: {ex.Message}",
                     NotificationType.Error);
             }
         }
+
 
         public void HandlePaymentSuccess()
         {
@@ -354,45 +396,37 @@ namespace AirTicketSalesManagement.ViewModel.Customer
                 PaymentDebugHelper.LogUserSession();
                 PaymentDebugHelper.ValidateUserSessionForPayment();
 
-                using (var context = new AirTicketDbContext())
+                using var context = _dbContextFactory.CreateDbContext();
+
+                var datVe = context.Datves
+                    .Include(dv => dv.MaLbNavigation)
+                    .Where(dv => dv.MaDv == _userSession.CurrentTicketId)
+                    .OrderByDescending(dv => dv.ThoiGianDv)
+                    .FirstOrDefault();
+
+                if (datVe != null && datVe.TtdatVe == "Chưa thanh toán (Online)")
                 {
-                    Datve datVe;
-                    datVe = context.Datves.Include(dv => dv.MaLbNavigation)
-                            .Where(dv => dv.MaDv == UserSession.Current.idVe)
-                            .OrderByDescending(dv => dv.ThoiGianDv)
-                            .FirstOrDefault();
-                    
-                    if (datVe != null)
-                    {
-                        if (datVe.TtdatVe == "Chưa thanh toán (Online)")
-                        {
-                            datVe.TtdatVe = "Đã thanh toán";
-                            context.SaveChanges();
-                            Debug.WriteLine($"[HandlePaymentSuccess] Successfully updated booking {datVe.MaDv} to 'Đã thanh toán'");
-                            string soHieuCb = datVe.MaLbNavigation?.SoHieuCb ?? "";
-                            var emailContent = _templateService.BuildBookingSuccess(
-                                soHieuCb,
-                                datVe.MaLbNavigation?.GioDi ?? DateTime.Now,
-                                DateTime.Now,
-                                datVe.TongTienTt ?? 0);
-                            _emailService.SendEmailAsync(datVe.Email ?? UserSession.Current.Email, $"Thanh toán vé chuyến bay {soHieuCb}", emailContent);
-                            _ = LoadData(UserSession.Current.CustomerId);
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"[HandlePaymentSuccess] Booking {datVe.MaDv} status is not 'Chưa thanh toán (Online)'. Current status: {datVe.TtdatVe}");
-                        }
-                    }
-                    else
-                    {
-                        Debug.WriteLine("[HandlePaymentSuccess] No valid booking found in the last 20 minutes");
-                    }
+                    datVe.TtdatVe = "Đã thanh toán";
+                    context.SaveChanges();
+
+                    string soHieuCb = datVe.MaLbNavigation?.SoHieuCb ?? "";
+                    var emailContent = _templateService.BuildBookingSuccess(
+                        soHieuCb,
+                        datVe.MaLbNavigation?.GioDi ?? DateTime.Now,
+                        DateTime.Now,
+                        datVe.TongTienTt ?? 0);
+
+                    _ = _emailService.SendEmailAsync(
+                        datVe.Email ?? _userSession.Email,
+                        $"Thanh toán vé chuyến bay {soHieuCb}",
+                        emailContent);
+
+                    _ = LoadData(_userSession.CustomerId);
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"[HandlePaymentSuccess] Lỗi cập nhật thanh toán: {ex.Message}");
-                Debug.WriteLine($"[HandlePaymentSuccess] Stack trace: {ex.StackTrace}");
             }
         }
 

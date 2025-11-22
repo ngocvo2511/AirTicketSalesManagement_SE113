@@ -2,12 +2,15 @@
 using AirTicketSalesManagement.Interface;
 using AirTicketSalesManagement.Models;
 using AirTicketSalesManagement.Services;
+using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.EmailServices;
+using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.Services.PaymentGateway;
+using AirTicketSalesManagement.Services.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
-
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
@@ -15,8 +18,10 @@ namespace AirTicketSalesManagement.ViewModel.Customer
     {
         private readonly IEmailService _emailService;
         private readonly EmailTemplateService _templateService;
-        private readonly CustomerViewModel parent;
-        private readonly NotificationViewModel notification;
+        private readonly CustomerViewModel _parent;
+        private readonly IAirTicketDbContextService _dbContextFactory;
+        private readonly IUserSessionService _userSession;
+        private readonly INotificationService _notificationService;
 
         [ObservableProperty]
         private KQLichSuDatVe lichSuDatVe;
@@ -30,136 +35,169 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         [ObservableProperty]
         private bool canCancle;
 
-        public NotificationViewModel Notification => notification;
+        public NotificationViewModel Notification { get; }
 
-        public BookingHistoryDetailViewModel()
+        // Constructor dùng cho DI / runtime
+        public BookingHistoryDetailViewModel(
+            KQLichSuDatVe lichSuDatVe,
+            CustomerViewModel parent,
+            IEmailService emailService,
+            EmailTemplateService templateService,
+            IAirTicketDbContextService dbContextFactory,
+            IUserSessionService userSession,  
+            INotificationService notificationService)      
         {
-            notification = new NotificationViewModel();
-        }
-
-        public BookingHistoryDetailViewModel(KQLichSuDatVe lichSuDatVe, CustomerViewModel parent)
-        {
-            notification = new NotificationViewModel();
-            this.LichSuDatVe = lichSuDatVe;
-            this.parent = parent;
-            LoadData();
-        }
-
-        public BookingHistoryDetailViewModel(KQLichSuDatVe lichSuDatVe, CustomerViewModel parent, IEmailService emailService, EmailTemplateService templateService)
-        {
-            notification = new NotificationViewModel();
             LichSuDatVe = lichSuDatVe;
+            _parent = parent;
             _emailService = emailService;
             _templateService = templateService;
-            this.parent = parent;
-            LoadData();
+            _dbContextFactory = dbContextFactory;
+            _userSession = userSession;
+            _notificationService = notificationService;
+            // Lấy đúng ViewModel NOTIFICATION dùng chung
+            if (notificationService is NotificationService ns)
+                Notification = ns.ViewModel;        // <--- IMPORTANT
+            else
+                Notification = new NotificationViewModel(); // fallback
+
         }
 
-        private async Task LoadData()
+        // Constructor default (dùng cho designer hoặc test)
+        public BookingHistoryDetailViewModel()
         {
-            CanCancle = lichSuDatVe.CanCancel;
+            Notification = new NotificationViewModel();
+        }
+
+        public async Task LoadData()
+        {
+            CanCancle = LichSuDatVe.CanCancel;
 
             try
             {
-                using (var context = new AirTicketDbContext())
-                {
-                    var result = (from ctdv in context.Ctdvs
-                                  where ctdv.MaDv == LichSuDatVe.MaVe
-                                  select new Ctdv
-                                  {
-                                      MaDv = ctdv.MaDv,
-                                      MaCtdv = ctdv.MaCtdv,
-                                      HoTenHk = ctdv.HoTenHk,
-                                      GioiTinh = ctdv.GioiTinh,
-                                      NgaySinh = ctdv.NgaySinh,
-                                      Cccd = ctdv.Cccd,
-                                      HoTenNguoiGiamHo = ctdv.HoTenNguoiGiamHo,
-                                      MaHvLb = ctdv.MaHvLb,
-                                      GiaVeTt = ctdv.GiaVeTt
-                                  }).ToList();
-                    CtdvList = new ObservableCollection<Ctdv>(result);
-                }
-            }
-            catch (Exception e)
-            {
+                using var context = _dbContextFactory.CreateDbContext();
 
+                var result = await context.Ctdvs
+                    .Where(ctdv => ctdv.MaDv == LichSuDatVe.MaVe)
+                    .Select(ctdv => new Ctdv
+                    {
+                        MaDv = ctdv.MaDv,
+                        MaCtdv = ctdv.MaCtdv,
+                        HoTenHk = ctdv.HoTenHk,
+                        GioiTinh = ctdv.GioiTinh,
+                        NgaySinh = ctdv.NgaySinh,
+                        Cccd = ctdv.Cccd,
+                        HoTenNguoiGiamHo = ctdv.HoTenNguoiGiamHo,
+                        MaHvLb = ctdv.MaHvLb,
+                        GiaVeTt = ctdv.GiaVeTt
+                    })
+                    .ToListAsync();
+
+                CtdvList = new ObservableCollection<Ctdv>(result);
             }
+            catch
+            {
+                // optional: await _notificationService.ShowNotificationAsync("Lỗi tải dữ liệu", NotificationType.Error);
+            }
+        }
+
+        public string? ValidateCancelTicket()
+        {
+            if (LichSuDatVe == null)
+                return "Vé không hợp lệ.";
+
+            if (LichSuDatVe.TrangThai == "Đã hủy")
+                return "Vé đã được hủy trước đó.";
+
+            if (!LichSuDatVe.CanCancel)
+                return "Vé không thể hủy do đã quá thời gian hủy.";
+
+            return null;
         }
 
         [RelayCommand]
         private void GoBack()
         {
-            parent.CurrentViewModel = new BookingHistoryViewModel(UserSession.Current.CustomerId, parent, _emailService,_templateService);
+            _parent.CurrentViewModel = new BookingHistoryViewModel(
+                _userSession.CustomerId,
+                _parent,
+                _emailService,
+                _templateService
+                ,_dbContextFactory,
+                new VnpayPaymentGateway(),
+                _userSession,
+                _notificationService);
         }
 
         [RelayCommand]
         private async Task CancelTicket()
         {
-            if (LichSuDatVe.TrangThai == "Đã hủy")
+            var error = ValidateCancelTicket();
+            if (error != null)
             {
-                await notification.ShowNotificationAsync("Vé đã được hủy trước đó.", NotificationType.Warning);
-                return;
-            }
-            if (LichSuDatVe.CanCancel == false)
-            {
-                await notification.ShowNotificationAsync("Vé không thể hủy do đã quá thời gian hủy.", NotificationType.Warning);
+                await _notificationService.ShowNotificationAsync(error, NotificationType.Warning);
                 return;
             }
 
-            bool confirmResult = await notification.ShowNotificationAsync(
+            bool confirmResult = await _notificationService.ShowNotificationAsync(
                 "Bạn có chắc chắn muốn hủy vé này không?",
                 NotificationType.Warning,
                 isConfirmation: true);
 
-            if (confirmResult)
+            if (!confirmResult) return;
+
+            try
             {
-                try
+                using var context = _dbContextFactory.CreateDbContext();
+
+                var booking = await context.Datves
+                    .Include(b => b.MaLbNavigation)
+                    .FirstOrDefaultAsync(b => b.MaDv == LichSuDatVe.MaVe);
+
+                if (booking == null)
                 {
-                    using (var context = new AirTicketDbContext())
-                    {
-                        var booking = await context.Datves.Include(b => b.MaLbNavigation).FirstOrDefaultAsync(b => b.MaDv == LichSuDatVe.MaVe);
-                        if (booking != null)
-                        {
-                            bool isPaid = booking.TtdatVe == "Đã thanh toán";
-                            string soHieuCb = booking.MaLbNavigation?.SoHieuCb ?? "";
-                            DateTime gioDi = booking.MaLbNavigation?.GioDi ?? DateTime.Now;
-                            var ctdvList = await context.Ctdvs
-                                .Where(ctdv => ctdv.MaDv == LichSuDatVe.MaVe)
-                                .ToListAsync();
-                            var maHvLb = ctdvList.FirstOrDefault()?.MaHvLb;
-                            if (maHvLb != null)
-                            {
-                                var hangVe = await context.Hangvetheolichbays
-                                    .FirstOrDefaultAsync(h => h.MaHvLb == maHvLb);
-                                if (hangVe != null)
-                                {
-                                    hangVe.SlveConLai += ctdvList.Count;
-                                }
-                            }
-                            booking.TtdatVe = "Đã hủy";
-                            await context.SaveChangesAsync();
-                            await notification.ShowNotificationAsync("Hủy vé thành công.", NotificationType.Information);
-                            LichSuDatVe.TrangThai = "Đã hủy";
-                            OnPropertyChanged(nameof(LichSuDatVe));
-                            if (isPaid)
-                            {
-                                var emailBody = _templateService.BuildBookingCancel(soHieuCb, gioDi, DateTime.Now);
-                                await _emailService.SendEmailAsync(
-                                    booking.Email ?? UserSession.Current.Email,
-                                    $"Huỷ vé chuyến bay {soHieuCb}",
-                                    emailBody);
-                            }
-                        }
-                        else
-                        {
-                            await notification.ShowNotificationAsync("Không tìm thấy vé để hủy.", NotificationType.Error);
-                        }
-                    }
+                    await _notificationService.ShowNotificationAsync("Không tìm thấy vé để hủy.", NotificationType.Error);
+                    return;
                 }
-                catch (Exception ex)
+
+                bool isPaid = booking.TtdatVe == "Đã thanh toán";
+                string soHieuCb = booking.MaLbNavigation?.SoHieuCb ?? "";
+                DateTime gioDi = booking.MaLbNavigation?.GioDi ?? DateTime.Now;
+
+                var ctdvList = await context.Ctdvs
+                    .Where(ctdv => ctdv.MaDv == LichSuDatVe.MaVe)
+                    .ToListAsync();
+
+                var maHvLb = ctdvList.FirstOrDefault()?.MaHvLb;
+
+                if (maHvLb != null)
                 {
-                    await notification.ShowNotificationAsync($"Lỗi khi hủy vé: {ex.Message}", NotificationType.Error);
+                    var hangVe = await context.Hangvetheolichbays
+                        .FirstOrDefaultAsync(h => h.MaHvLb == maHvLb);
+
+                    if (hangVe != null)
+                        hangVe.SlveConLai += ctdvList.Count;
                 }
+
+                booking.TtdatVe = "Đã hủy";
+                await context.SaveChangesAsync();
+
+                LichSuDatVe.TrangThai = "Đã hủy";
+                OnPropertyChanged(nameof(LichSuDatVe));
+
+                await _notificationService.ShowNotificationAsync("Hủy vé thành công.", NotificationType.Information);
+
+                if (isPaid)
+                {
+                    var emailBody = _templateService.BuildBookingCancel(soHieuCb, gioDi, DateTime.Now);
+                    await _emailService.SendEmailAsync(
+                        booking.Email ?? _userSession.Email,
+                        $"Huỷ vé chuyến bay {soHieuCb}",
+                        emailBody);
+                }
+            }
+            catch (Exception ex)
+            {
+                await _notificationService.ShowNotificationAsync($"Lỗi khi hủy vé: {ex.Message}", NotificationType.Error);
             }
         }
     }

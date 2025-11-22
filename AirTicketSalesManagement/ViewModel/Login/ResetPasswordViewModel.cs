@@ -1,6 +1,11 @@
 ﻿using AirTicketSalesManagement.Data;
 using AirTicketSalesManagement.Interface;
 using AirTicketSalesManagement.Services.EmailServices;
+using AirTicketSalesManagement.Services.EmailValidation;
+using AirTicketSalesManagement.Services.Login;
+using AirTicketSalesManagement.Services.Navigation;
+using AirTicketSalesManagement.Services.ResetPassword;
+using AirTicketSalesManagement.Services.Timer;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections;
@@ -10,14 +15,15 @@ using System.Windows.Threading;
 
 namespace AirTicketSalesManagement.ViewModel.Login
 {
-    public partial class ResetPasswordViewModel : BaseViewModel, INotifyDataErrorInfo
+    public partial class ResetPasswordViewModel : ValidationBase
     {
         private readonly IEmailService _emailService;
         private readonly IOtpService _otpService;
-        private readonly EmailTemplateService _emailTemplateService;
+        private readonly IEmailTemplateService _emailTemplateService;
+        private readonly ITimerService _timerService;
+        private readonly IResetPasswordService _resetPasswordService;
         private AuthViewModel _auth;
-        private readonly Dictionary<string, List<string>> _errors = new();
-        private ToastViewModel _toast = new ToastViewModel();
+        private ToastViewModel _toast { get; }
         [ObservableProperty]
         private string? code;
 
@@ -40,15 +46,18 @@ namespace AirTicketSalesManagement.ViewModel.Login
         private bool canResendCode;
         public string? Email { get; set; }
 
-        private DispatcherTimer? _timer;
-        private TimeSpan _timeLeft;
-
-        public ResetPasswordViewModel(AuthViewModel _auth, string Email, IEmailService emailService, IOtpService otpService, EmailTemplateService emailTemplateService)
+        public ResetPasswordViewModel(AuthViewModel _auth, string Email,IResetPasswordService resetPasswordService, IEmailService emailService, IOtpService otpService, IEmailTemplateService emailTemplateService, ITimerService timerService, ToastViewModel Toast)
         {
+            _toast = Toast;
+            _resetPasswordService = resetPasswordService;
             _emailService = emailService;
             _otpService = otpService;
             _emailTemplateService = emailTemplateService;
-            StartCountdown();
+            _timerService = timerService;
+            _timerService.Start(TimeSpan.FromMinutes(3),
+                   onTick: t => TimeLeftText = $"Mã hết hạn sau: {t.Minutes:D2}:{t.Seconds:D2}",
+                   onFinished: () => TimeLeftText = "Mã xác nhận đã hết hạn."
+               );
             this._auth = _auth;
             this.Email = Email;
             string otp = _otpService.GenerateOtp(Email);
@@ -66,26 +75,26 @@ namespace AirTicketSalesManagement.ViewModel.Login
             });
         }
         [RelayCommand]        
-        
-        private async Task CheckCode()
+
+        private Task CheckCode()
         {
             ClearErrors(nameof(Code));
             if (IsCodeExpired)
             {
                 AddError(nameof(Code), "Mã xác nhận đã hết hạn. Vui lòng gửi lại mã mới.");
-                return;
+                return Task.CompletedTask;
             }
 
             if (Email == null)
             {
                 AddError(nameof(Email), "Email không được để trống.");
-                return;
+                return Task.CompletedTask;
             }
 
             if (string.IsNullOrWhiteSpace(Code))
             {
                 AddError(nameof(Code), "Mã xác nhận không được để trống.");
-                return;
+                return Task.CompletedTask;
             }
 
             bool isValid = _otpService.VerifyOtp(Email,Code);
@@ -95,9 +104,11 @@ namespace AirTicketSalesManagement.ViewModel.Login
             }
             else
             {
-                AddError(nameof(Code), "Mã xác nhận không hợp lệ.");
+                AddError(nameof(Code), "Mã xác nhận không hợp lệ hoặc đã hết hạn.");
                 IsCodeValid = false;
             }
+
+            return Task.CompletedTask;
         }
 
         [RelayCommand]
@@ -106,43 +117,13 @@ namespace AirTicketSalesManagement.ViewModel.Login
             string otp = _otpService.GenerateOtp(Email);
             var emailContent = _emailTemplateService.BuildForgotPasswordOtp(otp);
             await _emailService.SendEmailAsync(Email, "Yêu cầu đặt lại mật khẩu", emailContent);
-            ResetCountdown();
+            _timerService.Stop();
+            _timerService.Start(TimeSpan.FromMinutes(3),
+                onTick: t => TimeLeftText = $"Mã hết hạn sau: {t.Minutes:D2}:{t.Seconds:D2}",
+                onFinished: () => TimeLeftText = "Mã xác nhận đã hết hạn."
+            );
         }
 
-        private void StartCountdown()
-        {
-            _timeLeft = TimeSpan.FromMinutes(3);
-            IsCodeExpired = false;
-            CanResendCode = false;
-            UpdateTimeLeftText();
-
-            _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            _timer.Tick += (_, _) =>
-            {
-                _timeLeft = _timeLeft.Subtract(TimeSpan.FromSeconds(1));
-                UpdateTimeLeftText();
-
-                if (_timeLeft <= TimeSpan.Zero)
-                {
-                    _timer?.Stop();
-                    IsCodeExpired = true;
-                    CanResendCode = true;
-                    TimeLeftText = "Mã xác nhận đã hết hạn.";
-                }
-            };
-            _timer.Start();
-        }
-
-        private void ResetCountdown()
-        {
-            _timer?.Stop();
-            StartCountdown();
-        }
-
-        private void UpdateTimeLeftText()
-        {
-            TimeLeftText = $"Mã hết hạn sau: {_timeLeft.Minutes:D2}:{_timeLeft.Seconds:D2}";
-        }
 
         [RelayCommand]
         private async Task ResetPasswordAsync()
@@ -152,81 +133,39 @@ namespace AirTicketSalesManagement.ViewModel.Login
                 AddError(nameof(Code), "Vui lòng xác nhận mã trước khi đặt lại mật khẩu.");
                 return;
             }
-            Validate();
+            await ValidateAsync();
             if (HasErrors) return;
             try
             {
-                using(var context = new AirTicketDbContext())
-                {
-                    var user = context.Taikhoans.FirstOrDefault(x => x.Email == Email);
-                    if (user == null)
-                    {
-                        AddError(nameof(Email), "Tài khoản không tồn tại");
-                        return;
-                    }
-                    string hashPass = BCrypt.Net.BCrypt.HashPassword(Password);
-                    user.MatKhau = hashPass;
-                    await context.SaveChangesAsync();
-                }
-                _auth.CurrentViewModel = new LoginViewModel(_auth);
+                await _resetPasswordService.UpdatePasswordAsync(Email!, Password);
+                _auth.CurrentViewModel = new LoginViewModel(_auth, new LoginService(new Data.AirTicketDbContext()), new NavigationWindowService(), new EmailValidation(), new ToastViewModel());
             }
             catch
             {
                 await _toast.ShowToastAsync("Không thể kết nối đến cơ sở dữ liệu", Brushes.OrangeRed);
                 return;
             }
-            
+
         }
-        #region Error
-        public void Validate()
+        public override Task ValidateAsync()
         {
             ClearErrors(nameof(Password));
             ClearErrors(nameof(ConfirmPassword));
 
             if (string.IsNullOrWhiteSpace(Password))
+            {
                 AddError(nameof(Password), "Mật khẩu không được để trống.");
+            }                 
             else if (Password.Length > 100)
                 AddError(nameof(Password), "Mật khẩu vượt quá giới hạn cho phép");
             if (ConfirmPassword != Password)
             {
                 AddError(nameof(ConfirmPassword), "Xác nhận mật khẩu không khớp với mật khẩu.");
             }
-            if (HasErrors) return;
+            return Task.CompletedTask;
         }
-        public bool HasErrors => _errors.Any();
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-        public IEnumerable? GetErrors(string propertyName)
-        {
-            if (!string.IsNullOrWhiteSpace(propertyName) && _errors.ContainsKey(propertyName))
-                return _errors[propertyName];
-            return null;
-        }
-
-        private void AddError(string propertyName, string error)
-        {
-            if (!_errors.ContainsKey(propertyName))
-                _errors[propertyName] = new List<string>();
-
-            if (!_errors[propertyName].Contains(error))
-            {
-                _errors[propertyName].Add(error);
-                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            }
-        }
-
-        private void ClearErrors(string propertyName)
-        {
-            if (_errors.ContainsKey(propertyName))
-            {
-                _errors.Remove(propertyName);
-                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            }
-        }
-
-        #endregion
 
         [RelayCommand]
         private void ShowLogin() => _auth.NavigateToLogin();
-    }
-
+    }   
 }
