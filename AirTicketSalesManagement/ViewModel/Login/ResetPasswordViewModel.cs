@@ -23,7 +23,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
         private readonly ITimerService _timerService;
         private readonly IResetPasswordService _resetPasswordService;
         private AuthViewModel _auth;
-        private ToastViewModel _toast { get; }
+        public ToastViewModel Toast { get; }
         [ObservableProperty]
         private string? code;
 
@@ -46,9 +46,9 @@ namespace AirTicketSalesManagement.ViewModel.Login
         private bool canResendCode;
         public string? Email { get; set; }
 
-        public ResetPasswordViewModel(AuthViewModel _auth, string Email,IResetPasswordService resetPasswordService, IEmailService emailService, IOtpService otpService, IEmailTemplateService emailTemplateService, ITimerService timerService, ToastViewModel Toast)
+        public ResetPasswordViewModel(AuthViewModel _auth, string Email,IResetPasswordService resetPasswordService, IEmailService emailService, IOtpService otpService, IEmailTemplateService emailTemplateService, ITimerService timerService, ToastViewModel toast)
         {
-            _toast = Toast;
+            this.Toast = toast;
             _resetPasswordService = resetPasswordService;
             _emailService = emailService;
             _otpService = otpService;
@@ -66,11 +66,11 @@ namespace AirTicketSalesManagement.ViewModel.Login
             {
                 if (t.IsFaulted)
                 {
-                    _ = _toast.ShowToastAsync("Không thể gửi mã xác nhận. Vui lòng thử lại sau.", Brushes.OrangeRed);
+                    _ = Toast.ShowToastAsync("Không thể gửi mã xác nhận. Vui lòng thử lại sau.", Brushes.OrangeRed);
                 }
                 else
                 {
-                    _ = _toast.ShowToastAsync("Mã xác nhận đã được gửi đến email của bạn.", Brushes.Green);
+                    _ = Toast.ShowToastAsync("Mã xác nhận đã được gửi đến email của bạn.", Brushes.Green);
                 }
             });
         }
@@ -138,11 +138,12 @@ namespace AirTicketSalesManagement.ViewModel.Login
             try
             {
                 await _resetPasswordService.UpdatePasswordAsync(Email!, Password);
+                await Toast.ShowToastAsync("Đặt lại mật khẩu thành công", Brushes.Green);
                 _auth.CurrentViewModel = new LoginViewModel(_auth, new LoginService(new Data.AirTicketDbContext()), new NavigationWindowService(), new EmailValidation(), new ToastViewModel());
             }
             catch
             {
-                await _toast.ShowToastAsync("Không thể kết nối đến cơ sở dữ liệu", Brushes.OrangeRed);
+                await Toast.ShowToastAsync("Không thể kết nối đến cơ sở dữ liệu", Brushes.OrangeRed);
                 return;
             }
 

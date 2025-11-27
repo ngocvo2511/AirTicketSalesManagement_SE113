@@ -1,25 +1,11 @@
-﻿using AirTicketSalesManagement.Data;
-using AirTicketSalesManagement.Interface;
-using AirTicketSalesManagement.Models;
+﻿using AirTicketSalesManagement.Interface;
 using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Services.EmailValidation;
 using AirTicketSalesManagement.Services.Register;
 using AirTicketSalesManagement.Services.Timer;
-using BCrypt.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace AirTicketSalesManagement.ViewModel.Login
 {
@@ -76,7 +62,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
                 AddError(nameof(Email), "Email không được để trống.");
             else if (Email.Length > 254)
                 AddError(nameof(Email), "Email vượt quá giới hạn cho phép");
-            else if (_emailValidation.IsValid(Email))
+            else if (!_emailValidation.IsValid(Email))
                 AddError(nameof(Email), "Email không hợp lệ.");
             else if (await _registerService.IsEmailExistsAsync(Email))
                 AddError(nameof(Email), "Email đã được đăng ký");
