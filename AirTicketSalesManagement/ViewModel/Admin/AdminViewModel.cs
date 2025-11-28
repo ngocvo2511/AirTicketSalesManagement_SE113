@@ -6,7 +6,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Media.Animation;
 using System.Windows;
-using AirTicketSalesManagement.ViewModel.CustomerManagement;
 using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Services.Customer;
 using AirTicketSalesManagement.Services.Notification;

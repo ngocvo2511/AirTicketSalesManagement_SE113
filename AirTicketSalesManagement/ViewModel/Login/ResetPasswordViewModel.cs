@@ -85,11 +85,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
                 return Task.CompletedTask;
             }
 
-            if (Email == null)
-            {
-                AddError(nameof(Email), "Email không được để trống.");
-                return Task.CompletedTask;
-            }
+
 
             if (string.IsNullOrWhiteSpace(Code))
             {

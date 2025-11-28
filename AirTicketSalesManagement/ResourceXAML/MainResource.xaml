@@ -9,7 +9,6 @@
                     xmlns:viewsSTAFF="clr-namespace:AirTicketSalesManagement.View.Staff"
                     xmlns:viewmodelBOOKING="clr-namespace:AirTicketSalesManagement.ViewModel.Booking"
                     xmlns:viewmodelADMIN="clr-namespace:AirTicketSalesManagement.ViewModel.Admin"
-                    xmlns:viewmodelMANAGE="clr-namespace:AirTicketSalesManagement.ViewModel.CustomerManagement"
                     xmlns:viewsADMIN="clr-namespace:AirTicketSalesManagement.View.Admin"                    
                     xmlns:viewsNotify="clr-namespace:AirTicketSalesManagement.View.Notification">
     
@@ -53,9 +52,8 @@
     <viewmodelADMIN:FlightManagementViewModel x:Key="FlightManagementVM"/>
     <viewmodelADMIN:ScheduleManagementViewModel x:Key="ScheduleManagementVM"/>
     <viewmodelADMIN:AccountManagementViewModel x:Key="AccountManagementVM"/>
-    
-    <!-- Cutomer Management -->
-    <viewmodelMANAGE:CustomerManagementViewModel x:Key="CustomerManagementVM"/>
+    <viewmodelADMIN:CustomerManagementViewModel x:Key="CustomerManagementVM"/>
+
 
 
     <!-- Notification -->
@@ -161,7 +159,7 @@
     </DataTemplate>
     
     <!-- Customer Management -->
-    <DataTemplate DataType="{x:Type viewmodelMANAGE:CustomerManagementViewModel}">
+    <DataTemplate DataType="{x:Type viewmodelADMIN:CustomerManagementViewModel}">
         <viewsSTAFF:CustomerManagementView/>
     </DataTemplate>
 

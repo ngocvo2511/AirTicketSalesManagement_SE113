@@ -14,11 +14,11 @@ using AirTicketSalesManagement.ViewModel.Booking;
 using AirTicketSalesManagement.Models;
 using CommunityToolkit.Mvvm.Messaging;
 using AirTicketSalesManagement.ViewModel.Customer;
-using AirTicketSalesManagement.ViewModel.CustomerManagement;
 using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Messages;
 using AirTicketSalesManagement.Services.Customer;
 using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.ViewModel.Admin;
 
 namespace AirTicketSalesManagement.ViewModel.Staff
 {

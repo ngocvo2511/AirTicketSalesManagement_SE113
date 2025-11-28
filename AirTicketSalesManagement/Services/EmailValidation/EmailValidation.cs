@@ -10,6 +10,6 @@ namespace AirTicketSalesManagement.Services.EmailValidation
     public class EmailValidation : IEmailValidation
     {
         public bool IsValid(string email)
-        => Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+        => Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
     }
 }

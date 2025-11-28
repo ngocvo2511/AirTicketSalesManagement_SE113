@@ -76,7 +76,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
                 AddError(nameof(Email), "Email không được để trống.");
             else if (Email.Length > 254)
                 AddError(nameof(Email), "Email vượt quá giới hạn cho phép");
-            else if (_emailValidation.IsValid(Email))
+            else if (!_emailValidation.IsValid(Email))
                 AddError(nameof(Email), "Email không hợp lệ.");
             else if (await _registerService.IsEmailExistsAsync(Email))
                 AddError(nameof(Email), "Email đã được đăng ký");
@@ -136,7 +136,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
                     return;
                 }
 
-                await Toast.ShowToastAsync("Đăng kí thành công. Vui lòng đăng nhập.", Brushes.Green);
+                await Toast.ShowToastAsync("Đăng ký thành công. Vui lòng đăng nhập.", Brushes.Green);
                 _auth.NavigateToLogin();
             }
             else

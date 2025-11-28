@@ -29,4 +29,11 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModel\Customer\" />
+    <Folder Include="ViewModel\Booking\" />
+    <Folder Include="ViewModel\Login\" />
+    <Folder Include="ViewModel\Staff\" />
+  </ItemGroup>
+
 </Project>

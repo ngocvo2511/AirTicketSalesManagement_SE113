@@ -237,7 +237,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         {
             if (parent is StaffViewModel staffViewModel)
             {
-                staffViewModel.CurrentViewModel = new TicketManagementDetailViewModel(chiTietVe, parent,_dbContextService, _notificationService, _emailService, _templateService);
+                staffViewModel.CurrentViewModel = new TicketManagementDetailViewModel(chiTietVe, parent, _dbContextService, _notificationService, _emailService, _templateService);
             }
             else if (parent is AdminViewModel adminViewModel)
             {
@@ -285,7 +285,11 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         [RelayCommand]
         public async Task CancelTicket(QuanLiDatVe ve)
         {
-            if (ve == null) return;
+            if (ve == null)
+            {
+                await _notification_service_fallback("Vé không hợp lệ.", NotificationType.Warning);
+                return;
+            }
             if (ve.CanCancel == false)
             {
                 await _notification_service_fallback("Không thể hủy vé này do đã quá thời hạn hủy.", NotificationType.Warning);
@@ -346,7 +350,11 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         [RelayCommand]
         public async Task ConfirmPayment(QuanLiDatVe ve)
         {
-            if (ve == null) return;
+            if (ve == null)
+            {
+                await _notification_service_fallback("Vé không hợp lệ.", NotificationType.Warning);
+                return;
+            }
             if (ve.CanConfirm == false)
             {
                 await _notification_service_fallback("Không thể xác nhận thanh toán vé này do đã quá thời hạn đặt vé.", NotificationType.Warning);

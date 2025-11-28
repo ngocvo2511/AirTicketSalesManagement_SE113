@@ -526,20 +526,36 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     return;
                 }
 
-                int slVeKT = int.Parse(AddSLVeKT);
-                if (slVeKT <= 0)
+                if (!int.TryParse(AddSLVeKT, out int slVeKT) || slVeKT <= 0)
                 {
-                    await _notify.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Số lượng vé khai thác không hợp lệ.", NotificationType.Warning);
                     return;
                 }
+
+                if (!decimal.TryParse(AddGiaVe, out decimal giaVe) || giaVe <= 0)
+                {
+                    await _notify.ShowNotificationAsync("Giá vé không hợp lệ.", NotificationType.Warning);
+                    return;
+                }
+
 
                 int sumTicket = 0;
                 foreach (var hv in TicketClassForScheduleList)
                 {
+                    if (string.IsNullOrWhiteSpace(hv.TenHangVe) || string.IsNullOrWhiteSpace(hv.SLVeToiDa))
+                    {
+                        await _notify.ShowNotificationAsync("Vui lòng nhập đầy đủ thông tin hạng ghế.", NotificationType.Warning);
+                        return;
+                    }
+                    if(!int.TryParse(hv.SLVeToiDa, out int slVeToiDa) || slVeToiDa <= 0)
+                    {
+                        await _notify.ShowNotificationAsync("Vui lòng nhập giá vé của hạng ghế hợp lệ.", NotificationType.Warning);
+                        return;
+                    }
                     sumTicket += int.Parse(hv.SLVeToiDa);
                 }
 
-                if (sumTicket != int.Parse(AddSLVeKT))
+                if (sumTicket != slVeKT)
                 {
                     await _notify.ShowNotificationAsync("Tổng số lượng vé của các hạng ghế phải bằng số lượng vé khai thác.", NotificationType.Warning);
                     return;
@@ -593,8 +609,8 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                             GioDi = ngayGioDi,
                             GioDen = ngayGioDen,
                             LoaiMb = AddLoaiMB,
-                            SlveKt = int.Parse(AddSLVeKT),
-                            GiaVe = decimal.Parse(AddGiaVe),
+                            SlveKt = slVeKT,
+                            GiaVe = giaVe,
                             TtlichBay = AddTTLichBay
                         };
 
@@ -958,19 +974,37 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     return;
                 }
 
-                int slVeKT = int.Parse(EditSLVeKT);
-                if (slVeKT <= 0)
+
+                if (!int.TryParse(EditSLVeKT, out int slVeKT) || slVeKT <= 0)
                 {
-                    await _notify.ShowNotificationAsync("Số lượng vé khai thác phải lớn hơn 0.", NotificationType.Warning);
+                    await _notify.ShowNotificationAsync("Số lượng vé khai thác không hợp lệ.", NotificationType.Warning);
+                    return;
+                }
+
+                if (!decimal.TryParse(EditGiaVe.Replace("VNĐ", "").Replace(",", "").Trim(), out decimal giaVe) || giaVe <= 0)
+                {
+                    await _notify.ShowNotificationAsync("Giá vé không hợp lệ.", NotificationType.Warning);
                     return;
                 }
 
                 int sumTicket = 0;
+
                 foreach (var hv in TicketClassForScheduleList)
                 {
+                    if (string.IsNullOrWhiteSpace(hv.TenHangVe) || string.IsNullOrWhiteSpace(hv.SLVeToiDa))
+                    {
+                        await _notify.ShowNotificationAsync("Vui lòng nhập đầy đủ thông tin hạng ghế.", NotificationType.Warning);
+                        return;
+                    }
+                    if (!int.TryParse(hv.SLVeToiDa, out int slVeToiDa) || slVeToiDa <= 0)
+                    {
+                        await _notify.ShowNotificationAsync("Vui lòng nhập giá vé của hạng ghế hợp lệ.", NotificationType.Warning);
+                        return;
+                    }
                     sumTicket += int.Parse(hv.SLVeToiDa);
                 }
-                if (sumTicket != int.Parse(EditSLVeKT))
+
+                if (sumTicket != slVeKT)
                 {
                     await _notify.ShowNotificationAsync("Tổng số lượng vé của các hạng ghế phải bằng số lượng vé khai thác.", NotificationType.Warning);
                     return;
@@ -1022,7 +1056,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     schedule.GioDi = EditNgayDi.Value.Date + TimeSpan.Parse(EditGioDi);
                     schedule.GioDen = EditNgayDen.Value.Date + TimeSpan.Parse(EditGioDen);
                     schedule.LoaiMb = EditLoaiMB;
-                    schedule.SlveKt = int.Parse(EditSLVeKT);
+                    schedule.SlveKt = slVeKT;
                     schedule.GiaVe = decimal.Parse(EditGiaVe.Replace("VNĐ", "").Replace(",", "").Trim());
                     schedule.TtlichBay = EditTTLichBay;
 

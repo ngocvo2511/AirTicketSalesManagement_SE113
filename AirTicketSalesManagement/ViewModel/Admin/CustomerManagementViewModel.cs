@@ -1,21 +1,11 @@
-﻿using AirTicketSalesManagement.Data;
-using AirTicketSalesManagement.Models;
+﻿using AirTicketSalesManagement.Models;
 using AirTicketSalesManagement.Services.Customer;
 using AirTicketSalesManagement.Services.Notification;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
 
-namespace AirTicketSalesManagement.ViewModel.CustomerManagement
+namespace AirTicketSalesManagement.ViewModel.Admin
 {
     public partial class CustomerManagementViewModel : BaseViewModel
     {
