@@ -125,20 +125,20 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                        ?? new NotificationViewModel();
 
             // load initial data (fire-and-forget is OK for UI)
-            _ = LoadRegulationAsync();
+            LoadRegulation();
         }
 
         private AirTicketDbContext CreateContext() => _dbContextService.CreateDbContext();
 
-        public async Task LoadRegulationAsync()
+        public async void LoadRegulation()
         {
             try
             {
                 await using var context = CreateContext();
 
-                var regulation = await context.Quydinhs
+                var regulation = context.Quydinhs
                                               .AsNoTracking()
-                                              .FirstOrDefaultAsync();
+                                              .FirstOrDefault();
 
                 if (regulation is not null)
                 {
@@ -626,7 +626,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             try
             {
                 await using var context = CreateContext();
-                var regulation = await context.Quydinhs.FirstOrDefaultAsync();
+                var regulation = context.Quydinhs.FirstOrDefault();
 
                 if (regulation is null)
                 {
@@ -684,7 +684,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             try
             {
                 await using var context = CreateContext();
-                var regulation = await context.Quydinhs.FirstOrDefaultAsync();
+                var regulation = context.Quydinhs.FirstOrDefault();
                 if (regulation is null)
                 {
                     regulation = new Quydinh { TuoiToiDaTreEm = EditChildAge };
