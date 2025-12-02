@@ -176,7 +176,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     };
 
                     context.Quydinhs.Add(regulation);
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
             }
             catch (Exception ex)
@@ -240,7 +240,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.SoSanBay = EditMaxAirports;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 MaxAirports = EditMaxAirports;
                 IsEditingMaxAirports = false;
             }
@@ -291,7 +291,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.ThoiGianBayToiThieu = EditMinFlightTime;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 MinFlightTime = EditMinFlightTime;
                 IsEditingMinFlightTime = false;
             }
@@ -342,7 +342,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.SoSanBayTgtoiDa = EditMaxStopover;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 MaxStopover = EditMaxStopover;
                 IsEditingMaxStopover = false;
             }
@@ -391,7 +391,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.TgdungMin = EditMinStopTime;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 MinStopTime = EditMinStopTime;
                 IsEditingMinStopTime = false;
             }
@@ -441,7 +441,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.TgdungMax = EditMaxStopTime;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 MaxStopTime = EditMaxStopTime;
                 IsEditingMaxStopTime = false;
             }
@@ -491,7 +491,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.TgdatVeChamNhat = EditBookingTime;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 BookingTime = EditBookingTime;
                 IsEditingBookingTime = false;
             }
@@ -541,7 +541,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.TghuyDatVe = EditCancelTime;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 CancelTime = EditCancelTime;
                 IsEditingCancelTime = false;
             }
@@ -590,7 +590,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.SoHangVe = EditTicketClassCount;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 TicketClassCount = EditTicketClassCount;
                 IsEditingTicketClassCount = false;
             }
@@ -647,9 +647,10 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     regulation.TuoiToiDaSoSinh = EditInfantAge;
                 }
 
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 InfantAge = EditInfantAge;
                 IsEditingInfantAge = false;
+                await _notification_service_fallback("Lưu thành công.", NotificationType.Information);
             }
             catch (Exception ex)
             {
@@ -702,9 +703,10 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     }
                     regulation.TuoiToiDaTreEm = EditChildAge;
                 }
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 ChildAge = EditChildAge;
                 IsEditingChildAge = false;
+                await _notification_service_fallback("Lưu thành công.", NotificationType.Information);
             }
             catch (Exception ex)
             {

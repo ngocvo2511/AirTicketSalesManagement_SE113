@@ -498,7 +498,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         [RelayCommand]
-        public async void SaveAddSchedule()
+        public async Task SaveAddSchedule()
         {
             try
             {
@@ -941,7 +941,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         [RelayCommand]
-        public async void SaveEditSchedule()
+        public async Task SaveEditSchedule()
         {
             try
             {
