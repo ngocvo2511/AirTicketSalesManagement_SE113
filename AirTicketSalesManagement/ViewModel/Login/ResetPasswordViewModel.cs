@@ -76,7 +76,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
         }
         [RelayCommand]        
 
-        private Task CheckCode()
+        public Task CheckCode()
         {
             ClearErrors(nameof(Code));
             if (IsCodeExpired)
@@ -122,7 +122,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
 
 
         [RelayCommand]
-        private async Task ResetPasswordAsync()
+        public async Task ResetPasswordAsync()
         {
             if (!IsCodeValid)
             {

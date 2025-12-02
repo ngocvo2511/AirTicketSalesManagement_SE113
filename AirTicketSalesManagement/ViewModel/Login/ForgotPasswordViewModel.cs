@@ -71,7 +71,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             return true;
         }
         [RelayCommand]
-        private async Task ForgotPasswordAsync()
+        public async Task ForgotPasswordAsync()
         {
             if (!await ValidateAsync())
                 return;

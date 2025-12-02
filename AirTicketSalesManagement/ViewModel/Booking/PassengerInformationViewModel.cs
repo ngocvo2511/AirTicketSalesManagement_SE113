@@ -223,7 +223,7 @@ namespace AirTicketSalesManagement.ViewModel.Booking
         }
 
         [RelayCommand]
-        private async Task Continue()
+        public async Task ValidatePassengerInfoAndProceed()
         {
             // Validate all required fields are filled
             if (string.IsNullOrWhiteSpace(ContactEmail) || string.IsNullOrWhiteSpace(ContactPhone))

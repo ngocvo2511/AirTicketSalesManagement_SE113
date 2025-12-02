@@ -347,7 +347,7 @@
                         FontSize="14"
                         FontWeight="Medium"
                         HorizontalAlignment="Right"
-                        Command="{Binding ContinueCommand}">
+                        Command="{Binding ValidatePassengerInfoAndProceedCommand}">
                     <Button.Effect>
                         <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.3"/>
                     </Button.Effect>
