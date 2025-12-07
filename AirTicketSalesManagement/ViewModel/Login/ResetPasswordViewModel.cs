@@ -46,7 +46,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
         private bool canResendCode;
         public string? Email { get; set; }
 
-        public ResetPasswordViewModel(AuthViewModel _auth, string Email,IResetPasswordService resetPasswordService, IEmailService emailService, IOtpService otpService, IEmailTemplateService emailTemplateService, ITimerService timerService, ToastViewModel Toast)
+        public ResetPasswordViewModel(AuthViewModel _auth, string Email, IResetPasswordService resetPasswordService, IEmailService emailService, IOtpService otpService, IEmailTemplateService emailTemplateService, ITimerService timerService, ToastViewModel Toast)
         {
             _toast = Toast;
             _resetPasswordService = resetPasswordService;
@@ -74,7 +74,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
                 }
             });
         }
-        [RelayCommand]        
+        [RelayCommand]
 
         public Task CheckCode()
         {
@@ -93,7 +93,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
                 return Task.CompletedTask;
             }
 
-            bool isValid = _otpService.VerifyOtp(Email,Code);
+            bool isValid = _otpService.VerifyOtp(Email, Code);
             if (isValid)
             {
                 IsCodeValid = true;
@@ -134,6 +134,8 @@ namespace AirTicketSalesManagement.ViewModel.Login
             try
             {
                 await _resetPasswordService.UpdatePasswordAsync(Email!, Password);
+                await _toast.ShowToastAsync("Mật khẩu đã được thay đổi thành công", Brushes.Green);
+
                 _auth.CurrentViewModel = new LoginViewModel(_auth, new LoginService(new Data.AirTicketDbContext()), new NavigationWindowService(), new EmailValidation(), new ToastViewModel());
             }
             catch
@@ -151,7 +153,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             if (string.IsNullOrWhiteSpace(Password))
             {
                 AddError(nameof(Password), "Mật khẩu không được để trống.");
-            }                 
+            }
             else if (Password.Length > 100)
                 AddError(nameof(Password), "Mật khẩu vượt quá giới hạn cho phép");
             if (ConfirmPassword != Password)
@@ -163,5 +165,5 @@ namespace AirTicketSalesManagement.ViewModel.Login
 
         [RelayCommand]
         private void ShowLogin() => _auth.NavigateToLogin();
-    }   
+    }
 }

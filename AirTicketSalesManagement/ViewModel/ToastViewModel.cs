@@ -18,7 +18,7 @@ namespace AirTicketSalesManagement.ViewModel
 
 
 
-        public async Task ShowToastAsync(string message, Brush bg = null, int durationMs = 2000)
+        public virtual async Task ShowToastAsync(string message, Brush bg = null, int durationMs = 2000)
         {
             if (IsVisible)
             {

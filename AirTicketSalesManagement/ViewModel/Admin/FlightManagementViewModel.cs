@@ -126,15 +126,15 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
         partial void OnEditDiemDiChanged(string value)
         {
-            OnPropertyChanged(nameof(AddDiemDenList));
-            OnPropertyChanged(nameof(SBTGList));
+            OnPropertyChanged(nameof(EditDiemDenList));
+            OnPropertyChanged(nameof(EditSBTGList));
             CapNhatSBTGList();
         }
 
         partial void OnEditDiemDenChanged(string value)
         {
-            OnPropertyChanged(nameof(AddDiemDiList));
-            OnPropertyChanged(nameof(SBTGList));
+            OnPropertyChanged(nameof(EditDiemDiList));
+            OnPropertyChanged(nameof(EditSBTGList));
             CapNhatSBTGList();
         }
         public NotificationViewModel Notification { get; }
@@ -502,8 +502,32 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         [RelayCommand]
-        public void EditFlight()
+        public async void EditFlight()
         {
+            if (SelectedFlight == null)
+            {
+                await _notification_service_fallback("Vui lòng chọn một chuyến bay để chỉnh sửa.", NotificationType.Warning);
+                return;
+            }
+
+            using var context = _dbContextService.CreateDbContext();
+            var existingFlight = context.Chuyenbays
+                .Include(cb => cb.Lichbays)
+                .Include(cb => cb.Sanbaytrunggians)
+                .FirstOrDefault(cb => cb.SoHieuCb == SelectedFlight.SoHieuCb);
+
+            if (existingFlight == null)
+            {
+                await _notification_service_fallback("Không tìm thấy chuyến bay để chỉnh sửa.", NotificationType.Error);
+                return;
+            }
+
+            if (existingFlight.Lichbays.Any())
+            {
+                await _notification_service_fallback("Không thể chỉnh sửa chuyến bay đã có lịch bay.", NotificationType.Warning);
+                return;
+            }
+
             DanhSachSBTG = new ObservableCollection<SBTG>();
             ResetEditField();
             IsEditPopupOpen = true;
@@ -610,22 +634,40 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     return;
                 }
 
+                
+
+
                 using var context = _dbContextService.CreateDbContext();
                 var existingFlight = context.Chuyenbays
                     .Include(cb => cb.Lichbays)
                     .Include(cb => cb.Sanbaytrunggians)
                     .FirstOrDefault(cb => cb.SoHieuCb == EditSoHieuCB);
 
-                if (existingFlight == null)
+                int thoiGianDungMin = 0;
+                int thoiGianDungMax = int.MaxValue;
+                var quyDinh = context.Quydinhs.FirstOrDefault();
+
+                if (quyDinh != null)
                 {
-                    await _notification_service_fallback("Không tìm thấy chuyến bay để chỉnh sửa.", NotificationType.Error);
-                    return;
+                    thoiGianDungMin = quyDinh.TgdungMin.GetValueOrDefault();
+                    thoiGianDungMax = quyDinh.TgdungMax.GetValueOrDefault(int.MaxValue);
                 }
 
-                if (existingFlight.Lichbays.Any())
+                foreach (var sbtg in DanhSachSBTG)
                 {
-                    await _notification_service_fallback("Không thể chỉnh sửa chuyến bay đã có lịch bay.", NotificationType.Warning);
-                    return;
+                    if (!string.IsNullOrWhiteSpace(sbtg.MaSBTG))
+                    {
+                        if (thoiGianDungMin > sbtg.ThoiGianDung)
+                        {
+                            await _notification_service_fallback($"Thời gian dừng tối thiểu là: {thoiGianDungMin} phút", NotificationType.Warning);
+                            return;
+                        }
+                        else if (thoiGianDungMax < sbtg.ThoiGianDung)
+                        {
+                            await _notification_service_fallback($"Thời gian dừng tối đa là: {thoiGianDungMax} phút", NotificationType.Warning);
+                            return;
+                        }
+                    }
                 }
 
                 existingFlight.SbdiNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDi));
@@ -694,7 +736,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     MaSBTG = string.Empty,
                     ThoiGianDung = 0,
                     GhiChu = string.Empty,
-                    SbtgList = new ObservableCollection<string>(SBTGList),
+                    SbtgList = new ObservableCollection<string>(EditSBTGList),  //Loi ngay cho nay
                     OnMaSBTGChangedCallback = CapNhatSBTGList
                 };
 

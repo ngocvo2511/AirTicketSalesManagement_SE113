@@ -38,7 +38,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             CurrentViewModel = new RegisterViewModel(this, new RegisterService(new Data.AirTicketDbContext()), new EmailService(), new OtpService(), new EmailTemplateService(), new DispatcherTimerService(), new EmailValidation(), new ToastViewModel());
         }
 
-        public void NavigateToLogin()
+        public virtual void NavigateToLogin()
         {
             CurrentViewModel = new LoginViewModel(this,new LoginService(new Data.AirTicketDbContext()), new NavigationWindowService(), new EmailValidation(), new ToastViewModel());
         }

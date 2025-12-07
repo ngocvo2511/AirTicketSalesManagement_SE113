@@ -234,6 +234,278 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
         [TestFixture]
         public class SaveEditFlightTests
         {
+            private Mock<IAirTicketDbContextService> _dbContextServiceMock;
+            private Mock<INotificationService> _notificationServiceMock;
+            private FlightManagementViewModel _viewModel;
+            private Mock<AirTicketDbContext> _dbContextMock;
+
+            private Chuyenbay _selectedFlight;
+
+            private Mock<DbSet<T>> CreateMockDbSet<T>(IQueryable<T> data) where T : class
+            {
+                var mockSet = new Mock<DbSet<T>>();
+                mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(data.Provider);
+                mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(data.Expression);
+                mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
+                mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
+                return mockSet;
+            }
+
+            [SetUp]
+            public void SetUp()
+            {
+                _dbContextServiceMock = new Mock<IAirTicketDbContextService>();
+                _notificationServiceMock = new Mock<INotificationService>();
+                _dbContextMock = new Mock<AirTicketDbContext>();
+
+                var sanbays = new List<Sanbay>
+                {
+                    new Sanbay { MaSb = "CXR", ThanhPho = "Khánh Hòa", QuocGia = "Việt Nam" },
+                    new Sanbay { MaSb = "HUI", ThanhPho = "Thừa Thiên - Huế", QuocGia = "Việt Nam" },
+                    new Sanbay { MaSb = "HAN", ThanhPho = "Hà Nội", QuocGia = "Việt Nam" } 
+
+                }.AsQueryable();
+
+                var quydinhs = new List<Quydinh>
+                {
+                    new Quydinh { TgdungMin = 10, TgdungMax = 30 }
+                }.AsQueryable();
+
+                var sanbayDbSet = CreateMockDbSet(sanbays);
+                var quydinhDbSet = CreateMockDbSet(quydinhs);
+
+                _dbContextMock.Setup(x => x.Sanbays).Returns(sanbayDbSet.Object);
+                _dbContextMock.Setup(x => x.Quydinhs).Returns(quydinhDbSet.Object);
+
+                _selectedFlight = new Chuyenbay
+                {
+                    SoHieuCb = "VJ206",
+                    SbdiNavigation = sanbays.First(sb => sb.MaSb == "CXR"),
+                    SbdenNavigation = sanbays.First(sb => sb.MaSb == "HUI"),
+                    HangHangKhong = "Vietjet Air",
+                    TtkhaiThac = "Đang khai thác",
+                    Sanbaytrunggians = new List<Sanbaytrunggian>(),
+                    Lichbays = new List<Lichbay>()
+                };
+
+                var chuyenbays = new List<Chuyenbay> { _selectedFlight }.AsQueryable();
+                var chuyenbayDbSet = CreateMockDbSet(chuyenbays);
+
+                _dbContextMock.Setup(x => x.Chuyenbays).Returns(chuyenbayDbSet.Object);
+
+                _dbContextServiceMock.Setup(x => x.CreateDbContext()).Returns(_dbContextMock.Object);
+
+                _notificationServiceMock
+                    .Setup(x => x.ShowNotificationAsync(It.IsAny<string>(), It.IsAny<NotificationType>(), It.IsAny<bool>()))
+                    .ReturnsAsync(true);
+
+                _viewModel = new FlightManagementViewModel(_dbContextServiceMock.Object, _notificationServiceMock.Object)
+                {
+                    SanBayList = new ObservableCollection<string>
+                    {
+                        "Khánh Hòa (CXR), Việt Nam",
+                        "Thừa Thiên - Huế (HUI), Việt Nam",
+                        "Hà Nội (HAN), Việt Nam"
+
+                    },
+                    SelectedFlight = _selectedFlight
+                };
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldWarn_When_EditDiemDi_IsNull()
+            {
+                _viewModel.EditDiemDi = null;
+                _viewModel.EditDiemDen = "Thừa Thiên - Huế (HUI), Việt Nam";
+                _viewModel.EditSoHieuCB = "VJ206";
+                _viewModel.EditHangHangKhong = "Vietjet Air";
+                _viewModel.EditTTKhaiThac = "Đang khai thác";
+
+                _viewModel.SaveEditFlight();
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Vui lòng điền đầy đủ thông tin chuyến bay")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldWarn_When_EditDiemDen_IsNull()
+            {
+                _viewModel.EditDiemDi = "Khánh Hòa (CXR), Việt Nam";
+                _viewModel.EditDiemDen = null;
+                _viewModel.EditSoHieuCB = "VJ206";
+                _viewModel.EditHangHangKhong = "Vietjet Air";
+                _viewModel.EditTTKhaiThac = "Đang khai thác";
+
+                _viewModel.SaveEditFlight();
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Vui lòng điền đầy đủ thông tin chuyến bay")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldWarn_When_EditSoHieuCB_IsNull()
+            {
+                _viewModel.EditDiemDi = "Khánh Hòa (CXR), Việt Nam";
+                _viewModel.EditDiemDen = "Thừa Thiên - Huế (HUI), Việt Nam";
+                _viewModel.EditSoHieuCB = null;
+                _viewModel.EditHangHangKhong = "Vietjet Air";
+                _viewModel.EditTTKhaiThac = "Đang khai thác";
+
+                _viewModel.SaveEditFlight();
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Vui lòng điền đầy đủ thông tin chuyến bay")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldWarn_When_EditHangHangKhong_IsNull()
+            {
+                _viewModel.EditDiemDi = "Khánh Hòa (CXR), Việt Nam";
+                _viewModel.EditDiemDen = "Thừa Thiên - Huế (HUI), Việt Nam";
+                _viewModel.EditSoHieuCB = "VJ206";
+                _viewModel.EditHangHangKhong = null;
+                _viewModel.EditTTKhaiThac = "Đang khai thác";
+
+                _viewModel.SaveEditFlight();
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Vui lòng điền đầy đủ thông tin chuyến bay")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldWarn_When_EditTTKhaiThac_IsNull()
+            {
+                _viewModel.EditDiemDi = "Khánh Hòa (CXR), Việt Nam";
+                _viewModel.EditDiemDen = "Thừa Thiên - Huế (HUI), Việt Nam";
+                _viewModel.EditSoHieuCB = "VJ206";
+                _viewModel.EditHangHangKhong = "Vietjet Air";
+                _viewModel.EditTTKhaiThac = null;
+
+                _viewModel.SaveEditFlight();
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Vui lòng điền đầy đủ thông tin chuyến bay")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldWarn_When_ThoiGianDung_LessThanMin()
+            {
+                _viewModel.EditDiemDi = "Khánh Hòa (CXR), Việt Nam";
+                _viewModel.EditDiemDen = "Thừa Thiên - Huế (HUI), Việt Nam";
+                _viewModel.EditSoHieuCB = "VJ206";
+                _viewModel.EditHangHangKhong = "Vietjet Air";
+                _viewModel.EditTTKhaiThac = "Đang khai thác";
+                _viewModel.DanhSachSBTG = new ObservableCollection<SBTG>
+                {
+                    new SBTG { STT = 1, MaSBTG = "Hà Nội (HAN), Việt Nam", ThoiGianDung = 5 }
+                };
+
+                _viewModel.SaveEditFlight();
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Thời gian dừng tối thiểu là: 10 phút")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldWarn_When_ThoiGianDung_GreaterThanMax()
+            {
+                _viewModel.EditDiemDi = "Khánh Hòa (CXR), Việt Nam";
+                _viewModel.EditDiemDen = "Thừa Thiên - Huế (HUI), Việt Nam";
+                _viewModel.EditSoHieuCB = "VJ206";
+                _viewModel.EditHangHangKhong = "Vietjet Air";
+                _viewModel.EditTTKhaiThac = "Đang khai thác";
+                _viewModel.DanhSachSBTG = new ObservableCollection<SBTG>
+                {
+                    new SBTG { STT = 1, MaSBTG = "Hà Nội (HAN), Việt Nam", ThoiGianDung = 40 }
+                };
+
+                _viewModel.SaveEditFlight();
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Thời gian dừng tối đa là: 30 phút")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldUpdateFlight_When_Valid()
+            {
+                _viewModel.EditDiemDi = "Khánh Hòa (CXR), Việt Nam";
+                _viewModel.EditDiemDen = "Thừa Thiên - Huế (HUI), Việt Nam";
+                _viewModel.EditSoHieuCB = "VJ206";
+                _viewModel.EditHangHangKhong = "Vietjet Air";
+                _viewModel.EditTTKhaiThac = "Đang khai thác";
+                _viewModel.DanhSachSBTG = new ObservableCollection<SBTG>();
+
+                // Setup RemoveRange and Add for Sanbaytrunggians
+                _dbContextMock.Setup(x => x.Sanbaytrunggians.RemoveRange(It.IsAny<IEnumerable<Sanbaytrunggian>>()));
+                _dbContextMock.Setup(x => x.Sanbaytrunggians.Add(It.IsAny<Sanbaytrunggian>()));
+
+                // Setup SaveChanges
+                _dbContextMock.Setup(x => x.SaveChanges());
+
+                _viewModel.SaveEditFlight();
+
+                // Verify that SaveChanges was called
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.AtLeastOnce);
+
+                // Verify notification
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Chuyến bay đã được cập nhật thành công")),
+                        NotificationType.Information,
+                        false),
+                    Times.Once);
+
+                // Verify popup closed
+                Assert.IsFalse(_viewModel.IsEditPopupOpen);
+            }
+
+            [Test]
+            public void SaveEditFlight_ShouldWarn_When_SelectedFlight_IsNull()
+            {
+                _viewModel.SelectedFlight = null;
+                _viewModel.EditDiemDi = "Khánh Hòa (CXR), Việt Nam";
+                _viewModel.EditDiemDen = "Thừa Thiên - Huế (HUI), Việt Nam";
+                _viewModel.EditSoHieuCB = "VJ206";
+                _viewModel.EditHangHangKhong = "Vietjet Air";
+                _viewModel.EditTTKhaiThac = "Đang khai thác";
+
+                _viewModel.SaveEditFlight();
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Đã xảy ra lỗi khi cập nhật chuyến bay: ")),
+                        NotificationType.Error,
+                        false),
+                    Times.Once);
+            }
         }
     }
 }
