@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace AirTicketSalesManagementTests
 {
     [TestFixture]
-    public class PassengerInformationViewModelTests
+    public class ValidatePassengerInfoAndProceed_test
     {
         private Mock<INotificationService> _mockNotificationService;
         private Mock<IAirTicketDbContextService> _mockDbContextService;
