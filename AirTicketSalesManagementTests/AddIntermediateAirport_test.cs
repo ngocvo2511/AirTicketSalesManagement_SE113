@@ -6,12 +6,7 @@ using AirTicketSalesManagement.ViewModel;
 using AirTicketSalesManagement.ViewModel.Admin;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirTicketSalesManagementTests
 {
@@ -130,6 +125,103 @@ namespace AirTicketSalesManagementTests
                 );
             }
         }
+
+        //Truong hop khong co quy dinh trong DB
+        [Test]
+        public void AddIntermediateAirport_NoQuyDinh_ShouldShowWarning()
+        {
+            // Arrange: Không có quy định trong DB
+            _mockContext.Setup(c => c.Quydinhs).Returns(CreateMockDbSet(new List<Quydinh>()).Object);
+
+            _viewModel.DanhSachSBTG = new ObservableCollection<SBTG>();
+
+            // Act
+            _viewModel.AddIntermediateAirport();
+
+            // Assert: Không thêm mới, cảnh báo tối đa là 0
+            Assert.AreEqual(0, _viewModel.DanhSachSBTG.Count, "Không được thêm khi không có quy định.");
+            _mockNotificationService.Verify(
+                n => n.ShowNotificationAsync(
+                    It.Is<string>(msg => msg.Contains("Số sân bay trung gian tối đa là: 0")),
+                    NotificationType.Warning,
+                    It.IsAny<bool>()),
+                Times.Once,
+                "Phải hiển thị cảnh báo khi không có quy định."
+            );
+        }
+
+        //Truong hop so san bay trung gian hien tai vuot qua gioi han
+        [Test]
+        public void AddIntermediateAirport_CountAboveLimit_ShouldShowWarning()
+        {
+            // Arrange: Số lượng hiện tại > giới hạn
+            int initialCount = 5;
+            int maxLimit = 3;
+            var listQuyDinh = new List<Quydinh> { new Quydinh { Id = 1, SoSanBayTgtoiDa = maxLimit } };
+            _mockContext.Setup(c => c.Quydinhs).Returns(CreateMockDbSet(listQuyDinh).Object);
+
+            _viewModel.DanhSachSBTG = new ObservableCollection<SBTG>();
+            for (int i = 0; i < initialCount; i++)
+            {
+                _viewModel.DanhSachSBTG.Add(new SBTG { STT = i + 1 });
+            }
+
+            // Act
+            _viewModel.AddIntermediateAirport();
+
+            // Assert: Không thêm mới, cảnh báo đúng
+            Assert.AreEqual(initialCount, _viewModel.DanhSachSBTG.Count, "Không được thêm khi đã vượt giới hạn.");
+            _mockNotificationService.Verify(
+                n => n.ShowNotificationAsync(
+                    It.Is<string>(msg => msg.Contains($"Số sân bay trung gian tối đa là: {maxLimit}")),
+                    NotificationType.Warning,
+                    It.IsAny<bool>()),
+                Times.Once,
+                "Phải hiển thị cảnh báo khi đã vượt giới hạn."
+            );
+        }
+
+        //Truong hop them moi thanh cong, kiem tra thuoc tinh SBTG moi
+        [Test]
+        public void AddIntermediateAirport_NewSBTG_ShouldHaveCorrectProperties()
+        {
+            // Arrange: Cho phép thêm mới
+            int initialCount = 0;
+            int maxLimit = 2;
+            var listQuyDinh = new List<Quydinh> { new Quydinh { Id = 1, SoSanBayTgtoiDa = maxLimit } };
+            _mockContext.Setup(c => c.Quydinhs).Returns(CreateMockDbSet(listQuyDinh).Object);
+
+            _viewModel.DanhSachSBTG = new ObservableCollection<SBTG>();
+
+            // Act
+            _viewModel.AddIntermediateAirport();
+
+            // Assert: Kiểm tra thuộc tính của SBTG mới
+            Assert.AreEqual(1, _viewModel.DanhSachSBTG.Count, "Phải thêm mới SBTG.");
+            var sbtg = _viewModel.DanhSachSBTG.First();
+            Assert.AreEqual(1, sbtg.STT, "STT phải là 1.");
+            Assert.AreEqual(string.Empty, sbtg.MaSBTG, "MaSBTG phải rỗng.");
+            Assert.AreEqual(0, sbtg.ThoiGianDung, "ThoiGianDung phải là 0.");
+            Assert.AreEqual(string.Empty, sbtg.GhiChu, "GhiChu phải rỗng.");
+            Assert.IsNotNull(sbtg.SbtgList, "SbtgList phải được khởi tạo.");
+        }
+
+
+        //Truong hop DanhSachSBTG = null
+        [Test]
+        public void AddIntermediateAirport_DanhSachSBTGNull_ShouldNotThrow()
+        {
+            // Arrange: DanhSachSBTG = null
+            int maxLimit = 2;
+            var listQuyDinh = new List<Quydinh> { new Quydinh { Id = 1, SoSanBayTgtoiDa = maxLimit } };
+            _mockContext.Setup(c => c.Quydinhs).Returns(CreateMockDbSet(listQuyDinh).Object);
+
+            _viewModel.DanhSachSBTG = null;
+
+            // Act & Assert: Không bị lỗi, không thêm mới
+            Assert.DoesNotThrow(() => _viewModel.AddIntermediateAirport(), "Không được throw exception khi danh sách null.");
+        }
+
 
         // --- HELPER: Mock DbSet (Cần thiết cho EF Core Mocking) ---
         private static Mock<DbSet<T>> CreateMockDbSet<T>(List<T> sourceList) where T : class

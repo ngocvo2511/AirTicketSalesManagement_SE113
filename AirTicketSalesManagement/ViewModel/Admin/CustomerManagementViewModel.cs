@@ -131,7 +131,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             string? validationError = ValidateEditCustomer();
             if (validationError != null)
             {
-                await Notification.ShowNotificationAsync(
+                await _notification.ShowNotificationAsync(
                     validationError,
                     NotificationType.Warning);
                 return;
@@ -142,7 +142,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                 if (customer is null)
                 {
-                    await Notification.ShowNotificationAsync(
+                    await _notification.ShowNotificationAsync(
                         "Không tìm thấy khách hàng trong cơ sở dữ liệu.",
                         NotificationType.Error);
                     return;
@@ -157,7 +157,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
                 await _customerService.UpdateAsync(customer);
 
-                await Notification.ShowNotificationAsync(
+                await _notification.ShowNotificationAsync(
                     "Cập nhật khách hàng thành công!",
                     NotificationType.Information);
 
@@ -167,7 +167,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
             catch (Exception ex)
             {
-                await Notification.ShowNotificationAsync(
+                await _notification.ShowNotificationAsync(
                     "Lỗi khi lưu dữ liệu: " + ex.Message,
                     NotificationType.Error);
             }

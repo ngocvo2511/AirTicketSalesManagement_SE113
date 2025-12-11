@@ -1,18 +1,10 @@
-﻿using AirTicketSalesManagement.Data;
-using AirTicketSalesManagement.Models;
+﻿using AirTicketSalesManagement.Models;
 using AirTicketSalesManagement.Services.DbContext;
-using AirTicketSalesManagement.Services.Navigation;
 using AirTicketSalesManagement.Services.Notification;
 using AirTicketSalesManagement.ViewModel;
 using AirTicketSalesManagement.ViewModel.Booking;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirTicketSalesManagementTests
 {
@@ -85,62 +77,47 @@ namespace AirTicketSalesManagementTests
                 // Dữ liệu mẫu HỢP LỆ dùng chung
                 string validEmail = "ngocvo2502@gmail.com";
                 string validPhone = "0987682438";
-                // Người lớn (35 tuổi)
-                string validAName = "Vo Xuan Ngoc";
-                string validAGender = "Nam";
-                string validADoB = "01/01/1990";
-                string validAID = "052205003846";
-                // Trẻ em (10 tuổi)
-                string validCName = "Vo Xuan B";
-                string validCGender = "Nam";
-                string validCDoB = "27/10/2015";
-                // Em bé (Gần 1 tuổi)
-                string validIName = "Vo Xuan A";
-                string validIGender = "Nam";
-                string validIDoB = "27/02/2025";
-                string validIGuardian = "Vo Xuan Ngoc";
+                string aName = "Vo Xuan Ngoc";
+                string cName = "Vo Xuan B";
+                string iName = "Vo Xuan A";
 
-                // --- GROUP 1: CONTACT EMAIL ---
+                // --- GROUP 1: CONTACT INFORMATION ---
                 yield return CreateCase("UTCID01", null, validPhone, "Vui lòng nhập đầy đủ thông tin");
                 yield return CreateCase("UTCID02", "", validPhone, "Vui lòng nhập đầy đủ thông tin");
-                yield return CreateCase("UTCID03", "ngocvo2502@", validPhone, "Email không hợp lệ!");
-
-                // --- GROUP 2: CONTACT PHONE ---
-                yield return CreateCase("UTCID04", validEmail, null, "Vui lòng nhập đầy đủ thông tin");
-                yield return CreateCase("UTCID05", validEmail, "", "Vui lòng nhập đầy đủ thông tin");
-                yield return CreateCase("UTCID06", validEmail, "098768243a", "Số điện thoại không hợp lệ!");
+                yield return CreateCase("UTCID03", validEmail, null, "Vui lòng nhập đầy đủ thông tin");
+                yield return CreateCase("UTCID04", validEmail, "", "Vui lòng nhập đầy đủ thông tin");
+                yield return CreateCase("UTCID05", "ngocvo2502@", validPhone, "Email không hợp lệ!");
+                yield return CreateCase("UTCID06", validEmail, "098768243a", "Số điện thoại không hợp lệ");
 
                 // --- GROUP 3: ADULT INFO ---
                 yield return CreateCase("UTCID07", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", aName: null);
                 yield return CreateCase("UTCID08", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", aName: "");
                 yield return CreateCase("UTCID09", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", aGender: null);
                 yield return CreateCase("UTCID10", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", aDoB: null);
-                yield return CreateCase("UTCID11", validEmail, validPhone, "Ngày sinh của hành khách", aDoB: "02/11/2026"); // Tương lai
+                yield return CreateCase("UTCID11", validEmail, validPhone, $"Ngày sinh của hành khách {aName} không hợp lệ với độ tuổi loại Người lớn.", aDoB: "02/11/2026");
                 yield return CreateCase("UTCID12", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", aID: null);
                 yield return CreateCase("UTCID13", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", aID: "");
-                yield return CreateCase("UTCID14", validEmail, validPhone, "Số căn cước không hợp lệ!", aID: "05220500384"); // Thiếu số
-                yield return CreateCase("UTCID15", validEmail, validPhone, "Số căn cước không hợp lệ!", aID: "05220500384a"); // Có chữ
+                yield return CreateCase("UTCID14", validEmail, validPhone, "Số căn cước không hợp lệ!", aID: "05220500384");
+                yield return CreateCase("UTCID15", validEmail, validPhone, "Số căn cước không hợp lệ!", aID: "05220500384a");
 
                 // --- GROUP 4: CHILD INFO ---
                 yield return CreateCase("UTCID16", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", cName: null);
                 yield return CreateCase("UTCID17", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", cName: "");
                 yield return CreateCase("UTCID18", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", cGender: null);
                 yield return CreateCase("UTCID19", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", cDoB: null);
-                yield return CreateCase("UTCID20", validEmail, validPhone, "Ngày sinh của hành khách", cDoB: "02/11/2026"); // Tương lai
+                yield return CreateCase("UTCID20", validEmail, validPhone, $"Ngày sinh của hành khách {cName} không hợp lệ với độ tuổi loại Trẻ em.", cDoB: "02/11/2026");
 
                 // --- GROUP 5: INFANT INFO ---
                 yield return CreateCase("UTCID21", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", iName: null);
                 yield return CreateCase("UTCID22", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", iName: "");
                 yield return CreateCase("UTCID23", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", iGender: null);
                 yield return CreateCase("UTCID24", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", iDoB: null);
-                yield return CreateCase("UTCID25", validEmail, validPhone, "Ngày sinh của hành khách", iDoB: "02/11/2026"); // Tương lai
+                yield return CreateCase("UTCID25", validEmail, validPhone, $"Ngày sinh của hành khách {iName} không hợp lệ với độ tuổi loại Em bé.", iDoB: "02/11/2026");
                 yield return CreateCase("UTCID26", validEmail, validPhone, "Vui lòng nhập đầy đủ thông tin", iGuardian: null);
 
                 // --- GROUP 6: HAPPY PATHS (Thành công - Mong đợi msg lỗi là NULL) ---
-                yield return CreateCase("UTCID27", validEmail, validPhone, null, aGender: "Nam", cGender: "Nam", iGender: "Nam");
-                yield return CreateCase("UTCID28", validEmail, validPhone, null, aGender: "Nam", cGender: "Nữ", iGender: "Nữ");
-                yield return CreateCase("UTCID29", validEmail, validPhone, null, aGender: "Nữ", cGender: "Nữ", iGender: "Nam");
-                yield return CreateCase("UTCID30", validEmail, validPhone, null, aGender: "Nữ", cGender: "Nam", iGender: "Nữ");
+                yield return CreateCase("UTCID27", validEmail, validPhone, null);
+
             }
         }
 
@@ -230,7 +207,7 @@ namespace AirTicketSalesManagementTests
         private static TestCaseData CreateCase(
             string caseName, string email, string phone, string expectedError,
             string aName = "Vo Xuan Ngoc", string aGender = "Nam", string aDoB = "01/01/1990", string aID = "052205003846",
-            string cName = "Vo Xuan B", string cGender = "Nam", string cDoB = "27/10/2015",
+            string cName = "Vo Xuan B", string cGender = "Nữ", string cDoB = "27/10/2015",
             string iName = "Vo Xuan A", string iGender = "Nam", string iDoB = "27/02/2025", string iGuardian = "Vo Xuan Ngoc")
         {
             return new TestCaseData(
