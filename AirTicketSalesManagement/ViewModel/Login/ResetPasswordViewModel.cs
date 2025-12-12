@@ -134,7 +134,6 @@ namespace AirTicketSalesManagement.ViewModel.Login
             try
             {
                 await _resetPasswordService.UpdatePasswordAsync(Email!, Password);
-                await _toast.ShowToastAsync("Mật khẩu đã được thay đổi thành công", Brushes.Green);
 
                 _auth.CurrentViewModel = new LoginViewModel(_auth, new LoginService(new Data.AirTicketDbContext()), new NavigationWindowService(), new EmailValidation(), new ToastViewModel());
             }
