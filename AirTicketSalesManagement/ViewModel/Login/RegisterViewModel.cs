@@ -1,25 +1,11 @@
-﻿using AirTicketSalesManagement.Data;
-using AirTicketSalesManagement.Interface;
-using AirTicketSalesManagement.Models;
+﻿using AirTicketSalesManagement.Interface;
 using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Services.EmailValidation;
 using AirTicketSalesManagement.Services.Register;
 using AirTicketSalesManagement.Services.Timer;
-using BCrypt.Net;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace AirTicketSalesManagement.ViewModel.Login
 {

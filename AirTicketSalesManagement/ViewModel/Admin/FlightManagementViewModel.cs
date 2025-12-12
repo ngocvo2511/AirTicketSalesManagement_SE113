@@ -502,8 +502,32 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         [RelayCommand]
-        public void EditFlight()
+        public async void EditFlight()
         {
+            if (SelectedFlight == null)
+            {
+                await _notification_service_fallback("Vui lòng chọn một chuyến bay để chỉnh sửa.", NotificationType.Warning);
+                return;
+            }
+
+            using var context = _dbContextService.CreateDbContext();
+            var existingFlight = context.Chuyenbays
+                .Include(cb => cb.Lichbays)
+                .Include(cb => cb.Sanbaytrunggians)
+                .FirstOrDefault(cb => cb.SoHieuCb == SelectedFlight.SoHieuCb);
+
+            if (existingFlight == null)
+            {
+                await _notification_service_fallback("Không tìm thấy chuyến bay để chỉnh sửa.", NotificationType.Error);
+                return;
+            }
+
+            if (existingFlight.Lichbays.Any())
+            {
+                await _notification_service_fallback("Không thể chỉnh sửa chuyến bay đã có lịch bay.", NotificationType.Warning);
+                return;
+            }
+
             DanhSachSBTG = new ObservableCollection<SBTG>();
             ResetEditField();
             IsEditPopupOpen = true;
@@ -616,17 +640,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     .Include(cb => cb.Sanbaytrunggians)
                     .FirstOrDefault(cb => cb.SoHieuCb == EditSoHieuCB);
 
-                if (existingFlight == null)
-                {
-                    await _notification_service_fallback("Không tìm thấy chuyến bay để chỉnh sửa.", NotificationType.Error);
-                    return;
-                }
-
-                if (existingFlight.Lichbays.Any())
-                {
-                    await _notification_service_fallback("Không thể chỉnh sửa chuyến bay đã có lịch bay.", NotificationType.Warning);
-                    return;
-                }
+                
 
                 existingFlight.SbdiNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDi));
                 existingFlight.SbdenNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDen));
