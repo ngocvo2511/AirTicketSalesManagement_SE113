@@ -126,15 +126,15 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
         partial void OnEditDiemDiChanged(string value)
         {
-            OnPropertyChanged(nameof(EditDiemDenList));
-            OnPropertyChanged(nameof(EditSBTGList));
+            OnPropertyChanged(nameof(AddDiemDenList));
+            OnPropertyChanged(nameof(SBTGList));
             CapNhatSBTGList();
         }
 
         partial void OnEditDiemDenChanged(string value)
         {
-            OnPropertyChanged(nameof(EditDiemDiList));
-            OnPropertyChanged(nameof(EditSBTGList));
+            OnPropertyChanged(nameof(AddDiemDiList));
+            OnPropertyChanged(nameof(SBTGList));
             CapNhatSBTGList();
         }
         public NotificationViewModel Notification { get; }
@@ -634,41 +634,13 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     return;
                 }
 
-                
-
-
                 using var context = _dbContextService.CreateDbContext();
                 var existingFlight = context.Chuyenbays
                     .Include(cb => cb.Lichbays)
                     .Include(cb => cb.Sanbaytrunggians)
                     .FirstOrDefault(cb => cb.SoHieuCb == EditSoHieuCB);
 
-                int thoiGianDungMin = 0;
-                int thoiGianDungMax = int.MaxValue;
-                var quyDinh = context.Quydinhs.FirstOrDefault();
-
-                if (quyDinh != null)
-                {
-                    thoiGianDungMin = quyDinh.TgdungMin.GetValueOrDefault();
-                    thoiGianDungMax = quyDinh.TgdungMax.GetValueOrDefault(int.MaxValue);
-                }
-
-                foreach (var sbtg in DanhSachSBTG)
-                {
-                    if (!string.IsNullOrWhiteSpace(sbtg.MaSBTG))
-                    {
-                        if (thoiGianDungMin > sbtg.ThoiGianDung)
-                        {
-                            await _notification_service_fallback($"Thời gian dừng tối thiểu là: {thoiGianDungMin} phút", NotificationType.Warning);
-                            return;
-                        }
-                        else if (thoiGianDungMax < sbtg.ThoiGianDung)
-                        {
-                            await _notification_service_fallback($"Thời gian dừng tối đa là: {thoiGianDungMax} phút", NotificationType.Warning);
-                            return;
-                        }
-                    }
-                }
+                
 
                 existingFlight.SbdiNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDi));
                 existingFlight.SbdenNavigation = context.Sanbays.FirstOrDefault(sb => sb.MaSb == ExtractMaSB(EditDiemDen));
@@ -736,7 +708,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                     MaSBTG = string.Empty,
                     ThoiGianDung = 0,
                     GhiChu = string.Empty,
-                    SbtgList = new ObservableCollection<string>(EditSBTGList),  //Loi ngay cho nay
+                    SbtgList = new ObservableCollection<string>(SBTGList),
                     OnMaSBTGChangedCallback = CapNhatSBTGList
                 };
 
