@@ -1,4 +1,5 @@
 ﻿using AirTicketSalesManagement.Data;
+using BCrypt.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,12 @@ namespace AirTicketSalesManagement.Services.ResetPassword
         {
             _context = context;
         }
-        public async Task UpdatePasswordAsync(string email, string newHashedPassword)
+        public async Task UpdatePasswordAsync(string email, string Password)
         {
             var user = _context.Taikhoans.FirstOrDefault(x => x.Email == email);
             if (user != null)
             {
-                user.MatKhau = newHashedPassword;
+                user.MatKhau = BCrypt.Net.BCrypt.HashPassword(Password);
                 await _context.SaveChangesAsync();
             }
         }

@@ -122,11 +122,17 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         }
 
         [RelayCommand]
-        private void NavigateToCustomerManagement()
+        private async Task NavigateToCustomerManagementAsync()
         {
             WeakReferenceMessenger.Default.Send(new WebViewClearCacheMessage());
             IsWebViewVisible = false;
-            CurrentViewModel = new CustomerManagementViewModel(new CustomerService(), new NotificationService(new NotificationViewModel()));
+            var vm = new CustomerManagementViewModel(
+            new CustomerService(),
+            new NotificationService(new NotificationViewModel()));
+
+            CurrentViewModel = vm;
+
+            await vm.LoadCustomersCommand.ExecuteAsync(null);
         }
 
         [RelayCommand]

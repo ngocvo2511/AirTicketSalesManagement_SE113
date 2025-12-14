@@ -26,12 +26,5 @@ namespace AirTicketSalesManagement.View.Customer
         {
             InitializeComponent();
         }
-        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is BookingHistoryViewModel vm)
-            {
-                await vm.LoadData(UserSession.Current.CustomerId);
-            }
-        }
     }
 }

@@ -35,6 +35,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [ObservableProperty]
         private DateTime? editBirthDate;
 
+        public IRelayCommand LoadCommand { get; }
         public NotificationViewModel Notification { get; }
 
         public CustomerManagementViewModel(ICustomerService customerService,

@@ -10,6 +10,7 @@ using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Services.Customer;
 using AirTicketSalesManagement.Services.Notification;
 using AirTicketSalesManagement.Services.DbContext;
+using System.Threading.Tasks;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
@@ -51,9 +52,15 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         [RelayCommand]
-        private void NavigateToCustomerManagement()
+        private async Task NavigateToCustomerManagement()
         {
-            CurrentViewModel = new CustomerManagementViewModel(new CustomerService(), new NotificationService(new NotificationViewModel()));
+            var vm = new CustomerManagementViewModel(
+                new CustomerService(),
+                new NotificationService(new NotificationViewModel()));
+
+            CurrentViewModel = vm;
+
+            await vm.LoadCustomersCommand.ExecuteAsync(null);
         }
 
         [RelayCommand]

@@ -13,10 +13,5 @@ namespace AirTicketSalesManagement.View.Staff
         {
             InitializeComponent();
         }
-        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (DataContext is CustomerManagementViewModel vm)
-                await vm.LoadCustomersCommand.ExecuteAsync(null);
-        }
     }
 }

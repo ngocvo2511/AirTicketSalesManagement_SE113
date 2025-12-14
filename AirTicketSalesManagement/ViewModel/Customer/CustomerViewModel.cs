@@ -15,6 +15,7 @@ using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.PaymentGateway;
 using AirTicketSalesManagement.Services.Notification;
 using AirTicketSalesManagement.Services.Session;
+using System.Threading.Tasks;
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
@@ -120,11 +121,13 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         }
 
         [RelayCommand]
-        private void NavigateToBookingHistory()
+        private async Task NavigateToBookingHistory()
         {
             WeakReferenceMessenger.Default.Send(new WebViewClearCacheMessage());
             IsWebViewVisible = false;
-            CurrentViewModel = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService(), new AirTicketDbService(), new VnpayPaymentGateway(), new UserSessionService(), new NotificationService(new NotificationViewModel()));
+            var vm = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService(), new AirTicketDbService(), new VnpayPaymentGateway(), new UserSessionService(), new NotificationService(new NotificationViewModel()));
+            CurrentViewModel = vm;
+            await vm.LoadData(UserSession.Current.CustomerId);
         }
 
         [RelayCommand]

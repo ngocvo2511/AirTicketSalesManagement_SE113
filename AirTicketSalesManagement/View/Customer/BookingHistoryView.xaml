@@ -10,8 +10,7 @@
              xmlns:behaviors="clr-namespace:AirTicketSalesManagement.Behaviors"
              mc:Ignorable="d" 
              xmlns:notification="clr-namespace:AirTicketSalesManagement.View.Notification"
-             d:DesignHeight="650" d:DesignWidth="980"
-             Loaded="UserControl_Loaded">
+             d:DesignHeight="650" d:DesignWidth="980">
     <UserControl.Resources>
         <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="28"/>

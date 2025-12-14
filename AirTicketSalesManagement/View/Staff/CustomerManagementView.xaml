@@ -8,9 +8,14 @@
              xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:behaviors="clr-namespace:AirTicketSalesManagement.Behaviors"
              mc:Ignorable="d" 
-             xmlns:notification="clr-namespace:AirTicketSalesManagement.View.Notification"
-             d:DesignHeight="700" d:DesignWidth="1200"
-             Loaded="UserControl_Loaded">
+             xmlns:notification="clr-namespace:AirTicketSalesManagement.View.Notification" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             d:DesignHeight="700" d:DesignWidth="1200">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction
+                Command="{Binding LoadCustomersCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <UserControl.Resources>
         <!-- Custom Card Style -->
         <Style x:Key="CardStyle" TargetType="Border">
