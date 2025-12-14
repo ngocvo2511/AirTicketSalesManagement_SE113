@@ -23,7 +23,8 @@ namespace AirTicketSalesManagement.ViewModel.Login
         private readonly ITimerService _timerService;
         private readonly IResetPasswordService _resetPasswordService;
         private AuthViewModel _auth;
-        private ToastViewModel _toast { get; }
+        public ToastViewModel Toast { get; }
+
         [ObservableProperty]
         private string? code;
 
@@ -46,9 +47,9 @@ namespace AirTicketSalesManagement.ViewModel.Login
         private bool canResendCode;
         public string? Email { get; set; }
 
-        public ResetPasswordViewModel(AuthViewModel _auth, string Email, IResetPasswordService resetPasswordService, IEmailService emailService, IOtpService otpService, IEmailTemplateService emailTemplateService, ITimerService timerService, ToastViewModel Toast)
+        public ResetPasswordViewModel(AuthViewModel _auth, string Email, IResetPasswordService resetPasswordService, IEmailService emailService, IOtpService otpService, IEmailTemplateService emailTemplateService, ITimerService timerService, ToastViewModel toast)
         {
-            _toast = Toast;
+            this.Toast = toast;
             _resetPasswordService = resetPasswordService;
             _emailService = emailService;
             _otpService = otpService;
@@ -56,7 +57,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             _timerService = timerService;
             _timerService.Start(TimeSpan.FromMinutes(3),
                    onTick: t => TimeLeftText = $"Mã hết hạn sau: {t.Minutes:D2}:{t.Seconds:D2}",
-                   onFinished: () => TimeLeftText = "Mã xác nhận đã hết hạn."
+                   onFinished: () => { TimeLeftText = "Mã xác nhận đã hết hạn."; CanResendCode = true; }
                );
             this._auth = _auth;
             this.Email = Email;
@@ -66,11 +67,11 @@ namespace AirTicketSalesManagement.ViewModel.Login
             {
                 if (t.IsFaulted)
                 {
-                    _ = _toast.ShowToastAsync("Không thể gửi mã xác nhận. Vui lòng thử lại sau.", Brushes.OrangeRed);
+                    _ = Toast.ShowToastAsync("Không thể gửi mã xác nhận. Vui lòng thử lại sau.", Brushes.OrangeRed);
                 }
                 else
                 {
-                    _ = _toast.ShowToastAsync("Mã xác nhận đã được gửi đến email của bạn.", Brushes.Green);
+                    _ = Toast.ShowToastAsync("Mã xác nhận đã được gửi đến email của bạn.", Brushes.Green);
                 }
             });
         }
@@ -110,14 +111,16 @@ namespace AirTicketSalesManagement.ViewModel.Login
         [RelayCommand]
         private async Task ResendCodeAsync()
         {
+            CanResendCode = false;
             string otp = _otpService.GenerateOtp(Email);
             var emailContent = _emailTemplateService.BuildForgotPasswordOtp(otp);
             await _emailService.SendEmailAsync(Email, "Yêu cầu đặt lại mật khẩu", emailContent);
             _timerService.Stop();
             _timerService.Start(TimeSpan.FromMinutes(3),
                 onTick: t => TimeLeftText = $"Mã hết hạn sau: {t.Minutes:D2}:{t.Seconds:D2}",
-                onFinished: () => TimeLeftText = "Mã xác nhận đã hết hạn."
+                onFinished: () => { TimeLeftText = "Mã xác nhận đã hết hạn."; CanResendCode = true; }
             );
+            await Toast.ShowToastAsync("Mã xác nhận mới đã được gửi đến email của bạn.", Brushes.Green);
         }
 
 
@@ -139,7 +142,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             }
             catch
             {
-                await _toast.ShowToastAsync("Không thể kết nối đến cơ sở dữ liệu", Brushes.OrangeRed);
+                await Toast.ShowToastAsync("Không thể kết nối đến cơ sở dữ liệu", Brushes.OrangeRed);
                 return;
             }
 
