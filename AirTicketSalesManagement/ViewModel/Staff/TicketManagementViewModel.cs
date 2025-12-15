@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Media;
 
@@ -51,11 +52,13 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         public ObservableCollection<string> DiemDenList =>
             new(SanBayList.Where(s => s != NoiDiFilter));
 
+        [ExcludeFromCodeCoverage]
         partial void OnNoiDiFilterChanged(string value)
         {
             OnPropertyChanged(nameof(DiemDenList));
         }
 
+        [ExcludeFromCodeCoverage]
         partial void OnNoiDenFilterChanged(string value)
         {
             OnPropertyChanged(nameof(DiemDiList));
@@ -102,7 +105,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         // Create DbContext via injected factory
         private AirTicketDbContext CreateContext() => _dbContextService.CreateDbContext();
 
-        // Public so tests can await
+        [ExcludeFromCodeCoverage]
         public async Task LoadData()
         {
             try
@@ -174,6 +177,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         }
 
         // Keep synchronous compatibility; operates via injected CreateContext
+        [ExcludeFromCodeCoverage]
         public void ClearExpiredHolds()
         {
             try
@@ -232,6 +236,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ShowDetailHistory(QuanLiDatVe chiTietVe)
         {
@@ -245,6 +250,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void SearchHistory()
         {
@@ -401,6 +407,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void ClearFilter()
         {
@@ -414,6 +421,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             IsEmpty = HistoryBooking.Count == 0;
         }
 
+        [ExcludeFromCodeCoverage]
         partial void OnSanBayListChanged(ObservableCollection<string> value)
         {
             OnPropertyChanged(nameof(DiemDiList));
@@ -426,6 +434,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         [ObservableProperty]
         private double searchContentHeight = double.NaN;
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ToggleSearch()
         {

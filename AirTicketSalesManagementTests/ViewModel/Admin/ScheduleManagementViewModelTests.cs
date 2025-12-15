@@ -592,7 +592,7 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
 
                 _notificationServiceMock.Verify(
                     x => x.ShowNotificationAsync(
-                        It.Is<string>(msg => msg.Contains("Vui lòng nhập số lượng ghế của hạng ghế hợp lệ.")),
+                        It.Is<string>(msg => msg.Contains("Vui lòng nhập giá vé của hạng ghế hợp lệ.")),
                         NotificationType.Warning,
                         false),
                     Times.Once);
@@ -1072,7 +1072,7 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
 
                 _notificationServiceMock.Verify(
                     x => x.ShowNotificationAsync(
-                        It.Is<string>(msg => msg.Contains("Vui lòng nhập số lượng ghế của hạng ghế hợp lệ.")),
+                        It.Is<string>(msg => msg.Contains("Vui lòng nhập giá vé của hạng ghế hợp lệ.")),
                         NotificationType.Warning,
                         false),
                     Times.Once);

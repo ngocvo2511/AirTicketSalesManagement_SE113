@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +70,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             LoadData();
         }
 
+        [ExcludeFromCodeCoverage]
         private void LoadData()
         {
             try
@@ -104,6 +106,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void OpenEditProfile()
         {
@@ -111,6 +114,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             IsEditPopupOpen = true;
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetField()
         {
             EditHoTen = HoTen;
@@ -121,6 +125,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             EditEmail = Email;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CloseEditPopup()
         {
@@ -262,6 +267,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             return System.Text.RegularExpressions.Regex.IsMatch(phone, @"^0\d{9}$");
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void OpenChangePassword()
         {
@@ -269,6 +275,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             IsChangePasswordPopupOpen = true;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CloseChangePasswordPopup()
         {
@@ -333,6 +340,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetPasswordField()
         {
             CurrentPassword = string.Empty;

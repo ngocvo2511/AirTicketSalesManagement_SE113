@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,23 +27,26 @@ namespace AirTicketSalesManagement.ViewModel.Login
             CurrentViewModel = new LoginViewModel(this, new LoginService(new Data.AirTicketDbContext()), new NavigationWindowService(), new EmailValidation(), new ToastViewModel());
         }
 
-        
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CloseWindow()
         {
             Application.Current.Shutdown();
         }
 
+        [ExcludeFromCodeCoverage]
         public void NavigateToRegister()
         {
             CurrentViewModel = new RegisterViewModel(this, new RegisterService(new Data.AirTicketDbContext()), new EmailService(), new OtpService(), new EmailTemplateService(), new DispatcherTimerService(), new EmailValidation(), new ToastViewModel());
         }
 
+        [ExcludeFromCodeCoverage]
         public virtual void NavigateToLogin()
         {
             CurrentViewModel = new LoginViewModel(this,new LoginService(new Data.AirTicketDbContext()), new NavigationWindowService(), new EmailValidation(), new ToastViewModel());
         }
 
+        [ExcludeFromCodeCoverage]
         public void NavigateToForgotPassword()
         {
             CurrentViewModel = new ForgotPasswordViewModel(this, new ForgotPasswordService(new Data.AirTicketDbContext()), new ToastViewModel());

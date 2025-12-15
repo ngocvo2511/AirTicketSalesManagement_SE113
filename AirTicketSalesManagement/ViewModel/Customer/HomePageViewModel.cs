@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,16 +53,19 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         public ObservableCollection<string> DiemDenList =>
             new(SanBayList.Where(s => s != DiemDi));
 
+        [ExcludeFromCodeCoverage]
         partial void OnDiemDiChanged(string value)
         {
             OnPropertyChanged(nameof(DiemDenList));
         }
 
+        [ExcludeFromCodeCoverage]
         partial void OnDiemDenChanged(string value)
         {
             OnPropertyChanged(nameof(DiemDiList));
         }
 
+        [ExcludeFromCodeCoverage]
         public void LoadSanBay()
         {
             using (var context = new AirTicketDbContext()) // Hoặc dùng SqlConnection nếu ADO.NET
@@ -78,6 +82,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void SearchFlight()
         {

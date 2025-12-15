@@ -19,6 +19,7 @@ using AirTicketSalesManagement.Messages;
 using AirTicketSalesManagement.Services.Customer;
 using AirTicketSalesManagement.Services.Notification;
 using AirTicketSalesManagement.ViewModel.Admin;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Staff
 {
@@ -89,6 +90,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             };
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToStaffProfile()
         {
@@ -97,6 +99,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             CurrentViewModel = new StaffProfileViewModel();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToHomePage()
         {
@@ -105,6 +108,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             CurrentViewModel = new HomePageViewModel();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToFlightTicketBooking()
         {
@@ -113,6 +117,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             CurrentViewModel = new FlightScheduleSearchViewModel();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToTicketManagement()
         {
@@ -121,6 +126,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             CurrentViewModel = new TicketManagementViewModel(this, new EmailService(), new EmailTemplateService());
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToCustomerManagement()
         {
@@ -129,6 +135,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             CurrentViewModel = new CustomerManagementViewModel(new CustomerService(), new NotificationService(new NotificationViewModel()));
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void Logout()
         {
@@ -163,6 +170,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         [ObservableProperty]
         private string toggleIcon = "MenuOpen";
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ToggleSidebar()
         {

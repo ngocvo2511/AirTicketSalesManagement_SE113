@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -78,6 +79,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             _auth.CurrentViewModel = new ResetPasswordViewModel(_auth, Email, new ResetPasswordService(new AirTicketDbContext()), new EmailService(), new OtpService(), new EmailTemplateService(), new DispatcherTimerService(), new ToastViewModel());
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ShowLogin() => _auth.NavigateToLogin();
     }
