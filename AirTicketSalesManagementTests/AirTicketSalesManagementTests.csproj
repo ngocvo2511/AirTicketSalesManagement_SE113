@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="TestResults\" />
     <Folder Include="ViewModel\Customer\" />
     <Folder Include="ViewModel\Booking\" />
     <Folder Include="ViewModel\Staff\" />

@@ -213,7 +213,7 @@ var assemblies = [
   {
     "name": "AirTicketSalesManagement",
     "classes": [
-      { "name": "AirTicketSalesManagement.App", "rp": "AirTicketSalesManagement_App.html", "cl": 0, "ucl": 14, "cal": 14, "tl": 163, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.App", "rp": "AirTicketSalesManagement_App.html", "cl": 0, "ucl": 14, "cal": 14, "tl": 162, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Behaviors.DatePickerBehaviors", "rp": "AirTicketSalesManagement_DatePickerBehaviors.html", "cl": 0, "ucl": 21, "cal": 21, "tl": 43, "cb": 0, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Converters.AdminRoleToVisibilityConverter", "rp": "AirTicketSalesManagement_AdminRoleToVisibilityConverter.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 24, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Converters.AirportDisplayConverter", "rp": "AirTicketSalesManagement_AirportDisplayConverter.html", "cl": 0, "ucl": 9, "cal": 9, "tl": 29, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -243,9 +243,9 @@ var assemblies = [
       { "name": "AirTicketSalesManagement.Converters.TicketSelectionConverter", "rp": "AirTicketSalesManagement_TicketSelectionConverter.html", "cl": 0, "ucl": 20, "cal": 20, "tl": 41, "cb": 0, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Converters.ZeroToVisibleConverter", "rp": "AirTicketSalesManagement_ZeroToVisibleConverter.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 58, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Data.AirTicketDbContext", "rp": "AirTicketSalesManagement_AirTicketDbContext.html", "cl": 15, "ucl": 334, "cal": 349, "tl": 409, "cb": 0, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.Helper.PasswordHelper", "rp": "AirTicketSalesManagement_PasswordHelper.html", "cl": 0, "ucl": 35, "cal": 35, "tl": 71, "cb": 0, "tb": 16, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.Helper.PasswordHelper", "rp": "AirTicketSalesManagement_PasswordHelper.html", "cl": 0, "ucl": 35, "cal": 35, "tl": 71, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Helper.PaymentDebugHelper", "rp": "AirTicketSalesManagement_PaymentDebugHelper.html", "cl": 0, "ucl": 92, "cal": 92, "tl": 130, "cb": 0, "tb": 18, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.MainWindow", "rp": "AirTicketSalesManagement_MainWindow.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 115, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.MainWindow", "rp": "AirTicketSalesManagement_MainWindow.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 114, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Messages.WebViewClearCacheMessage", "rp": "AirTicketSalesManagement_WebViewClearCacheMessage.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 9, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Models.Chuyenbay", "rp": "AirTicketSalesManagement_Chuyenbay.html", "cl": 9, "ucl": 1, "cal": 10, "tl": 28, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.Models.Ctdv", "rp": "AirTicketSalesManagement_Ctdv.html", "cl": 0, "ucl": 11, "cal": 11, "tl": 29, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -305,13 +305,13 @@ var assemblies = [
       { "name": "AirTicketSalesManagement.View.Admin.RegulationManagementView", "rp": "AirTicketSalesManagement_RegulationManagementView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 767, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Admin.ReportView", "rp": "AirTicketSalesManagement_ReportView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 545, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Admin.RoleToVisibilityConverter", "rp": "AirTicketSalesManagement_RoleToVisibilityConverter.2.html", "cl": 0, "ucl": 9, "cal": 9, "tl": 64, "cb": 0, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.View.Admin.ScheduleManagementView", "rp": "AirTicketSalesManagement_ScheduleManagementView.html", "cl": 0, "ucl": 146, "cal": 146, "tl": 1831, "cb": 0, "tb": 102, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.View.Admin.ScheduleManagementView", "rp": "AirTicketSalesManagement_ScheduleManagementView.html", "cl": 0, "ucl": 146, "cal": 146, "tl": 1831, "cb": 0, "tb": 100, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Customer.BookingHistoryDetailView", "rp": "AirTicketSalesManagement_BookingHistoryDetailView.html", "cl": 0, "ucl": 12, "cal": 12, "tl": 354, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Customer.BookingHistoryView", "rp": "AirTicketSalesManagement_BookingHistoryView.html", "cl": 0, "ucl": 12, "cal": 12, "tl": 564, "cb": 0, "tb": 9, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Customer.CustomerProfileView", "rp": "AirTicketSalesManagement_CustomerProfileView.html", "cl": 0, "ucl": 21, "cal": 21, "tl": 1381, "cb": 0, "tb": 15, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Customer.CustomerWindow", "rp": "AirTicketSalesManagement_CustomerWindow.html", "cl": 0, "ucl": 118, "cal": 118, "tl": 455, "cb": 0, "tb": 26, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Customer.FlightScheduleSearchView", "rp": "AirTicketSalesManagement_FlightScheduleSearchView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 757, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.View.Customer.HomePageView", "rp": "AirTicketSalesManagement_HomePageView.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 241, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.View.Customer.HomePageView", "rp": "AirTicketSalesManagement_HomePageView.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 240, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Customer.PassengerInformationView", "rp": "AirTicketSalesManagement_PassengerInformationView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 389, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Customer.PaymentConfirmationView", "rp": "AirTicketSalesManagement_PaymentConfirmationView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 396, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Login.AuthWindow", "rp": "AirTicketSalesManagement_AuthWindow.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 130, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -319,27 +319,27 @@ var assemblies = [
       { "name": "AirTicketSalesManagement.View.Login.LoginView", "rp": "AirTicketSalesManagement_LoginView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 246, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Login.RegisterView", "rp": "AirTicketSalesManagement_RegisterView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 280, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Login.ResetPasswordView", "rp": "AirTicketSalesManagement_ResetPasswordView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 301, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.View.Notification.NotificationControl", "rp": "AirTicketSalesManagement_NotificationControl.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 244, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.View.Notification.ToastView", "rp": "AirTicketSalesManagement_ToastView.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 156, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.View.Notification.NotificationControl", "rp": "AirTicketSalesManagement_NotificationControl.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 243, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.View.Notification.ToastView", "rp": "AirTicketSalesManagement_ToastView.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 155, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Staff.CustomerManagementView", "rp": "AirTicketSalesManagement_CustomerManagementView.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 636, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Staff.HomePageView", "rp": "AirTicketSalesManagement_HomePageView.2.html", "cl": 0, "ucl": 6, "cal": 6, "tl": 157, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Staff.Staff_CustomerInfoManage", "rp": "AirTicketSalesManagement_Staff_CustomerInfoManage.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 193, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.View.Staff.Staff_ManageFlights", "rp": "AirTicketSalesManagement_Staff_ManageFlights.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 221, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.View.Staff.Staff_ManageSchedules", "rp": "AirTicketSalesManagement_Staff_ManageSchedules.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 203, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.View.Staff.Staff_ManageFlights", "rp": "AirTicketSalesManagement_Staff_ManageFlights.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 220, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.View.Staff.Staff_ManageSchedules", "rp": "AirTicketSalesManagement_Staff_ManageSchedules.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 202, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Staff.Staff_TicketManagementDetailView", "rp": "AirTicketSalesManagement_Staff_TicketManagementDetailView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 355, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Staff.Staff_TicketManagementView", "rp": "AirTicketSalesManagement_Staff_TicketManagementView.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 573, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.View.Staff.StaffFlightScheduleLookUp", "rp": "AirTicketSalesManagement_StaffFlightScheduleLookUp.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 207, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.View.Staff.StaffFlightScheduleLookUp", "rp": "AirTicketSalesManagement_StaffFlightScheduleLookUp.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 206, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Staff.StaffFlightSelectingTickets", "rp": "AirTicketSalesManagement_StaffFlightSelectingTickets.html", "cl": 0, "ucl": 10, "cal": 10, "tl": 145, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Staff.StaffProfileView", "rp": "AirTicketSalesManagement_StaffProfileView.html", "cl": 0, "ucl": 19, "cal": 19, "tl": 1376, "cb": 0, "tb": 15, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.View.Staff.StaffWindow", "rp": "AirTicketSalesManagement_StaffWindow.html", "cl": 0, "ucl": 118, "cal": 118, "tl": 498, "cb": 0, "tb": 26, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Admin.AccountManagementViewModel", "rp": "AirTicketSalesManagement_AccountManagementViewModel.html", "cl": 93, "ucl": 224, "cal": 317, "tl": 513, "cb": 22, "tb": 96, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.AdminProfileViewModel", "rp": "AirTicketSalesManagement_AdminProfileViewModel.html", "cl": 0, "ucl": 205, "cal": 205, "tl": 352, "cb": 0, "tb": 42, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.ViewModel.Admin.AdminProfileViewModel", "rp": "AirTicketSalesManagement_AdminProfileViewModel.html", "cl": 0, "ucl": 205, "cal": 205, "tl": 352, "cb": 0, "tb": 40, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Admin.AdminViewModel", "rp": "AirTicketSalesManagement_AdminViewModel.html", "cl": 0, "ucl": 66, "cal": 66, "tl": 137, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.CustomerManagementViewModel", "rp": "AirTicketSalesManagement_CustomerManagementViewModel.html", "cl": 0, "ucl": 124, "cal": 124, "tl": 202, "cb": 0, "tb": 40, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "rp": "AirTicketSalesManagement_FlightManagementViewModel.html", "cl": 152, "ucl": 366, "cal": 518, "tl": 778, "cb": 44, "tb": 156, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.ViewModel.Admin.CustomerManagementViewModel", "rp": "AirTicketSalesManagement_CustomerManagementViewModel.html", "cl": 0, "ucl": 124, "cal": 124, "tl": 202, "cb": 0, "tb": 38, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "rp": "AirTicketSalesManagement_FlightManagementViewModel.html", "cl": 147, "ucl": 78, "cal": 225, "tl": 796, "cb": 42, "tb": 68, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Admin.RegulationManagementViewModel", "rp": "AirTicketSalesManagement_RegulationManagementViewModel.html", "cl": 62, "ucl": 374, "cal": 436, "tl": 737, "cb": 14, "tb": 98, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.ReportViewModel", "rp": "AirTicketSalesManagement_ReportViewModel.html", "cl": 0, "ucl": 254, "cal": 254, "tl": 331, "cb": 0, "tb": 22, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "rp": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "cl": 261, "ucl": 531, "cal": 792, "tl": 1193, "cb": 139, "tb": 388, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.ViewModel.Admin.ReportViewModel", "rp": "AirTicketSalesManagement_ReportViewModel.html", "cl": 0, "ucl": 254, "cal": 254, "tl": 331, "cb": 0, "tb": 28, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "rp": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "cl": 261, "ucl": 531, "cal": 792, "tl": 1193, "cb": 139, "tb": 390, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Booking.FlightScheduleSearchViewModel", "rp": "AirTicketSalesManagement_FlightScheduleSearchViewModel.html", "cl": 0, "ucl": 340, "cal": 340, "tl": 548, "cb": 0, "tb": 206, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Booking.ObservableCollectionExtensions", "rp": "AirTicketSalesManagement_ObservableCollectionExtensions.html", "cl": 0, "ucl": 3, "cal": 3, "tl": 548, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Booking.PassengerInfoModel", "rp": "AirTicketSalesManagement_PassengerInfoModel.html", "cl": 0, "ucl": 27, "cal": 27, "tl": 429, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -347,7 +347,7 @@ var assemblies = [
       { "name": "AirTicketSalesManagement.ViewModel.Booking.PaymentConfirmationViewModel", "rp": "AirTicketSalesManagement_PaymentConfirmationViewModel.html", "cl": 0, "ucl": 304, "cal": 304, "tl": 432, "cb": 0, "tb": 68, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryDetailViewModel", "rp": "AirTicketSalesManagement_BookingHistoryDetailViewModel.html", "cl": 0, "ucl": 123, "cal": 123, "tl": 204, "cb": 0, "tb": 36, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "rp": "AirTicketSalesManagement_BookingHistoryViewModel.html", "cl": 0, "ucl": 312, "cal": 312, "tl": 462, "cb": 0, "tb": 90, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "rp": "AirTicketSalesManagement_CustomerProfileViewModel.html", "cl": 0, "ucl": 210, "cal": 210, "tl": 378, "cb": 0, "tb": 54, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "rp": "AirTicketSalesManagement_CustomerProfileViewModel.html", "cl": 0, "ucl": 210, "cal": 210, "tl": 378, "cb": 0, "tb": 52, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Customer.CustomerViewModel", "rp": "AirTicketSalesManagement_CustomerViewModel.html", "cl": 0, "ucl": 122, "cal": 122, "tl": 194, "cb": 0, "tb": 24, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Customer.HomePageViewModel", "rp": "AirTicketSalesManagement_HomePageViewModel.html", "cl": 0, "ucl": 47, "cal": 47, "tl": 112, "cb": 0, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Customer.WebViewNavigationMessage", "rp": "AirTicketSalesManagement_WebViewNavigationMessage.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 194, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -360,7 +360,7 @@ var assemblies = [
       { "name": "AirTicketSalesManagement.ViewModel.MenuBarViewModel", "rp": "AirTicketSalesManagement_MenuBarViewModel.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 31, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.NotificationViewModel", "rp": "AirTicketSalesManagement_NotificationViewModel.html", "cl": 1, "ucl": 58, "cal": 59, "tl": 132, "cb": 0, "tb": 6, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Staff.HomePageViewModel", "rp": "AirTicketSalesManagement_HomePageViewModel.2.html", "cl": 0, "ucl": 97, "cal": 97, "tl": 137, "cb": 0, "tb": 10, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "AirTicketSalesManagement.ViewModel.Staff.StaffProfileViewModel", "rp": "AirTicketSalesManagement_StaffProfileViewModel.html", "cl": 0, "ucl": 210, "cal": 210, "tl": 357, "cb": 0, "tb": 40, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "AirTicketSalesManagement.ViewModel.Staff.StaffProfileViewModel", "rp": "AirTicketSalesManagement_StaffProfileViewModel.html", "cl": 0, "ucl": 210, "cal": 210, "tl": 357, "cb": 0, "tb": 38, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Staff.StaffViewModel", "rp": "AirTicketSalesManagement_StaffViewModel.html", "cl": 0, "ucl": 111, "cal": 111, "tl": 184, "cb": 0, "tb": 18, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementDetailViewModel", "rp": "AirTicketSalesManagement_TicketManagementDetailViewModel.html", "cl": 0, "ucl": 175, "cal": 175, "tl": 274, "cb": 0, "tb": 80, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "rp": "AirTicketSalesManagement_TicketManagementViewModel.html", "cl": 0, "ucl": 325, "cal": 325, "tl": 448, "cb": 0, "tb": 112, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
@@ -368,7 +368,7 @@ var assemblies = [
       { "name": "AirTicketSalesManagement.ViewModel.ValidationBase", "rp": "AirTicketSalesManagement_ValidationBase.html", "cl": 18, "ucl": 6, "cal": 24, "tl": 48, "cb": 8, "tb": 14, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "BoolToWidthConverter", "rp": "AirTicketSalesManagement_BoolToWidthConverter.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 17, "cb": 0, "tb": 4, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
       { "name": "ExcelExporter", "rp": "AirTicketSalesManagement_ExcelExporter.html", "cl": 0, "ucl": 119, "cal": 119, "tl": 174, "cb": 0, "tb": 12, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
-      { "name": "XamlGeneratedNamespace.GeneratedInternalTypeHelper", "rp": "AirTicketSalesManagement_GeneratedInternalTypeHelper.html", "cl": 0, "ucl": 19, "cal": 19, "tl": 62, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
+      { "name": "XamlGeneratedNamespace.GeneratedInternalTypeHelper", "rp": "AirTicketSalesManagement_GeneratedInternalTypeHelper.html", "cl": 0, "ucl": 19, "cal": 19, "tl": 61, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -433,26 +433,14 @@ var riskHotspots = [
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Booking.PassengerInformationViewModel", "reportPath": "AirTicketSalesManagement_PassengerInformationViewModel.html", "methodName": "ValidatePassengerInfoAndProceed()", "methodShortName": "ValidatePassengerInfoAndProceed()", "fileIndex": 0, "line": 227,
     "metrics": [
-      { "value": 1190, "exceeded": true },
-      { "value": 34, "exceeded": true },
+      { "value": 1056, "exceeded": true },
+      { "value": 32, "exceeded": true },
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.View.Admin.ScheduleManagementView", "reportPath": "AirTicketSalesManagement_ScheduleManagementView.html", "methodName": "System.Windows.Markup.IComponentConnector.Connect(System.Int32,System.Object)", "methodShortName": "System.Windows.Markup.IComponentConnector.Connect(...)", "fileIndex": 0, "line": 1017,
     "metrics": [
       { "value": 930, "exceeded": true },
       { "value": 30, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "reportPath": "AirTicketSalesManagement_CustomerProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 148,
-    "metrics": [
-      { "value": 930, "exceeded": true },
-      { "value": 30, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.AdminProfileViewModel", "reportPath": "AirTicketSalesManagement_AdminProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 135,
-    "metrics": [
-      { "value": 812, "exceeded": true },
-      { "value": 28, "exceeded": true },
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryDetailViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryDetailViewModel.html", "methodName": "CancelTicket()", "methodShortName": "CancelTicket()", "fileIndex": 0, "line": 133,
@@ -467,7 +455,7 @@ var riskHotspots = [
       { "value": 28, "exceeded": true },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.StaffProfileViewModel", "reportPath": "AirTicketSalesManagement_StaffProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 132,
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "reportPath": "AirTicketSalesManagement_CustomerProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 148,
     "metrics": [
       { "value": 812, "exceeded": true },
       { "value": 28, "exceeded": true },
@@ -479,13 +467,19 @@ var riskHotspots = [
       { "value": 28, "exceeded": true },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "ResetEditField()", "methodShortName": "ResetEditField()", "fileIndex": 0, "line": 537,
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.AdminProfileViewModel", "reportPath": "AirTicketSalesManagement_AdminProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 135,
     "metrics": [
       { "value": 702, "exceeded": true },
       { "value": 26, "exceeded": true },
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Booking.PaymentConfirmationViewModel", "reportPath": "AirTicketSalesManagement_PaymentConfirmationViewModel.html", "methodName": "HandlePaymentSuccess()", "methodShortName": "HandlePaymentSuccess()", "fileIndex": 0, "line": 335,
+    "metrics": [
+      { "value": 702, "exceeded": true },
+      { "value": 26, "exceeded": true },
+    ]},
+  {
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.StaffProfileViewModel", "reportPath": "AirTicketSalesManagement_StaffProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 132,
     "metrics": [
       { "value": 702, "exceeded": true },
       { "value": 26, "exceeded": true },
@@ -527,12 +521,6 @@ var riskHotspots = [
       { "value": 18, "exceeded": true },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.CustomerManagementViewModel", "reportPath": "AirTicketSalesManagement_CustomerManagementViewModel.html", "methodName": "ValidateEditCustomer()", "methodShortName": "ValidateEditCustomer()", "fileIndex": 0, "line": 180,
-    "metrics": [
-      { "value": 342, "exceeded": true },
-      { "value": 18, "exceeded": true },
-    ]},
-  {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.View.Admin.ScheduleManagementView", "reportPath": "AirTicketSalesManagement_ScheduleManagementView.html", "methodName": "TimeTextBox_PreviewKeyDown(System.Object,System.Windows.Input.KeyEventArgs)", "methodShortName": "TimeTextBox_PreviewKeyDown(...)", "fileIndex": 1, "line": 69,
     "metrics": [
       { "value": 272, "exceeded": true },
@@ -551,7 +539,13 @@ var riskHotspots = [
       { "value": 16, "exceeded": true },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "Search()", "methodShortName": "Search()", "fileIndex": 0, "line": 215,
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.CustomerManagementViewModel", "reportPath": "AirTicketSalesManagement_CustomerManagementViewModel.html", "methodName": "ValidateEditCustomer()", "methodShortName": "ValidateEditCustomer()", "fileIndex": 0, "line": 180,
+    "metrics": [
+      { "value": 272, "exceeded": true },
+      { "value": 16, "exceeded": true },
+    ]},
+  {
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Booking.PassengerInformationViewModel", "reportPath": "AirTicketSalesManagement_PassengerInformationViewModel.html", "methodName": "AddExistingInformation(AirTicketSalesManagement.Models.ThongTinHanhKhachVaChuyenBay)", "methodShortName": "AddExistingInformation(...)", "fileIndex": 0, "line": 147,
     "metrics": [
       { "value": 272, "exceeded": true },
       { "value": 16, "exceeded": true },
@@ -576,12 +570,6 @@ var riskHotspots = [
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "reportPath": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "methodName": "DeleteSchedule()", "methodShortName": "DeleteSchedule()", "fileIndex": 0, "line": 838,
-    "metrics": [
-      { "value": 210, "exceeded": true },
-      { "value": 14, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Booking.PassengerInformationViewModel", "reportPath": "AirTicketSalesManagement_PassengerInformationViewModel.html", "methodName": "AddExistingInformation(AirTicketSalesManagement.Models.ThongTinHanhKhachVaChuyenBay)", "methodShortName": "AddExistingInformation(...)", "fileIndex": 0, "line": 147,
     "metrics": [
       { "value": 210, "exceeded": true },
       { "value": 14, "exceeded": false },
@@ -671,7 +659,7 @@ var riskHotspots = [
       { "value": 12, "exceeded": false },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "SaveFlight()", "methodShortName": "SaveFlight()", "fileIndex": 0, "line": 414,
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "SaveFlight()", "methodShortName": "SaveFlight()", "fileIndex": 0, "line": 425,
     "metrics": [
       { "value": 121, "exceeded": true },
       { "value": 30, "exceeded": true },
@@ -689,12 +677,6 @@ var riskHotspots = [
       { "value": 10, "exceeded": false },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.View.Admin.ScheduleManagementView", "reportPath": "AirTicketSalesManagement_ScheduleManagementView.html", "methodName": "TimeTextBox_TextChanged(System.Object,System.Windows.Controls.TextChangedEventArgs)", "methodShortName": "TimeTextBox_TextChanged(...)", "fileIndex": 1, "line": 116,
-    "metrics": [
-      { "value": 110, "exceeded": true },
-      { "value": 10, "exceeded": false },
-    ]},
-  {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.View.Admin.ScheduleManagementView", "reportPath": "AirTicketSalesManagement_ScheduleManagementView.html", "methodName": "IsValidTimeFormat(System.String)", "methodShortName": "IsValidTimeFormat(...)", "fileIndex": 1, "line": 158,
     "metrics": [
       { "value": 110, "exceeded": true },
@@ -702,12 +684,6 @@ var riskHotspots = [
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.AccountManagementViewModel", "reportPath": "AirTicketSalesManagement_AccountManagementViewModel.html", "methodName": "DeleteAccount()", "methodShortName": "DeleteAccount()", "fileIndex": 0, "line": 442,
-    "metrics": [
-      { "value": 110, "exceeded": true },
-      { "value": 10, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "DeleteFlight()", "methodShortName": "DeleteFlight()", "fileIndex": 0, "line": 564,
     "metrics": [
       { "value": 110, "exceeded": true },
       { "value": 10, "exceeded": false },
@@ -779,18 +755,6 @@ var riskHotspots = [
       { "value": 8, "exceeded": false },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.Helper.PasswordHelper", "reportPath": "AirTicketSalesManagement_PasswordHelper.html", "methodName": "OnBoundPasswordChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)", "methodShortName": "OnBoundPasswordChanged(...)", "fileIndex": 0, "line": 24,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.Helper.PasswordHelper", "reportPath": "AirTicketSalesManagement_PasswordHelper.html", "methodName": "AttachChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)", "methodShortName": "AttachChanged(...)", "fileIndex": 0, "line": 44,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.Helper.PaymentDebugHelper", "reportPath": "AirTicketSalesManagement_PaymentDebugHelper.html", "methodName": "ValidateUserSessionForPayment()", "methodShortName": "ValidateUserSessionForPayment()", "fileIndex": 0, "line": 95,
     "metrics": [
       { "value": 72, "exceeded": true },
@@ -809,6 +773,12 @@ var riskHotspots = [
       { "value": 8, "exceeded": false },
     ]},
   {
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.View.Admin.ScheduleManagementView", "reportPath": "AirTicketSalesManagement_ScheduleManagementView.html", "methodName": "TimeTextBox_TextChanged(System.Object,System.Windows.Controls.TextChangedEventArgs)", "methodShortName": "TimeTextBox_TextChanged(...)", "fileIndex": 1, "line": 116,
+    "metrics": [
+      { "value": 72, "exceeded": true },
+      { "value": 8, "exceeded": false },
+    ]},
+  {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.AccountManagementViewModel", "reportPath": "AirTicketSalesManagement_AccountManagementViewModel.html", "methodName": "Search()", "methodShortName": "Search()", "fileIndex": 0, "line": 152,
     "metrics": [
       { "value": 72, "exceeded": true },
@@ -822,12 +792,6 @@ var riskHotspots = [
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.CustomerManagementViewModel", "reportPath": "AirTicketSalesManagement_CustomerManagementViewModel.html", "methodName": "SaveEditCustomer()", "methodShortName": "SaveEditCustomer()", "fileIndex": 0, "line": 123,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "EditFlight()", "methodShortName": "EditFlight()", "fileIndex": 0, "line": 506,
     "metrics": [
       { "value": 72, "exceeded": true },
       { "value": 8, "exceeded": false },
@@ -870,6 +834,12 @@ var riskHotspots = [
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.RegulationManagementViewModel", "reportPath": "AirTicketSalesManagement_RegulationManagementViewModel.html", "methodName": "SaveTicketClassCount()", "methodShortName": "SaveTicketClassCount()", "fileIndex": 0, "line": 570,
+    "metrics": [
+      { "value": 72, "exceeded": true },
+      { "value": 8, "exceeded": false },
+    ]},
+  {
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "reportPath": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "methodName": "UpdateTicketClassList()", "methodShortName": "UpdateTicketClassList()", "fileIndex": 0, "line": 710,
     "metrics": [
       { "value": 72, "exceeded": true },
       { "value": 8, "exceeded": false },
@@ -1049,12 +1019,6 @@ var riskHotspots = [
       { "value": 6, "exceeded": false },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "UpdateSTTAfterRemoval(System.Int32)", "methodShortName": "UpdateSTTAfterRemoval(...)", "fileIndex": 0, "line": 364,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ReportViewModel", "reportPath": "AirTicketSalesManagement_ReportViewModel.html", "methodName": "GenerateReportAsync()", "methodShortName": "GenerateReportAsync()", "fileIndex": 0, "line": 104,
     "metrics": [
       { "value": 42, "exceeded": true },
@@ -1062,12 +1026,6 @@ var riskHotspots = [
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "reportPath": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "methodName": "ExtractMaSB(System.String)", "methodShortName": "ExtractMaSB(...)", "fileIndex": 0, "line": 242,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "reportPath": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "methodName": "UpdateTicketClassList()", "methodShortName": "UpdateTicketClassList()", "fileIndex": 0, "line": 710,
     "metrics": [
       { "value": 42, "exceeded": true },
       { "value": 6, "exceeded": false },
@@ -1133,7 +1091,7 @@ var riskHotspots = [
       { "value": 6, "exceeded": false },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "SaveEditFlight()", "methodShortName": "SaveEditFlight()", "fileIndex": 0, "line": 626,
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "SaveEditFlight()", "methodShortName": "SaveEditFlight()", "fileIndex": 0, "line": 642,
     "metrics": [
       { "value": 40, "exceeded": true },
       { "value": 20, "exceeded": true },
