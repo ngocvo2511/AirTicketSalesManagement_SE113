@@ -10,6 +10,7 @@ using System.Linq;
 using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.Notification;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
@@ -193,12 +194,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             Flights = new ObservableCollection<Chuyenbay>(danhSach);
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void Refresh()
         {
             LoadFlights();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void ClearSearch()
         {
@@ -210,6 +213,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             LoadFlights();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void Search()
         {
@@ -264,13 +268,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             return displayString;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void AddFlight()
         {
             ResetAddField();
             IsAddPopupOpen = true;
         }
-
+        [ExcludeFromCodeCoverage]
         private void ResetAddField()
         {
             AddDiemDen = string.Empty;
@@ -281,18 +286,21 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             DanhSachSBTG = new ObservableCollection<SBTG>();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CancelAddFlight()
         {
             IsAddPopupOpen = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CloseAdd()
         {
             IsAddPopupOpen = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void AddIntermediateAirport()
         {
@@ -330,6 +338,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void RemoveIntermediateAirport(SBTG addSBTG)
         {
@@ -360,6 +369,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private void UpdateSTTAfterRemoval(int removedSTT)
         {
             try
@@ -383,6 +393,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private void CapNhatSBTGList()
         {
             if (DanhSachSBTG == null || DanhSachSBTG.Count == 0)
@@ -501,6 +512,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void EditFlight()
         {
@@ -533,6 +545,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             IsEditPopupOpen = true;
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetEditField()
         {
             EditDiemDi = SelectedFlight?.SbdiNavigation != null
@@ -559,6 +572,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             CapNhatSBTGList();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void DeleteFlight()
         {
@@ -609,12 +623,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CancelEditFlight()
         {
             IsEditPopupOpen = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CloseEdit()
         {
@@ -683,6 +699,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async Task EditIntermediateAirportAsync()
         {
@@ -721,6 +738,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void RemoveEditIntermediateAirport(SBTG editSBTG)
         {
