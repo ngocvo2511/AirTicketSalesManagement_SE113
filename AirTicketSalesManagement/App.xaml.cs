@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 using QuestPDF.Infrastructure;
 
 namespace AirTicketSalesManagement
@@ -6,6 +7,7 @@ namespace AirTicketSalesManagement
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class App : Application
     {
         protected override void OnStartup(StartupEventArgs e)

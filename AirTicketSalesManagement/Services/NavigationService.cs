@@ -1,12 +1,14 @@
 ﻿using AirTicketSalesManagement.ViewModel.Customer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AirTicketSalesManagement.Services
 {
+    [ExcludeFromCodeCoverage]
     public static class NavigationService
     {
         // Stack lưu trữ các màn hình đã điều hướng qua

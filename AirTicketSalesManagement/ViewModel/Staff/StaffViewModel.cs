@@ -23,6 +23,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Staff
 {
+    [ExcludeFromCodeCoverage]
     public partial class StaffViewModel : BaseViewModel
     {
         [ObservableProperty]

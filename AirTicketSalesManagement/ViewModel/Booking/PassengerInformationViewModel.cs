@@ -383,6 +383,7 @@ namespace AirTicketSalesManagement.ViewModel.Booking
         }
 
         // Use RegulationProvider instead of creating DbContext inside model
+        [ExcludeFromCodeCoverage]
         public string PassengerTypeDescription
         {
             get

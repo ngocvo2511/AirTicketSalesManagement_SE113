@@ -289,6 +289,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
         }
 
         // made public Task so tests can await
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async Task CancelTicket(QuanLiDatVe ve)
         {

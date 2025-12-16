@@ -1,7 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.Models.UIModels;
 
+[ExcludeFromCodeCoverage]
 public partial class UserSelectionModel : ObservableObject
 {
     [ObservableProperty]

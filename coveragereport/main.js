@@ -213,71 +213,43 @@ var assemblies = [
   {
     "name": "AirTicketSalesManagement",
     "classes": [
-      { "name": "AirTicketSalesManagement.App", "rp": "AirTicketSalesManagement_App.html", "cl": 0, "ucl": 14, "cal": 14, "tl": 162, "cb": 0, "tb": 2, "cm": 0, "fcm": 0, "tm": 3, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 2,  "cov": 0,  "bcov": 0 } },
       { "name": "AirTicketSalesManagement.Data.AirTicketDbContext", "rp": "AirTicketSalesManagement_AirTicketDbContext.html", "cl": 332, "ucl": 17, "cal": 349, "tl": 409, "cb": 2, "tb": 6, "cm": 16, "fcm": 15, "tm": 17, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 8,  "cc": 6,  "cov": 0,  "bcov": 33.33 } },
       { "name": "AirTicketSalesManagement.Models.Chuyenbay", "rp": "AirTicketSalesManagement_Chuyenbay.html", "cl": 9, "ucl": 1, "cal": 10, "tl": 28, "cb": 0, "tb": 2, "cm": 9, "fcm": 9, "tm": 10, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 2,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.Models.Ctdv", "rp": "AirTicketSalesManagement_Ctdv.html", "cl": 0, "ucl": 11, "cal": 11, "tl": 29, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 11, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.Datve", "rp": "AirTicketSalesManagement_Datve.html", "cl": 1, "ucl": 13, "cal": 14, "tl": 35, "cb": 0, "tb": 0, "cm": 1, "fcm": 1, "tm": 14, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.Hangve", "rp": "AirTicketSalesManagement_Hangve.html", "cl": 3, "ucl": 1, "cal": 4, "tl": 15, "cb": 0, "tb": 0, "cm": 3, "fcm": 3, "tm": 4, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.Hangvetheolichbay", "rp": "AirTicketSalesManagement_Hangvetheolichbay.html", "cl": 5, "ucl": 3, "cal": 8, "tl": 23, "cb": 0, "tb": 0, "cm": 5, "fcm": 5, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
+      { "name": "AirTicketSalesManagement.Models.Hangvetheolichbay", "rp": "AirTicketSalesManagement_Hangvetheolichbay.html", "cl": 6, "ucl": 2, "cal": 8, "tl": 23, "cb": 0, "tb": 0, "cm": 6, "fcm": 6, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.HanhKhach", "rp": "AirTicketSalesManagement_HanhKhach.html", "cl": 13, "ucl": 0, "cal": 13, "tl": 27, "cb": 0, "tb": 0, "cm": 6, "fcm": 6, "tm": 6, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.Khachhang", "rp": "AirTicketSalesManagement_Khachhang.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 23, "cb": 0, "tb": 0, "cm": 8, "fcm": 8, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.KQLichSuDatVe", "rp": "AirTicketSalesManagement_KQLichSuDatVe.html", "cl": 0, "ucl": 33, "cal": 33, "tl": 64, "cb": 0, "tb": 14, "cm": 0, "fcm": 0, "tm": 17, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 156,  "cc": 12,  "cov": 0,  "bcov": 0 } },
       { "name": "AirTicketSalesManagement.Models.KQTraCuuChuyenBayMoRong", "rp": "AirTicketSalesManagement_KQTraCuuChuyenBayMoRong.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 26, "cb": 0, "tb": 0, "cm": 4, "fcm": 4, "tm": 4, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.Lichbay", "rp": "AirTicketSalesManagement_Lichbay.html", "cl": 11, "ucl": 0, "cal": 11, "tl": 29, "cb": 0, "tb": 0, "cm": 11, "fcm": 11, "tm": 11, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.Loaive", "rp": "AirTicketSalesManagement_Loaive.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 23, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.Nhanvien", "rp": "AirTicketSalesManagement_Nhanvien.html", "cl": 4, "ucl": 4, "cal": 8, "tl": 23, "cb": 0, "tb": 0, "cm": 4, "fcm": 4, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.Quydinh", "rp": "AirTicketSalesManagement_Quydinh.html", "cl": 10, "ucl": 1, "cal": 11, "tl": 29, "cb": 0, "tb": 0, "cm": 10, "fcm": 10, "tm": 11, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.ReportModel.MonthItem", "rp": "AirTicketSalesManagement_MonthItem.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 14, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 2, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.ReportModel.MonthlyReportItem", "rp": "AirTicketSalesManagement_MonthlyReportItem.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 20, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.ReportModel.ReportSummaryModel", "rp": "AirTicketSalesManagement_ReportSummaryModel.html", "cl": 0, "ucl": 3, "cal": 3, "tl": 15, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 3, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Models.ReportModel.YearlyReportItem", "rp": "AirTicketSalesManagement_YearlyReportItem.html", "cl": 0, "ucl": 5, "cal": 5, "tl": 17, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 5, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
+      { "name": "AirTicketSalesManagement.Models.Quydinh", "rp": "AirTicketSalesManagement_Quydinh.html", "cl": 11, "ucl": 0, "cal": 11, "tl": 29, "cb": 0, "tb": 0, "cm": 11, "fcm": 11, "tm": 11, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.Sanbay", "rp": "AirTicketSalesManagement_Sanbay.html", "cl": 6, "ucl": 1, "cal": 7, "tl": 21, "cb": 0, "tb": 0, "cm": 6, "fcm": 6, "tm": 7, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.Sanbaytrunggian", "rp": "AirTicketSalesManagement_Sanbaytrunggian.html", "cl": 6, "ucl": 1, "cal": 7, "tl": 21, "cb": 0, "tb": 0, "cm": 6, "fcm": 6, "tm": 7, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.SBTG", "rp": "AirTicketSalesManagement_SBTG.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 32, "cb": 1, "tb": 2, "cm": 2, "fcm": 2, "tm": 2, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 2,  "cov": 100,  "bcov": 50.0 } },
-      { "name": "AirTicketSalesManagement.Models.SearchFlightParameters", "rp": "AirTicketSalesManagement_SearchFlightParameters.html", "cl": 0, "ucl": 4, "cal": 4, "tl": 12, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 4, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.Taikhoan", "rp": "AirTicketSalesManagement_Taikhoan.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 23, "cb": 0, "tb": 0, "cm": 8, "fcm": 8, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.ThongTinChuyenBayDuocChon", "rp": "AirTicketSalesManagement_ThongTinChuyenBayDuocChon.html", "cl": 2, "ucl": 1, "cal": 3, "tl": 15, "cb": 0, "tb": 0, "cm": 2, "fcm": 2, "tm": 3, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.ThongTinHanhKhachVaChuyenBay", "rp": "AirTicketSalesManagement_ThongTinHanhKhachVaChuyenBay.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 16, "cb": 0, "tb": 0, "cm": 4, "fcm": 4, "tm": 4, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Models.UIModels.AccountModel", "rp": "AirTicketSalesManagement_AccountModel.html", "cl": 27, "ucl": 8, "cal": 35, "tl": 67, "cb": 6, "tb": 14, "cm": 3, "fcm": 1, "tm": 3, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 9,  "cc": 8,  "cov": 71.42,  "bcov": 25.00 } },
       { "name": "AirTicketSalesManagement.Models.UIModels.HangVeTheoLichBay", "rp": "AirTicketSalesManagement_HangVeTheoLichBay.2.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 33, "cb": 1, "tb": 2, "cm": 2, "fcm": 2, "tm": 2, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 2,  "cov": 100,  "bcov": 50.0 } },
-      { "name": "AirTicketSalesManagement.Models.UIModels.QuanLiDatVe", "rp": "AirTicketSalesManagement_QuanLiDatVe.html", "cl": 0, "ucl": 37, "cal": 37, "tl": 65, "cb": 0, "tb": 22, "cm": 0, "fcm": 0, "tm": 19, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 156,  "cc": 12,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.Models.UIModels.UserSelectionModel", "rp": "AirTicketSalesManagement_UserSelectionModel.html", "cl": 10, "ucl": 9, "cal": 19, "tl": 37, "cb": 1, "tb": 4, "cm": 2, "fcm": 2, "tm": 4, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 2,  "cov": 0,  "bcov": 0 } },
       { "name": "AirTicketSalesManagement.Services.EmailValidation.EmailValidation", "rp": "AirTicketSalesManagement_EmailValidation.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 15, "cb": 0, "tb": 0, "cm": 1, "fcm": 1, "tm": 1, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Services.Login.LoginResult", "rp": "AirTicketSalesManagement_LoginResult.html", "cl": 8, "ucl": 0, "cal": 8, "tl": 20, "cb": 0, "tb": 0, "cm": 8, "fcm": 8, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Services.NavigationService", "rp": "AirTicketSalesManagement_NavigationService.html", "cl": 8, "ucl": 12, "cal": 20, "tl": 47, "cb": 1, "tb": 12, "cm": 3, "fcm": 3, "tm": 6, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 72,  "cc": 8,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.Services.Notification.NotificationService", "rp": "AirTicketSalesManagement_NotificationService.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 24, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 3, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.Services.PaymentRequestedMessage", "rp": "AirTicketSalesManagement_PaymentRequestedMessage.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 9, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 1, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.Services.UserSession", "rp": "AirTicketSalesManagement_UserSession.html", "cl": 7, "ucl": 1, "cal": 8, "tl": 23, "cb": 0, "tb": 0, "cm": 7, "fcm": 7, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.AccountManagementViewModel", "rp": "AirTicketSalesManagement_AccountManagementViewModel.html", "cl": 143, "ucl": 121, "cal": 264, "tl": 524, "cb": 38, "tb": 90, "cm": 9, "fcm": 5, "tm": 12, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1980,  "cc": 44,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.AdminProfileViewModel", "rp": "AirTicketSalesManagement_AdminProfileViewModel.html", "cl": 0, "ucl": 205, "cal": 205, "tl": 352, "cb": 0, "tb": 40, "cm": 0, "fcm": 0, "tm": 15, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 702,  "cc": 26,  "cov": 0,  "bcov": 0 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Admin.AccountManagementViewModel", "rp": "AirTicketSalesManagement_AccountManagementViewModel.html", "cl": 181, "ucl": 82, "cal": 263, "tl": 524, "cb": 65, "tb": 90, "cm": 10, "fcm": 5, "tm": 12, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 449,  "cc": 44,  "cov": 0,  "bcov": 61.36 } },
       { "name": "AirTicketSalesManagement.ViewModel.Admin.CustomerManagementViewModel", "rp": "AirTicketSalesManagement_CustomerManagementViewModel.html", "cl": 78, "ucl": 22, "cal": 100, "tl": 210, "cb": 29, "tb": 32, "cm": 6, "fcm": 3, "tm": 7, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 16,  "cc": 16,  "cov": 0,  "bcov": 50.0 } },
       { "name": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "rp": "AirTicketSalesManagement_FlightManagementViewModel.html", "cl": 193, "ucl": 58, "cal": 251, "tl": 797, "cb": 59, "tb": 78, "cm": 11, "fcm": 7, "tm": 23, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 121,  "cc": 30,  "cov": 0,  "bcov": 50.0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.RegulationManagementViewModel", "rp": "AirTicketSalesManagement_RegulationManagementViewModel.html", "cl": 77, "ucl": 289, "cal": 366, "tl": 758, "cb": 20, "tb": 98, "cm": 7, "fcm": 3, "tm": 17, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 110,  "cc": 10,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Admin.ReportViewModel", "rp": "AirTicketSalesManagement_ReportViewModel.html", "cl": 0, "ucl": 254, "cal": 254, "tl": 331, "cb": 0, "tb": 28, "cm": 0, "fcm": 0, "tm": 18, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 110,  "cc": 10,  "cov": 0,  "bcov": 0 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Admin.RegulationManagementViewModel", "rp": "AirTicketSalesManagement_RegulationManagementViewModel.html", "cl": 101, "ucl": 265, "cal": 366, "tl": 758, "cb": 27, "tb": 98, "cm": 8, "fcm": 3, "tm": 17, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 72,  "cc": 10,  "cov": 0,  "bcov": 0 } },
       { "name": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "rp": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "cl": 340, "ucl": 58, "cal": 398, "tl": 1210, "cb": 176, "tb": 200, "cm": 11, "fcm": 5, "tm": 16, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 82,  "cc": 66,  "cov": 0,  "bcov": 50.0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Booking.ObservableCollectionExtensions", "rp": "AirTicketSalesManagement_ObservableCollectionExtensions.html", "cl": 0, "ucl": 3, "cal": 3, "tl": 550, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 1, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Booking.PassengerInfoModel", "rp": "AirTicketSalesManagement_PassengerInfoModel.html", "cl": 15, "ucl": 12, "cal": 27, "tl": 431, "cb": 3, "tb": 8, "cm": 8, "fcm": 7, "tm": 9, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 20,  "cc": 4,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Booking.PassengerInformationViewModel", "rp": "AirTicketSalesManagement_PassengerInformationViewModel.html", "cl": 137, "ucl": 44, "cal": 181, "tl": 431, "cb": 51, "tb": 62, "cm": 10, "fcm": 6, "tm": 17, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 32,  "cc": 32,  "cov": 0,  "bcov": 50.0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryDetailViewModel", "rp": "AirTicketSalesManagement_BookingHistoryDetailViewModel.html", "cl": 0, "ucl": 123, "cal": 123, "tl": 204, "cb": 0, "tb": 36, "cm": 0, "fcm": 0, "tm": 7, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 812,  "cc": 28,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "rp": "AirTicketSalesManagement_BookingHistoryViewModel.html", "cl": 0, "ucl": 312, "cal": 312, "tl": 462, "cb": 0, "tb": 90, "cm": 0, "fcm": 0, "tm": 19, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 812,  "cc": 28,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "rp": "AirTicketSalesManagement_CustomerProfileViewModel.html", "cl": 0, "ucl": 210, "cal": 210, "tl": 378, "cb": 0, "tb": 52, "cm": 0, "fcm": 0, "tm": 18, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 812,  "cc": 28,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Customer.CustomerViewModel", "rp": "AirTicketSalesManagement_CustomerViewModel.html", "cl": 0, "ucl": 122, "cal": 122, "tl": 194, "cb": 0, "tb": 24, "cm": 0, "fcm": 0, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 2,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Customer.HomePageViewModel", "rp": "AirTicketSalesManagement_HomePageViewModel.html", "cl": 0, "ucl": 47, "cal": 47, "tl": 112, "cb": 0, "tb": 12, "cm": 0, "fcm": 0, "tm": 7, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 72,  "cc": 8,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Customer.WebViewNavigationMessage", "rp": "AirTicketSalesManagement_WebViewNavigationMessage.html", "cl": 0, "ucl": 1, "cal": 1, "tl": 194, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 1, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Login.AuthViewModel", "rp": "AirTicketSalesManagement_AuthViewModel.html", "cl": 4, "ucl": 12, "cal": 16, "tl": 51, "cb": 0, "tb": 0, "cm": 1, "fcm": 1, "tm": 5, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Login.ForgotPasswordViewModel", "rp": "AirTicketSalesManagement_ForgotPasswordViewModel.html", "cl": 0, "ucl": 37, "cal": 37, "tl": 84, "cb": 0, "tb": 8, "cm": 0, "fcm": 0, "tm": 6, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 42,  "cc": 6,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Login.LoginViewModel", "rp": "AirTicketSalesManagement_LoginViewModel.html", "cl": 45, "ucl": 11, "cal": 56, "tl": 107, "cb": 16, "tb": 16, "cm": 5, "fcm": 4, "tm": 9, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 6,  "cov": 0,  "bcov": 100 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Booking.PassengerInfoModel", "rp": "AirTicketSalesManagement_PassengerInfoModel.html", "cl": 15, "ucl": 1, "cal": 16, "tl": 432, "cb": 3, "tb": 4, "cm": 8, "fcm": 7, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 4,  "cc": 4,  "cov": 88.88,  "bcov": 75.00 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Booking.PassengerInformationViewModel", "rp": "AirTicketSalesManagement_PassengerInformationViewModel.html", "cl": 137, "ucl": 44, "cal": 181, "tl": 432, "cb": 51, "tb": 62, "cm": 10, "fcm": 6, "tm": 17, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 32,  "cc": 32,  "cov": 0,  "bcov": 50.0 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "rp": "AirTicketSalesManagement_BookingHistoryViewModel.html", "cl": 93, "ucl": 12, "cal": 105, "tl": 472, "cb": 27, "tb": 36, "cm": 4, "fcm": 1, "tm": 9, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 28,  "cc": 28,  "cov": 0,  "bcov": 50.0 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "rp": "AirTicketSalesManagement_CustomerProfileViewModel.html", "cl": 100, "ucl": 18, "cal": 118, "tl": 385, "cb": 31, "tb": 38, "cm": 6, "fcm": 3, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 30,  "cc": 28,  "cov": 0,  "bcov": 50.0 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Login.AuthViewModel", "rp": "AirTicketSalesManagement_AuthViewModel.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 55, "cb": 0, "tb": 0, "cm": 1, "fcm": 1, "tm": 1, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1,  "cc": 1,  "cov": 100,  "bcov": 100 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Login.ForgotPasswordViewModel", "rp": "AirTicketSalesManagement_ForgotPasswordViewModel.html", "cl": 35, "ucl": 1, "cal": 36, "tl": 86, "cb": 8, "tb": 8, "cm": 4, "fcm": 4, "tm": 5, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 6,  "cov": 0,  "bcov": 100 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Login.LoginViewModel", "rp": "AirTicketSalesManagement_LoginViewModel.html", "cl": 45, "ucl": 9, "cal": 54, "tl": 111, "cb": 16, "tb": 16, "cm": 5, "fcm": 4, "tm": 7, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 6,  "cov": 0,  "bcov": 100 } },
       { "name": "AirTicketSalesManagement.ViewModel.Login.RegisterViewModel", "rp": "AirTicketSalesManagement_RegisterViewModel.html", "cl": 80, "ucl": 20, "cal": 100, "tl": 159, "cb": 26, "tb": 26, "cm": 5, "fcm": 4, "tm": 7, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 18,  "cc": 18,  "cov": 0,  "bcov": 100 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Login.ResetPasswordViewModel", "rp": "AirTicketSalesManagement_ResetPasswordViewModel.html", "cl": 56, "ucl": 39, "cal": 95, "tl": 171, "cb": 11, "tb": 18, "cm": 5, "fcm": 4, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 42,  "cc": 6,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Staff.HomePageViewModel", "rp": "AirTicketSalesManagement_HomePageViewModel.2.html", "cl": 0, "ucl": 97, "cal": 97, "tl": 137, "cb": 0, "tb": 10, "cm": 0, "fcm": 0, "tm": 7, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 20,  "cc": 4,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Staff.StaffProfileViewModel", "rp": "AirTicketSalesManagement_StaffProfileViewModel.html", "cl": 0, "ucl": 210, "cal": 210, "tl": 357, "cb": 0, "tb": 38, "cm": 0, "fcm": 0, "tm": 14, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 702,  "cc": 26,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Staff.StaffViewModel", "rp": "AirTicketSalesManagement_StaffViewModel.html", "cl": 0, "ucl": 111, "cal": 111, "tl": 184, "cb": 0, "tb": 18, "cm": 0, "fcm": 0, "tm": 8, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 2,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementDetailViewModel", "rp": "AirTicketSalesManagement_TicketManagementDetailViewModel.html", "cl": 0, "ucl": 175, "cal": 175, "tl": 274, "cb": 0, "tb": 80, "cm": 0, "fcm": 0, "tm": 11, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1332,  "cc": 36,  "cov": 0,  "bcov": 0 } },
-      { "name": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "rp": "AirTicketSalesManagement_TicketManagementViewModel.html", "cl": 0, "ucl": 325, "cal": 325, "tl": 448, "cb": 0, "tb": 112, "cm": 0, "fcm": 0, "tm": 20, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 1332,  "cc": 36,  "cov": 0,  "bcov": 0 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Login.ResetPasswordViewModel", "rp": "AirTicketSalesManagement_ResetPasswordViewModel.html", "cl": 75, "ucl": 7, "cal": 82, "tl": 174, "cb": 16, "tb": 18, "cm": 6, "fcm": 4, "tm": 6, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 6,  "cc": 6,  "cov": 85.71,  "bcov": 83.33 } },
+      { "name": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "rp": "AirTicketSalesManagement_TicketManagementViewModel.html", "cl": 69, "ucl": 18, "cal": 87, "tl": 459, "cb": 25, "tb": 34, "cm": 5, "fcm": 2, "tm": 10, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 26,  "cc": 26,  "cov": 0,  "bcov": 62.50 } },
       { "name": "AirTicketSalesManagement.ViewModel.ToastViewModel", "rp": "AirTicketSalesManagement_ToastViewModel.html", "cl": 9, "ucl": 4, "cal": 13, "tl": 38, "cb": 2, "tb": 4, "cm": 2, "fcm": 1, "tm": 2, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 5,  "cc": 4,  "cov": 66.66,  "bcov": 50.0 } },
       { "name": "AirTicketSalesManagement.ViewModel.ValidationBase", "rp": "AirTicketSalesManagement_ValidationBase.html", "cl": 18, "ucl": 6, "cal": 24, "tl": 48, "cb": 8, "tb": 14, "cm": 5, "fcm": 3, "tm": 6, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 7,  "cc": 6,  "cov": 0,  "bcov": 25.00 } },
-      { "name": "ExcelExporter", "rp": "AirTicketSalesManagement_ExcelExporter.html", "cl": 0, "ucl": 119, "cal": 119, "tl": 174, "cb": 0, "tb": 12, "cm": 0, "fcm": 0, "tm": 3, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 42,  "cc": 6,  "cov": 0,  "bcov": 0 } },
       { "name": "XamlGeneratedNamespace.GeneratedInternalTypeHelper", "rp": "AirTicketSalesManagement_GeneratedInternalTypeHelper.html", "cl": 0, "ucl": 19, "cal": 19, "tl": 61, "cb": 0, "tb": 0, "cm": 0, "fcm": 0, "tm": 5, "lch": [], "bch": [], "mch": [], "mfch": [], "hc": [], "metrics": { "crp": 2,  "cc": 1,  "cov": 0,  "bcov": 100 } },
     ]},
 ];
@@ -295,104 +267,8 @@ var riskHotspots = [
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.AccountManagementViewModel", "reportPath": "AirTicketSalesManagement_AccountManagementViewModel.html", "methodName": "SaveEditAccount()", "methodShortName": "SaveEditAccount()", "fileIndex": 0, "line": 335,
     "metrics": [
-      { "value": 1980, "exceeded": true },
+      { "value": 449, "exceeded": true },
       { "value": 44, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementDetailViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementDetailViewModel.html", "methodName": "CancelTicket()", "methodShortName": "CancelTicket()", "fileIndex": 0, "line": 145,
-    "metrics": [
-      { "value": 1332, "exceeded": true },
-      { "value": 36, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementViewModel.html", "methodName": "CancelTicket()", "methodShortName": "CancelTicket()", "fileIndex": 0, "line": 287,
-    "metrics": [
-      { "value": 1332, "exceeded": true },
-      { "value": 36, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryDetailViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryDetailViewModel.html", "methodName": "CancelTicket()", "methodShortName": "CancelTicket()", "fileIndex": 0, "line": 133,
-    "metrics": [
-      { "value": 812, "exceeded": true },
-      { "value": 28, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryViewModel.html", "methodName": "CancelTicket()", "methodShortName": "CancelTicket()", "fileIndex": 0, "line": 280,
-    "metrics": [
-      { "value": 812, "exceeded": true },
-      { "value": 28, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "reportPath": "AirTicketSalesManagement_CustomerProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 148,
-    "metrics": [
-      { "value": 812, "exceeded": true },
-      { "value": 28, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementDetailViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementDetailViewModel.html", "methodName": "ConfirmPayment()", "methodShortName": "ConfirmPayment()", "fileIndex": 0, "line": 209,
-    "metrics": [
-      { "value": 812, "exceeded": true },
-      { "value": 28, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.AdminProfileViewModel", "reportPath": "AirTicketSalesManagement_AdminProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 135,
-    "metrics": [
-      { "value": 702, "exceeded": true },
-      { "value": 26, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.StaffProfileViewModel", "reportPath": "AirTicketSalesManagement_StaffProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 132,
-    "metrics": [
-      { "value": 702, "exceeded": true },
-      { "value": 26, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementViewModel.html", "methodName": "ConfirmPayment()", "methodShortName": "ConfirmPayment()", "fileIndex": 0, "line": 352,
-    "metrics": [
-      { "value": 702, "exceeded": true },
-      { "value": 26, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryViewModel.html", "methodName": "ClearExpiredHolds()", "methodShortName": "ClearExpiredHolds()", "fileIndex": 0, "line": 165,
-    "metrics": [
-      { "value": 506, "exceeded": true },
-      { "value": 22, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementViewModel.html", "methodName": "ClearExpiredHolds()", "methodShortName": "ClearExpiredHolds()", "fileIndex": 0, "line": 178,
-    "metrics": [
-      { "value": 506, "exceeded": true },
-      { "value": 22, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementViewModel.html", "methodName": "SearchHistory()", "methodShortName": "SearchHistory()", "fileIndex": 0, "line": 250,
-    "metrics": [
-      { "value": 272, "exceeded": true },
-      { "value": 16, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryViewModel.html", "methodName": "HandlePaymentSuccess()", "methodShortName": "HandlePaymentSuccess()", "fileIndex": 0, "line": 393,
-    "metrics": [
-      { "value": 210, "exceeded": true },
-      { "value": 14, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.Models.KQLichSuDatVe", "reportPath": "AirTicketSalesManagement_KQLichSuDatVe.html", "methodName": "get_CanCancel()", "methodShortName": "get_CanCancel()", "fileIndex": 0, "line": 52,
-    "metrics": [
-      { "value": 156, "exceeded": true },
-      { "value": 12, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.Models.UIModels.QuanLiDatVe", "reportPath": "AirTicketSalesManagement_QuanLiDatVe.html", "methodName": "get_CanCancel()", "methodShortName": "get_CanCancel()", "fileIndex": 0, "line": 44,
-    "metrics": [
-      { "value": 156, "exceeded": true },
-      { "value": 12, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryViewModel.html", "methodName": "ApplyFilter(System.Collections.Generic.IEnumerable`1<AirTicketSalesManagement.Models.KQLichSuDatVe>)", "methodShortName": "ApplyFilter(...)", "fileIndex": 0, "line": 230,
-    "metrics": [
-      { "value": 156, "exceeded": true },
-      { "value": 12, "exceeded": false },
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "SaveFlight()", "methodShortName": "SaveFlight()", "fileIndex": 0, "line": 425,
@@ -401,46 +277,10 @@ var riskHotspots = [
       { "value": 30, "exceeded": true },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.RegulationManagementViewModel", "reportPath": "AirTicketSalesManagement_RegulationManagementViewModel.html", "methodName": "SaveInfantAge()", "methodShortName": "SaveInfantAge()", "fileIndex": 0, "line": 637,
-    "metrics": [
-      { "value": 110, "exceeded": true },
-      { "value": 10, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ReportViewModel", "reportPath": "AirTicketSalesManagement_ReportViewModel.html", "methodName": "ExportReport()", "methodShortName": "ExportReport()", "fileIndex": 0, "line": 244,
-    "metrics": [
-      { "value": 110, "exceeded": true },
-      { "value": 10, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementDetailViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementDetailViewModel.html", "methodName": ".ctor(AirTicketSalesManagement.Models.UIModels.QuanLiDatVe,AirTicketSalesManagement.ViewModel.BaseViewModel,AirTicketSalesManagement.Services.DbContext.IAirTicketDbContextService,AirTicketSalesManagement.Services.Notification.INotificationService,AirTicketSalesManagement.Interface.IEmailService,AirTicketSalesManagement.Services.EmailServices.IEmailTemplateService)", "methodShortName": ".ctor(...)", "fileIndex": 0, "line": 60,
-    "metrics": [
-      { "value": 110, "exceeded": true },
-      { "value": 10, "exceeded": false },
-    ]},
-  {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "reportPath": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "methodName": "SaveAddSchedule()", "methodShortName": "SaveAddSchedule()", "fileIndex": 0, "line": 509,
     "metrics": [
       { "value": 82, "exceeded": true },
       { "value": 66, "exceeded": true },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.Models.UIModels.QuanLiDatVe", "reportPath": "AirTicketSalesManagement_QuanLiDatVe.html", "methodName": "get_CanConfirm()", "methodShortName": "get_CanConfirm()", "fileIndex": 0, "line": 54,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.Services.NavigationService", "reportPath": "AirTicketSalesManagement_NavigationService.html", "methodName": "NavigateBack()", "methodShortName": "NavigateBack()", "fileIndex": 0, "line": 30,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.AdminProfileViewModel", "reportPath": "AirTicketSalesManagement_AdminProfileViewModel.html", "methodName": "ChangePassword()", "methodShortName": "ChangePassword()", "fileIndex": 0, "line": 283,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.RegulationManagementViewModel", "reportPath": "AirTicketSalesManagement_RegulationManagementViewModel.html", "methodName": "SaveBookingTime()", "methodShortName": "SaveBookingTime()", "fileIndex": 0, "line": 483,
@@ -485,36 +325,6 @@ var riskHotspots = [
       { "value": 8, "exceeded": false },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "reportPath": "AirTicketSalesManagement_CustomerProfileViewModel.html", "methodName": ".ctor(AirTicketSalesManagement.Services.DbContext.IAirTicketDbContextService,AirTicketSalesManagement.Services.Notification.INotificationService)", "methodShortName": ".ctor(...)", "fileIndex": 0, "line": 63,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "reportPath": "AirTicketSalesManagement_CustomerProfileViewModel.html", "methodName": "ChangePassword()", "methodShortName": "ChangePassword()", "fileIndex": 0, "line": 298,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.HomePageViewModel", "reportPath": "AirTicketSalesManagement_HomePageViewModel.html", "methodName": "SearchFlight()", "methodShortName": "SearchFlight()", "fileIndex": 0, "line": 83,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.StaffProfileViewModel", "reportPath": "AirTicketSalesManagement_StaffProfileViewModel.html", "methodName": "ChangePassword()", "methodShortName": "ChangePassword()", "fileIndex": 0, "line": 280,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementViewModel.html", "methodName": ".ctor(AirTicketSalesManagement.ViewModel.BaseViewModel,AirTicketSalesManagement.Services.DbContext.IAirTicketDbContextService,AirTicketSalesManagement.Services.Notification.INotificationService,AirTicketSalesManagement.Interface.IEmailService,AirTicketSalesManagement.Services.EmailServices.IEmailTemplateService)", "methodShortName": ".ctor(...)", "fileIndex": 0, "line": 88,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
-  {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ScheduleManagementViewModel", "reportPath": "AirTicketSalesManagement_ScheduleManagementViewModel.html", "methodName": "SaveEditSchedule()", "methodShortName": "SaveEditSchedule()", "fileIndex": 0, "line": 960,
     "metrics": [
       { "value": 70, "exceeded": true },
@@ -527,58 +337,28 @@ var riskHotspots = [
       { "value": 26, "exceeded": true },
     ]},
   {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.ReportViewModel", "reportPath": "AirTicketSalesManagement_ReportViewModel.html", "methodName": "GenerateReportAsync()", "methodShortName": "GenerateReportAsync()", "fileIndex": 0, "line": 104,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryDetailViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryDetailViewModel.html", "methodName": "ValidateCancelTicket()", "methodShortName": "ValidateCancelTicket()", "fileIndex": 0, "line": 104,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryViewModel.html", "methodName": "ValidateCancelTicket(AirTicketSalesManagement.Models.KQLichSuDatVe)", "methodShortName": "ValidateCancelTicket(...)", "fileIndex": 0, "line": 266,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "reportPath": "AirTicketSalesManagement_CustomerProfileViewModel.html", "methodName": "LoadDataAsync()", "methodShortName": "LoadDataAsync()", "fileIndex": 0, "line": 94,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Login.ForgotPasswordViewModel", "reportPath": "AirTicketSalesManagement_ForgotPasswordViewModel.html", "methodName": "ValidateAsync()", "methodShortName": "ValidateAsync()", "fileIndex": 0, "line": 39,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Login.ResetPasswordViewModel", "reportPath": "AirTicketSalesManagement_ResetPasswordViewModel.html", "methodName": "CheckCode()", "methodShortName": "CheckCode()", "fileIndex": 0, "line": 81,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "ExcelExporter", "reportPath": "AirTicketSalesManagement_ExcelExporter.html", "methodName": "ExportYearlyReportToExcel(System.Collections.Generic.IReadOnlyList`1<AirTicketSalesManagement.Models.ReportModel.YearlyReportItem>,System.Int32,System.String)", "methodShortName": "ExportYearlyReportToExcel(...)", "fileIndex": 0, "line": 12,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "AirTicketSalesManagement", "class": "ExcelExporter", "reportPath": "AirTicketSalesManagement_ExcelExporter.html", "methodName": "ExportMonthlyReportToExcel(System.Collections.Generic.IReadOnlyList`1<AirTicketSalesManagement.Models.ReportModel.MonthlyReportItem>,System.Int32,System.Int32,System.String)", "methodShortName": "ExportMonthlyReportToExcel(...)", "fileIndex": 0, "line": 77,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Booking.PassengerInformationViewModel", "reportPath": "AirTicketSalesManagement_PassengerInformationViewModel.html", "methodName": "ValidatePassengerInfoAndProceed()", "methodShortName": "ValidatePassengerInfoAndProceed()", "fileIndex": 0, "line": 229,
     "metrics": [
       { "value": 32, "exceeded": true },
       { "value": 32, "exceeded": true },
+    ]},
+  {
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.BookingHistoryViewModel", "reportPath": "AirTicketSalesManagement_BookingHistoryViewModel.html", "methodName": "CancelTicket()", "methodShortName": "CancelTicket()", "fileIndex": 0, "line": 286,
+    "metrics": [
+      { "value": 28, "exceeded": false },
+      { "value": 28, "exceeded": true },
+    ]},
+  {
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Customer.CustomerProfileViewModel", "reportPath": "AirTicketSalesManagement_CustomerProfileViewModel.html", "methodName": "SaveProfile()", "methodShortName": "SaveProfile()", "fileIndex": 0, "line": 153,
+    "metrics": [
+      { "value": 30, "exceeded": false },
+      { "value": 28, "exceeded": true },
+    ]},
+  {
+    "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Staff.TicketManagementViewModel", "reportPath": "AirTicketSalesManagement_TicketManagementViewModel.html", "methodName": "ConfirmPayment()", "methodShortName": "ConfirmPayment()", "fileIndex": 0, "line": 360,
+    "metrics": [
+      { "value": 26, "exceeded": false },
+      { "value": 26, "exceeded": true },
     ]},
   {
     "assembly": "AirTicketSalesManagement", "class": "AirTicketSalesManagement.ViewModel.Admin.FlightManagementViewModel", "reportPath": "AirTicketSalesManagement_FlightManagementViewModel.html", "methodName": "SaveEditFlight()", "methodShortName": "SaveEditFlight()", "fileIndex": 0, "line": 641,

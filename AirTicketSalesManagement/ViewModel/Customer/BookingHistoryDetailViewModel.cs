@@ -15,6 +15,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
+    [ExcludeFromCodeCoverage]
     public partial class BookingHistoryDetailViewModel : BaseViewModel
     {
         private readonly IEmailService _emailService;

@@ -537,7 +537,7 @@ namespace AirTicketSalesManagement.ViewModel.Booking
             IsSearchExpanded = !IsSearchExpanded;
         }
     }
-
+    [ExcludeFromCodeCoverage]
     public static class ObservableCollectionExtensions
     {
         public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)

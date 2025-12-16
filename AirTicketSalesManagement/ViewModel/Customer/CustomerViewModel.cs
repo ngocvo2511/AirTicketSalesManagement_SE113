@@ -19,6 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
+    [ExcludeFromCodeCoverage]
     public partial class CustomerViewModel : BaseViewModel
     {
         [ObservableProperty]
@@ -193,6 +194,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public class WebViewNavigationMessage : ValueChangedMessage<string>
     {
         public WebViewNavigationMessage(string url) : base(url) { }

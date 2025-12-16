@@ -12,15 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ViewModel\Customer\**" />
-    <Compile Remove="ViewModel\Staff\**" />
-    <EmbeddedResource Remove="ViewModel\Customer\**" />
-    <EmbeddedResource Remove="ViewModel\Staff\**" />
-    <None Remove="ViewModel\Customer\**" />
-    <None Remove="ViewModel\Staff\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

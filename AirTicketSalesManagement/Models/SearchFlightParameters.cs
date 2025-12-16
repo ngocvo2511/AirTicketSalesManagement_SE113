@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.Models
 {
+    [ExcludeFromCodeCoverage]
     public class SearchFlightParameters
     {
         public string DiemDi { get; set; }

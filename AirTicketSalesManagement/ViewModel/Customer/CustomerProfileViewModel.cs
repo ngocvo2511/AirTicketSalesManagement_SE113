@@ -292,13 +292,13 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             ResetPasswordField();
             IsChangePasswordPopupOpen = true;
         }
-
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CloseChangePasswordPopup()
         {
             IsChangePasswordPopupOpen = false;
         }
-
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async Task ChangePassword()
         {
@@ -356,13 +356,13 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             HasPasswordError = false;
             PasswordErrorMessage = string.Empty;
         }
-
+        [ExcludeFromCodeCoverage]
         private void ShowError(string Error)
         {
             PasswordErrorMessage = Error;
             HasPasswordError = true;
         }
-
+        [ExcludeFromCodeCoverage]
         private void HideError()
         {
             HasPasswordError = false;

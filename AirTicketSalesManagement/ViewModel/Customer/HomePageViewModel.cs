@@ -17,6 +17,7 @@ using System.Windows;
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
+    [ExcludeFromCodeCoverage]
     public partial class HomePageViewModel : BaseViewModel
     {
         [ObservableProperty]

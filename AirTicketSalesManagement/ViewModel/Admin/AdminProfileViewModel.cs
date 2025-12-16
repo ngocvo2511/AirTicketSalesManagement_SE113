@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using System.Windows;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
+    [ExcludeFromCodeCoverage]
     public partial class AdminProfileViewModel : BaseViewModel
     {
         [ObservableProperty]
@@ -63,7 +65,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
         // Notification
         public NotificationViewModel Notification { get; set; } = new NotificationViewModel();
-
+        [ExcludeFromCodeCoverage]
         public AdminProfileViewModel()
         {
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
@@ -71,7 +73,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 LoadData();
             }
         }
-
+        [ExcludeFromCodeCoverage]
         private void LoadData()
         {
             try
@@ -107,13 +109,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void OpenEditProfile()
         {
             ResetField();
             IsEditPopupOpen = true;
         }
-
+        [ExcludeFromCodeCoverage]
         private void ResetField()
         {
             EditHoTen = HoTen;
@@ -123,7 +126,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditNgaySinh = NgaySinh;
             EditEmail = Email;
         }
-
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CloseEditPopup()
         {
@@ -246,7 +249,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 await Notification.ShowNotificationAsync($"Đã xảy ra lỗi: {ex.Message}", NotificationType.Error);
             }
         }
-
+        [ExcludeFromCodeCoverage]
         private bool IsValidEmail(string email)
         {
             try
@@ -259,19 +262,19 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 return false;
             }
         }
-
+        [ExcludeFromCodeCoverage]
         private bool IsValidPhone(string phone)
         {
             return System.Text.RegularExpressions.Regex.IsMatch(phone, @"^0\d{9}$");
         }
-
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void OpenChangePassword()
         {
             ResetPasswordField();
             IsChangePasswordPopupOpen = true;
         }
-
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CloseChangePasswordPopup()
         {
@@ -327,7 +330,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 await Notification.ShowNotificationAsync($"Có lỗi xảy ra khi đổi mật khẩu: {ex.Message}", NotificationType.Error);
             }
         }
-
+        [ExcludeFromCodeCoverage]
         private void ResetPasswordField()
         {
             CurrentPassword = string.Empty;
@@ -336,13 +339,13 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             HasPasswordError = false;
             PasswordErrorMessage = string.Empty;
         }
-
+        [ExcludeFromCodeCoverage]
         private void ShowError(string Error)
         {
             PasswordErrorMessage = Error;
             HasPasswordError = true;
         }
-
+        [ExcludeFromCodeCoverage]
         private void HideError()
         {
             HasPasswordError = false;

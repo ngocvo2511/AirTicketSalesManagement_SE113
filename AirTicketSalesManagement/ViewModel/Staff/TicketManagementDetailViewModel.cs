@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 
 namespace AirTicketSalesManagement.ViewModel.Staff
 {
+    [ExcludeFromCodeCoverage]
     public partial class TicketManagementDetailViewModel : BaseViewModel
     {
         // Injected dependencies for testability

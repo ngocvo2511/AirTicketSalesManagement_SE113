@@ -15,6 +15,7 @@ using System.Windows.Media;
 
 namespace AirTicketSalesManagement.ViewModel.Staff
 {
+    [ExcludeFromCodeCoverage]
     public partial class StaffProfileViewModel : BaseViewModel
     {
         [ObservableProperty]

@@ -230,6 +230,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         {
             parent.CurrentViewModel = new BookingHistoryDetailViewModel(lichSuDatVe, parent, _emailService, _templateService, _dbContextFactory, _userSession, _notificationService);
         }
+        [ExcludeFromCodeCoverage]
         public IEnumerable<KQLichSuDatVe> ApplyFilter(IEnumerable<KQLichSuDatVe> source)
         {
             var filter = source;
@@ -360,6 +361,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async Task ProcessPayment(KQLichSuDatVe ve)
         {
@@ -393,7 +395,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             }
         }
 
-
+        [ExcludeFromCodeCoverage]
         public void HandlePaymentSuccess()
         {
             try

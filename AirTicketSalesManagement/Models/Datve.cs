@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.Models;
 
+[ExcludeFromCodeCoverage]
 public partial class Datve
 {
     public int MaDv { get; set; }

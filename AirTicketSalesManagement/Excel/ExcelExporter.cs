@@ -3,9 +3,11 @@ using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 
+[ExcludeFromCodeCoverage]
 public static class ExcelExporter
 {
     public static void ExportYearlyReportToExcel(IReadOnlyList<YearlyReportItem> items, int year, string filePath)
@@ -72,7 +74,6 @@ public static class ExcelExporter
         using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
         workbook.Write(fs);
     }
-
     public static void ExportMonthlyReportToExcel(IReadOnlyList<MonthlyReportItem> items, int month, int year, string filePath)
     {
         var workbook = new XSSFWorkbook();
