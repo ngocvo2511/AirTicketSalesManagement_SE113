@@ -90,6 +90,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             _dbContextService = dbContextService ?? throw new System.ArgumentNullException(nameof(dbContextService));
             _notificationService = notificationService ?? throw new System.ArgumentNullException(nameof(notificationService));
             _emailService = emailService!;
+            _templateService = templateService!;
             Notification = (notificationService as NotificationService)?.ViewModel
                        ?? new NotificationViewModel();
             this.parent = parent;
@@ -355,16 +356,16 @@ namespace AirTicketSalesManagement.ViewModel.Staff
                 await _notification_service_fallback("Vé không hợp lệ.", NotificationType.Warning);
                 return;
             }
-            if (ve.CanConfirm == false)
-            {
-                await _notification_service_fallback("Không thể xác nhận thanh toán vé này do đã quá thời hạn đặt vé.", NotificationType.Warning);
-                return;
-            }
             if (ve.TrangThai != "Chưa thanh toán (Tiền mặt)")
             {
                 await _notification_service_fallback("Không thể xác nhận thanh toán.", NotificationType.Warning);
                 return;
             }
+            if (ve.CanConfirm == false)
+            {
+                await _notification_service_fallback("Không thể xác nhận thanh toán vé này do đã quá thời hạn đặt vé.", NotificationType.Warning);
+                return;
+            }         
             bool confirm = await _notification_service_fallback("Bạn có chắc chắn muốn xác nhận thanh toán vé này không?", NotificationType.Information, true);
             if (confirm)
             {

@@ -128,6 +128,7 @@ namespace AirTicketSalesManagementTests
                 yield return new TestCaseData("Đã thanh toán", true, true, "Lỗi khi hủy vé:"); 
                 yield return new TestCaseData("Chưa thanh toán (Online)", false, true, "Vé không thể hủy vì đã quá thời hạn hủy vé.");
                 yield return new TestCaseData("Chưa thanh toán (Tiền mặt)", true, true, "Hủy vé thành công.");
+                yield return new TestCaseData("Đã thanh toán", true, false, "");
             }
         }
 
@@ -218,7 +219,20 @@ namespace AirTicketSalesManagementTests
                 return;
             }
 
-            // CASE 4: Validate fail (quá hạn, đã hủy, ...)
+            // CASE 4: User hủy xác nhận
+            if (!confirmationResult)
+            {
+                _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Never);
+                _mockNotificationService.Verify(
+                    n => n.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Hủy vé thành công") || msg.Contains("Lỗi khi hủy vé") || msg.Contains("Không tìm thấy vé")),
+                        It.IsAny<NotificationType>(),
+                        It.IsAny<bool>()),
+                    Times.Never);
+                return;
+            }
+
+            // CASE 5: Validate fail (quá hạn, đã hủy, ...)
             _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Never);
 
             _mockNotificationService.Verify(
@@ -229,5 +243,63 @@ namespace AirTicketSalesManagementTests
                 Times.Once);
 
         }
+
+        [Test]
+        public async Task CancelTicket_ShouldHandleNullBooking()
+        {
+            // Arrange: đặt booking stub về null
+            _bookingStub = null;
+
+            // Act: gọi command với null
+            await _viewModel.CancelTicketCommand.ExecuteAsync((KQLichSuDatVe?)null);
+
+            // Assert: không có thao tác lưu DB
+            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Never);
+
+            // Assert: hiển thị thông báo lỗi/không tìm thấy vé (chấp nhận Error hoặc Warning)
+            _mockNotificationService.Verify(
+                n => n.ShowNotificationAsync(
+                    It.Is<string>(msg =>
+                        msg != null && (msg.Contains("Vé không hợp lệ."))),
+                    It.Is<NotificationType>(t => t == NotificationType.Error || t == NotificationType.Warning),
+                    It.IsAny<bool>()),
+                Times.AtLeastOnce);
+        }
+        [Test]
+        public async Task CancelTicket_ShouldShowError_When_DatveNotFound()
+        {
+            // Arrange: booking hợp lệ nhưng DbContext không có Datve tương ứng
+            _bookingStub.TrangThai = "Đã thanh toán";
+            _bookingStub.QdHuyVe = 1;
+            _bookingStub.NgayDat = DateTime.Now.AddDays(-2);
+            _bookingStub.GioDi = DateTime.Now.AddDays(5);
+
+            // Datves rỗng => _datVeStub coi như null / không tìm thấy
+            _mockContext.Setup(c => c.Datves)
+                .ReturnsDbSet(new List<Datve>());
+
+            // Xác nhận hủy = true để đi vào nhánh xử lý chính
+            _mockNotificationService
+                .Setup(n => n.ShowNotificationAsync(
+                    It.IsAny<string>(),
+                    NotificationType.Information,
+                    true))
+                .ReturnsAsync(true);
+
+            // Act
+            await _viewModel.CancelTicketCommand.ExecuteAsync(_bookingStub);
+
+            // Assert: không lưu DB vì không có Datve
+            _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Never);
+
+            // Assert: thông báo "Không tìm thấy vé để hủy."
+            _mockNotificationService.Verify(
+                n => n.ShowNotificationAsync(
+                    It.Is<string>(msg => msg.Contains("Không tìm thấy vé để hủy")),
+                    NotificationType.Error,
+                    false),
+                Times.Once);
+        }
     }
+
 }

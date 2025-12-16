@@ -27,44 +27,76 @@ namespace AirTicketSalesManagementTests
         {
             get
             {
-                yield return new TestCaseData("valid@gmail.com", true, true, true, null);
-                yield return new TestCaseData("valid@gmail.com", true, true, false, "Lỗi kết nối cơ sở dữ liệu.");
-                yield return new TestCaseData("invalid-email", false, false, true, "Email không hợp lệ.");
-                yield return new TestCaseData("notexist@gmail.com", true, false, true, "Tài khoản không tồn tại.");
+                yield return new TestCaseData("customer@gmail.com", true, true, true, null);
+                yield return new TestCaseData("", true, true, true, "Email không được để trống.");
+
+                // INVALID FORMAT
+                yield return new TestCaseData("ngocvo2502", false, false, true, "Email không hợp lệ.");
                 yield return new TestCaseData("ngocvo2502@", false, false, true, "Email không hợp lệ.");
+                yield return new TestCaseData("ngocvo2502@gmail", false, false, true, "Email không hợp lệ.");
                 yield return new TestCaseData("ngocvo2502@.com", false, false, true, "Email không hợp lệ.");
-                yield return new TestCaseData("valid@gmail.com", true, true, true, null); 
-                yield return new TestCaseData("", false, false, true, "Email không được để trống.");
+                yield return new TestCaseData("@gmail.com", false, false, true, "Email không hợp lệ.");
+
+                // NOT EXISTS
+                yield return new TestCaseData("test@gmail.com", true, false, true, "Tài khoản không tồn tại.");
+
+                // DB ERROR
+                yield return new TestCaseData("user@gmail.com", true, true, false, "Lỗi kết nối cơ sở dữ liệu.");
             }
         }
+
+
 
         [Test]
         [TestCaseSource(nameof(ForgotPasswordTestCases))]
-        public async Task ForgotPasswordAsync_Test(string email, bool isValidFormat, bool isExist, bool dbConnection, string expectedError)
+        public async Task ForgotPasswordAsync_Test(
+            string email,
+            bool isValidFormat,
+            bool isExist,
+            bool dbConnection,
+            string expectedError)
         {
             _viewModel.Email = email;
-            _mockForgotPasswordService.Setup(s => s.IsValid(email)).Returns(isValidFormat);
+
+            _mockForgotPasswordService
+                .Setup(s => s.IsValid(email))
+                .Returns(isValidFormat);
+
             if (dbConnection)
-                _mockForgotPasswordService.Setup(s => s.EmailExistsAsync(email)).ReturnsAsync(isExist);
+                _mockForgotPasswordService
+                    .Setup(s => s.EmailExistsAsync(email))
+                    .ReturnsAsync(isExist);
             else
-                _mockForgotPasswordService.Setup(s => s.EmailExistsAsync(email)).ThrowsAsync(new Exception("DB Error"));
+                _mockForgotPasswordService
+                    .Setup(s => s.EmailExistsAsync(email))
+                    .ThrowsAsync(new Exception("DB Error"));
 
-            await _viewModel.ForgotPasswordCommand.ExecuteAsync(null);
+            await _viewModel.ForgotPasswordAsync();
 
+            // CASE 1: DB ERROR → TOAST
+            if (expectedError == "Lỗi kết nối cơ sở dữ liệu.")
+            {
+                _mockToast.Verify(
+                    t => t.ShowToastAsync(
+                        It.Is<string>(s => s.Contains(expectedError)),
+                        null,
+                        2000),
+                    Times.Once);
+                return;
+            }
+
+            // CASE 2: VALIDATION ERROR
             if (expectedError != null)
             {
-                if (expectedError.Contains("Lỗi kết nối"))
-                    _mockToast.Verify(t => t.ShowToastAsync(It.Is<string>(s => s.Contains(expectedError)), null, 2000), Times.Once);
-                else
-                {
-                    var errors = _viewModel.GetErrors(nameof(_viewModel.Email)).Cast<string>();
-                    Assert.That(errors, Does.Contain(expectedError));
-                }
+                Assert.IsTrue(_viewModel.HasErrors);
+                var errors = _viewModel.GetErrors(nameof(_viewModel.Email)).Cast<string>();
+                Assert.That(errors, Does.Contain(expectedError));
+                return;
             }
-            else
-            {
-                Assert.IsFalse(_viewModel.HasErrors);
-            }
+
+            // CASE 3: SUCCESS
+            Assert.IsFalse(_viewModel.HasErrors);
         }
+
     }
 }

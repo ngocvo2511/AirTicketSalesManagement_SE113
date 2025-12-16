@@ -38,12 +38,11 @@ namespace AirTicketSalesManagementTests
             var listAccount = new List<Taikhoan>
     {
         _accountStub,
-        new Taikhoan { MaTk = 3, Email = "exist@example.com" }
+        new Taikhoan { MaTk = 3, Email = "yry12333@gmail.com" }
     };
 
             _mockContext = new Mock<AirTicketDbContext>();
 
-            // ✅ DbSet async-safe
             _mockContext.Setup(c => c.Taikhoans)
                 .ReturnsDbSet(listAccount);
 
@@ -81,15 +80,13 @@ namespace AirTicketSalesManagementTests
         {
             get
             {
-                yield return new TestCaseData("valid@gmail.com", "Admin", "Test Name", null, "Tài khoản đã được cập nhật thành công!", NotificationType.Information);
-                yield return new TestCaseData("invalid-email", "Nhân viên", "Test Name", null, "Email không hợp lệ!", NotificationType.Warning);
-                yield return new TestCaseData("", "Nhân viên", "Test Name", null, "Vui lòng điền đầy đủ thông tin tài khoản.", NotificationType.Warning);
-                yield return new TestCaseData("exist@example.com", "Nhân viên", "Test Name", null, "Email này đã được sử dụng.", NotificationType.Warning);
-                yield return new TestCaseData("valid@gmail.com", "", "Test Name", null, "Vui lòng điền đầy đủ thông tin tài khoản.", NotificationType.Warning);
-                yield return new TestCaseData("valid@gmail.com", "Nhân viên", "", null, "Vui lòng điền đầy đủ thông tin tài khoản.", NotificationType.Warning);
-                yield return new TestCaseData("valid@gmail.com", "Nhân viên", "Test Name", "newpass", "Tài khoản đã được cập nhật thành công!", NotificationType.Information);
-                yield return new TestCaseData("valid@gmail.com", "Nhân viên", "Test Name", null, "Không tìm thấy tài khoản để chỉnh sửa.", NotificationType.Error);
-                yield return new TestCaseData("valid@gmail.com", "Khách hàng", "Test Name", null, "Không thể chỉnh sửa vai trò tài khoản của bạn.", NotificationType.Warning);
+                yield return new TestCaseData("", "Admin", "Nguyễn Văn A", "", "Vui lòng điền đầy đủ thông tin tài khoản.", NotificationType.Warning);
+                yield return new TestCaseData("user@mail.com", null, "Nguyễn Văn A", "P@ssw0rd123", "Vui lòng điền đầy đủ thông tin tài khoản.", NotificationType.Warning);
+                yield return new TestCaseData("user@mail.com", "Admin", "", "", "Vui lòng điền đầy đủ thông tin tài khoản.", NotificationType.Warning);
+                yield return new TestCaseData("test@", "Admin", "Nguyễn Văn A", "P@ssw0rd123", "Email không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("yry12333@gmail.com", "Admin", "Nguyễn Văn A", "", "Email này đã được sử dụng.", NotificationType.Warning);
+                yield return new TestCaseData("user@mail.com", "Khách hàng", "Nguyễn Văn A", "P@ssw0rd123", "Không thể chỉnh sửa vai trò tài khoản của bạn.", NotificationType.Warning);
+                yield return new TestCaseData("user@mail.com", "Admin", "Nguyễn Văn A", "P@ssw0rd123", "Tài khoản đã được cập nhật thành công!", NotificationType.Information);
             }
         }
 

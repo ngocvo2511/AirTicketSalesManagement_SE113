@@ -28,7 +28,7 @@ namespace AirTicketSalesManagementTests
         {
             AirTicketSalesManagement.Services.UserSession.Current.CustomerId = 1;
             _khachHangStub = new Khachhang { MaKh = 1, HoTenKh = "Old Name", SoDt = "0900000000", Cccd = "000000000000", GioiTinh = "Nam", NgaySinh = new DateOnly(1990, 1, 1) };
-            _taiKhoanStub = new Taikhoan { MaKh = 1, Email = "old@example.com" };
+            _taiKhoanStub = new Taikhoan { MaKh = 1, Email = "yry12333@gmail.com" };
 
             _mockContext = new Mock<AirTicketDbContext>();
             _mockContext.Setup(c => c.Khachhangs)
@@ -38,7 +38,11 @@ namespace AirTicketSalesManagementTests
                 .ReturnsDbSet(new List<Taikhoan>
                 {
                     _taiKhoanStub,
-                    new Taikhoan { MaKh = 2, Email = "exist@example.com" }
+                    new Taikhoan
+                    {
+                        MaKh = 2,
+                        Email = "yry12333@gmail.com"
+                    }
                 });
 
             _mockContext.Setup(c => c.SaveChangesAsync(default))
@@ -62,15 +66,23 @@ namespace AirTicketSalesManagementTests
         {
             get
             {
-                yield return new TestCaseData(null, "0987682438", "valid@gmail.com", "052205003846", "02/11/2005", "Nam", "Họ tên không được để trống!", NotificationType.Warning);
-                yield return new TestCaseData("", "0987682438", "valid@gmail.com", "052205003846", "02/11/2005", "Nam", "Họ tên không được để trống!", NotificationType.Warning);
-                yield return new TestCaseData("Vo Xuan Ngoc", "0987682438", "", "052205003846", "02/11/2005", "Nam", "Email không được để trống!", NotificationType.Warning);
-                yield return new TestCaseData("Vo Xuan Ngoc", "0987682438", "invalid-email", "052205003846", "02/11/2005", "Nam", "Email không hợp lệ!", NotificationType.Warning);
-                yield return new TestCaseData("Vo Xuan Ngoc", "0987682438", "exist@example.com", "052205003846", "02/11/2005", "Nam", "Email đã được sử dụng bởi tài khoản khác!", NotificationType.Warning);
-                yield return new TestCaseData("Vo Xuan Ngoc", "098768243a", "valid@gmail.com", "052205003846", "02/11/2005", "Nam", "Số điện thoại không hợp lệ!", NotificationType.Warning);
-                yield return new TestCaseData("Vo Xuan Ngoc", "0987682438", "valid@gmail.com", "05220500384", "02/11/2005", "Nam", "Số căn cước không hợp lệ!", NotificationType.Warning);
-                yield return new TestCaseData("Vo Xuan Ngoc", "0987682438", "valid@gmail.com", "052205003846", "01/01/3000", "Nam", "Ngày sinh không hợp lệ!", NotificationType.Warning);
-                yield return new TestCaseData("Vo Xuan Ngoc", "0987682438", "valid@gmail.com", "052205003846", "02/11/2005", "Nam", "Cập nhật thông tin thành công!", NotificationType.Information);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "bao113@gmail.com", "052205003846", "11/02/2005", "Nam", "Cập nhật thông tin thành công!", NotificationType.Information);
+                yield return new TestCaseData("", "0987682438", "bao113@gmail.com", "052205003846", "11/02/2005", "Nữ", "Họ tên không được để trống!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "", "052205003846", "11/02/2005", "Khác", "Email không được để trống!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "ngocvo2502", "052205003846", "11/02/2005", "Nữ", "Email không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "ngocvo2502@", "052205003846", "11/02/2005", "Nam", "Email không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "ngocvo2502@gmail", "052205003846", "11/02/2005", "Nữ", "Email không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "ngocvo2502@.com", "052205003846", "11/02/2005", "Khác", "Email không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "@gmail.com", "052205003846", "11/02/2005", "Nữ", "Email không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "yry12333@gmail.com", "052205003846", "11/02/2005", "Nam", "Email đã được sử dụng bởi tài khoản khác!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "098768243", "bao113@gmail.com", "052205003846", "11/02/2005", "Khác", "Số điện thoại không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "098768243a", "bao113@gmail.com", "052205003846", "11/02/2005", "Nữ", "Số điện thoại không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "", "bao113@gmail.com", "052205003846", "11/02/2005", "Nam", "Cập nhật thông tin thành công!", NotificationType.Information);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "bao113@gmail.com", "05220500384a", "11/02/2005", "Nữ", "Số căn cước không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "bao113@gmail.com", "05220500384", "11/02/2005", "Nữ", "Số căn cước không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "bao113@gmail.com", "", "11/02/2005", "Khác", "Cập nhật thông tin thành công!", NotificationType.Information);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "bao113@gmail.com", "052205003846", "11/02/2026", "Nam", "Ngày sinh không hợp lệ!", NotificationType.Warning);
+                yield return new TestCaseData("Bui Quoc Bao", "0987682438", "bao113@gmail.com", "", "", "Nam", "Cập nhật thông tin thành công!", NotificationType.Information);
             }
         }
 

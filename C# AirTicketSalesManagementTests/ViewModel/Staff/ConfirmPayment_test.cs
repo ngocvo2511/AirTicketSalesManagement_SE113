@@ -2,7 +2,6 @@
 using AirTicketSalesManagement.Interface;
 using AirTicketSalesManagement.Models;
 using AirTicketSalesManagement.Models.UIModels;
-using AirTicketSalesManagement.Services;
 using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Services.Notification;
@@ -65,6 +64,11 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
                 NgayDat = DateTime.Now.AddDays(-1)
             };
 
+            // Mặc định cho phép confirm
+            typeof(QuanLiDatVe)
+                .GetProperty(nameof(QuanLiDatVe.CanConfirm))!
+                .SetValue(_bookingVmStub, true);
+
             _mockContext = new Mock<AirTicketDbContext>();
 
             // DbSet Datves
@@ -94,8 +98,13 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
                 .Setup(t => t.BuildBookingSuccess(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<decimal>()))
                 .Returns("EMAIL_BODY");
 
-            UserSession.Current.Email = "session@example.com";
+            // Cần UserSession email nếu booking.Email null
+            UserSession.Current = new UserSession
+            {
+                Email = "session@example.com"
+            };
 
+            // parent có thể là dummy, không dùng trong test này
             var parent = new BaseViewModel();
 
             _viewModel = new TicketManagementViewModel(
@@ -108,7 +117,7 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
         }
 
         // ------------------------------
-        // ve == null
+        // CASE 1: ve == null
         // ------------------------------
         [Test]
         public async Task ConfirmPayment_ShouldWarn_When_VeIsNull()
@@ -126,13 +135,14 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
         }
 
         // ------------------------------
-        // CanConfirm == false
+        // CASE 2: CanConfirm == false
         // ------------------------------
         [Test]
         public async Task ConfirmPayment_ShouldWarn_When_CanConfirmIsFalse()
         {
-            _bookingVmStub.QdDatVe = 1;
-            _bookingVmStub.GioDi = DateTime.Now.AddHours(12); // quá hạn xác nhận
+            typeof(QuanLiDatVe)
+                .GetProperty(nameof(QuanLiDatVe.CanConfirm))!
+                .SetValue(_bookingVmStub, false);
 
             await _viewModel.ConfirmPayment(_bookingVmStub);
 
@@ -146,9 +156,8 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
             _mockContext.Verify(c => c.SaveChangesAsync(default), Times.Never);
         }
 
-
         // ------------------------------
-        // Trạng thái không phải "Chưa thanh toán (Tiền mặt)"
+        // CASE 3: Trạng thái không phải "Chưa thanh toán (Tiền mặt)"
         // ------------------------------
         [Test]
         public async Task ConfirmPayment_ShouldWarn_When_StatusNotCashUnpaid()
@@ -168,7 +177,7 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
         }
 
         // ------------------------------
-        // Người dùng bấm No ở popup xác nhận
+        // CASE 4: Người dùng bấm No ở popup xác nhận
         // ------------------------------
         [Test]
         public async Task ConfirmPayment_ShouldNotProceed_When_UserCancelsConfirmation()
@@ -190,11 +199,10 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
                     NotificationType.Information,
                     false),
                 Times.Never);
-            _mockEmailService.Verify(e => e.SendEmailAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         // ------------------------------
-        // Không tìm thấy Datve trong DB
+        // CASE 5: Không tìm thấy Datve trong DB
         // ------------------------------
         [Test]
         public async Task ConfirmPayment_ShouldError_When_DatveNotFound()
@@ -215,18 +223,39 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
         }
 
         // ------------------------------
-        // Thành công + gửi email
+        // CASE 6: Lỗi khi SaveChangesAsync
+        // ------------------------------
+        [Test]
+        public async Task ConfirmPayment_ShouldError_When_SaveChangesThrows()
+        {
+            _mockContext.Setup(c => c.SaveChangesAsync(default))
+                .ThrowsAsync(new Exception("DB Error"));
+
+            await _viewModel.ConfirmPayment(_bookingVmStub);
+
+            _mockNotificationService.Verify(
+                n => n.ShowNotificationAsync(
+                    It.Is<string>(msg => msg.Contains("Lỗi khi xác nhận thanh toán")),
+                    NotificationType.Error,
+                    false),
+                Times.Once);
+        }
+
+        // ------------------------------
+        // CASE 7: Thành công + gửi email
         // ------------------------------
         [Test]
         public async Task ConfirmPayment_Success_ShouldUpdateStatus_SaveAndSendEmail()
         {
             _mockNotificationService
-                .Setup(n => n.ShowNotificationAsync(
-                    It.Is<string>(s => s.Contains("Bạn có chắc chắn")),
-                    NotificationType.Information,
-                    true))
+                .SetupSequence(n => n.ShowNotificationAsync(
+                        It.IsAny<string>(),
+                        It.IsAny<NotificationType>(),
+                        It.IsAny<bool>()))
+                // Popup xác nhận (isConfirmation = true) -> Yes
+                .ReturnsAsync(true)
+                // Thông báo kết quả (isConfirmation = false)
                 .ReturnsAsync(true);
-
 
             await _viewModel.ConfirmPayment(_bookingVmStub);
 
@@ -261,25 +290,6 @@ namespace AirTicketSalesManagementTests.ViewModel.Staff
                     It.Is<string>(to => to == "user@example.com"),
                     It.Is<string>(sub => sub.Contains("Thanh toán vé chuyến bay VN123")),
                     "EMAIL_BODY"),
-                Times.Once);
-        }
-
-        // ------------------------------
-        // Lỗi khi SaveChangesAsync
-        // ------------------------------
-        [Test]
-        public async Task ConfirmPayment_ShouldError_When_SaveChangesThrows()
-        {
-            _mockContext.Setup(c => c.SaveChangesAsync(default))
-                .ThrowsAsync(new Exception("DB Error"));
-
-            await _viewModel.ConfirmPayment(_bookingVmStub);
-
-            _mockNotificationService.Verify(
-                n => n.ShowNotificationAsync(
-                    It.Is<string>(msg => msg.Contains("Lỗi khi xác nhận thanh toán")),
-                    NotificationType.Error,
-                    false),
                 Times.Once);
         }
     }

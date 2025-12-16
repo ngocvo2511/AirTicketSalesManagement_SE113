@@ -62,8 +62,8 @@ namespace AirTicketSalesManagementTests
                 _mockDbContextService.Object,
                 _mockNotificationService.Object);
 
-            _viewModel.InfantAge = 2;
-            _viewModel.ChildAge = 12;
+            _viewModel.InfantAge = 1;
+            _viewModel.ChildAge = 6;
         }
 
 
@@ -71,8 +71,8 @@ namespace AirTicketSalesManagementTests
         {
             get
             {
-                yield return new TestCaseData(5, 12, "Lưu thành công.", NotificationType.Information);
-                yield return new TestCaseData(13, 12, "Tuổi tối đa của trẻ sơ sinh phải nhỏ hơn tuổi tối đa của trẻ em.", NotificationType.Warning);
+                yield return new TestCaseData(2, 6, "Lưu thành công.", NotificationType.Information);
+                yield return new TestCaseData(6, 6, "Tuổi tối đa của trẻ sơ sinh phải nhỏ hơn tuổi tối đa của trẻ em.", NotificationType.Warning);
             }
         }
 
