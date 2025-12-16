@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.Converters
 {
+    [ExcludeFromCodeCoverage]
     public class ZeroToVisibleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -24,6 +26,7 @@ namespace AirTicketSalesManagement.Converters
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public class NonZeroToVisibleConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -39,6 +42,7 @@ namespace AirTicketSalesManagement.Converters
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public class SearchedAndZeroToVisibleConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

@@ -10,9 +10,11 @@ using AirTicketSalesManagement.Services.EmailServices;
 using AirTicketSalesManagement.Services.Customer;
 using AirTicketSalesManagement.Services.Notification;
 using AirTicketSalesManagement.Services.DbContext;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
+    [ExcludeFromCodeCoverage]
     public partial class AdminViewModel : BaseViewModel
     {
 

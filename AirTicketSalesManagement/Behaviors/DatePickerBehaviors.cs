@@ -7,9 +7,11 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.Behaviors
 {
+    [ExcludeFromCodeCoverage]
     public static class DatePickerBehaviors
     {
         public static readonly DependencyProperty IsTextInputDisabledProperty =

@@ -128,6 +128,134 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
                 Assert.That(_vm.IsEditingChildAge, Is.False);
             }
         }
+
+        [TestFixture]
+        public class SaveMaxAirportsTests
+        {
+            private Mock<IAirTicketDbContextService> _dbContextServiceMock;
+            private Mock<INotificationService> _notificationServiceMock;
+            private Mock<AirTicketDbContext> _dbContextMock;
+            private RegulationManagementViewModel _vm;
+
+            private Mock<DbSet<T>> CreateMockDbSet<T>(IQueryable<T> data) where T : class
+            {
+                var mockSet = new Mock<DbSet<T>>();
+                mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(data.Provider);
+                mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(data.Expression);
+                mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
+                mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
+                return mockSet;
+            }
+
+            [SetUp]
+            public void SetUp()
+            {
+                _dbContextServiceMock = new Mock<IAirTicketDbContextService>();
+                _notificationServiceMock = new Mock<INotificationService>();
+                _dbContextMock = new Mock<AirTicketDbContext>();
+
+                _notificationServiceMock
+                    .Setup(n => n.ShowNotificationAsync(It.IsAny<string>(), It.IsAny<NotificationType>(), It.IsAny<bool>()))
+                    .ReturnsAsync(true);
+
+                // Provide an existing regulation for LoadRegulation
+                var initialRegList = new List<Quydinh>
+                {
+                    new Quydinh { SoSanBay = 10 }
+                };
+                var quyDinhDbSet = CreateMockDbSet(initialRegList.AsQueryable());
+                _dbContextMock.Setup(x => x.Quydinhs).Returns(quyDinhDbSet.Object);
+                _dbContextMock.Setup(x => x.SaveChanges()).Returns(1);
+
+                // Default: 0 sân bay
+                var sanbayDbSet = CreateMockDbSet(new List<Sanbay>().AsQueryable());
+                _dbContextMock.Setup(x => x.Sanbays).Returns(sanbayDbSet.Object);
+
+                _dbContextServiceMock.Setup(x => x.CreateDbContext()).Returns(_dbContextMock.Object);
+
+                _vm = new RegulationManagementViewModel(_dbContextServiceMock.Object, _notificationServiceMock.Object);
+                _vm.LoadRegulation();
+
+                Assert.That(_vm.MaxAirports, Is.EqualTo(10));
+            }
+
+            // CASE 1: Không hợp lệ (giá trị âm) => Không lưu
+            [Test]
+            public async Task SaveMaxAirports_EditNegative_ShouldNotSave()
+            {
+                _vm.EditMaxAirports = -1;
+                _vm.IsEditingMaxAirports = true;
+
+                await _vm.SaveMaxAirports();
+
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.Never);
+                Assert.That(_vm.MaxAirports, Is.EqualTo(10));
+                Assert.That(_vm.IsEditingMaxAirports, Is.True);
+            }
+
+            // CASE 2: Không thay đổi giá trị => Không lưu
+            [Test]
+            public async Task SaveMaxAirports_NoChange_ShouldNotSave()
+            {
+                _vm.EditMaxAirports = 10;
+                _vm.MaxAirports = 10;
+                _vm.IsEditingMaxAirports = true;
+
+                await _vm.SaveMaxAirports();
+
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.Never);
+                Assert.That(_vm.IsEditingMaxAirports, Is.False);
+            }
+
+            // CASE 3: Số sân bay hiện tại lớn hơn giới hạn mới => Cảnh báo, không lưu
+            [Test]
+            public async Task SaveMaxAirports_TooManyAirports_ShouldWarn_AndNotSave()
+            {
+                // Có 5 sân bay, giới hạn mới là 3
+                var sanbays = new List<Sanbay>
+                {
+                    new Sanbay { MaSb = "A" },
+                    new Sanbay { MaSb = "B" },
+                    new Sanbay { MaSb = "C" },
+                    new Sanbay { MaSb = "D" },
+                    new Sanbay { MaSb = "E" }
+                }.AsQueryable();
+                var sanbayDbSet = CreateMockDbSet(sanbays);
+                _dbContextMock.Setup(x => x.Sanbays).Returns(sanbayDbSet.Object);
+
+                _vm.EditMaxAirports = 3;
+                _vm.MaxAirports = 10;
+                _vm.IsEditingMaxAirports = true;
+
+                await _vm.SaveMaxAirports();
+
+                _notificationServiceMock.Verify(x =>
+                    x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("lớn hơn giới hạn mới")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.Never);
+                Assert.That(_vm.MaxAirports, Is.EqualTo(10));
+                Assert.That(_vm.IsEditingMaxAirports, Is.True);
+            }
+
+            // CASE 4: Lưu thành công khi hợp lệ
+            [Test]
+            public async Task SaveMaxAirports_Valid_ShouldUpdateAndPersist()
+            {
+                _vm.EditMaxAirports = 6;
+                _vm.MaxAirports = 10;
+                _vm.IsEditingMaxAirports = true;
+
+                await _vm.SaveMaxAirports();
+
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.Once);
+                Assert.That(_vm.MaxAirports, Is.EqualTo(6));
+                Assert.That(_vm.IsEditingMaxAirports, Is.False);
+            }
+        }
     }
     internal class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
     {

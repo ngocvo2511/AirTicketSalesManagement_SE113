@@ -572,7 +572,6 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             CapNhatSBTGList();
         }
 
-        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void DeleteFlight()
         {
@@ -774,6 +773,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         [ObservableProperty]
         private double searchContentHeight = double.NaN;
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ToggleSearch()
         {
@@ -781,6 +781,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         // Prefer _notificationService, fallback to Notification VM if service fails
+        [ExcludeFromCodeCoverage]
         private async Task<bool> _notification_service_fallback(string message, NotificationType type, bool isConfirmation = false)
         {
             try

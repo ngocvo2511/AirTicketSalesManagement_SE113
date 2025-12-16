@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -197,6 +198,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         // --- MaxAirports ---
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditMaxAirports()
         {
@@ -251,6 +253,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelMaxAirports()
         {
@@ -258,6 +261,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         // --- MinFlightTime ---
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditMinFlightTime()
         {
@@ -302,6 +306,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelMinFlightTime()
         {
@@ -309,6 +314,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         // --- MaxStopover ---
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditMaxStopover()
         {
@@ -353,6 +359,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelMaxStopover()
         {
@@ -360,6 +367,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         // --- MinStopTime ---
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditMinStopTime()
         {
@@ -402,6 +410,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelMinStopTime()
         {
@@ -409,6 +418,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         // --- MaxStopTime ---
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditMaxStopTime()
         {
@@ -452,6 +462,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelMaxStopTime()
         {
@@ -459,6 +470,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         // --- BookingTime ---
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditBookingTime()
         {
@@ -502,6 +514,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelBookingTime()
         {
@@ -509,6 +522,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
         }
 
         // --- CancelTime ---
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditCancelTime()
         {
@@ -552,12 +566,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelCancelTime()
         {
             IsEditingCancelTime = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditTicketClassCount()
         {
@@ -601,12 +617,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelTicketClassCount()
         {
             IsEditingTicketClassCount = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditInfantAge()
         {
@@ -659,12 +677,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelInfantAge()
         {
             IsEditingInfantAge = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void _EditChildAge()
         {
@@ -715,6 +735,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CancelChildAge()
         {

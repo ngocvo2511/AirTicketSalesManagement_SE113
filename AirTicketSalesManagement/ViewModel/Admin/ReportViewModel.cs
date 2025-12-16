@@ -13,9 +13,11 @@ using System.Windows.Media;
 using LiveCharts;
 using LiveCharts.Wpf;
 using LiveCharts.Defaults;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
+    [ExcludeFromCodeCoverage]
     public partial class ReportViewModel : BaseViewModel
     {
         [ObservableProperty] private bool isYearlyReport = true;

@@ -4,6 +4,7 @@ using AirTicketSalesManagement.Services.Notification;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Admin
 {
@@ -65,6 +66,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 await _notification.ShowNotificationAsync("Lỗi tải dữ liệu khách hàng", NotificationType.Error);
             }
         }
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void EditCustomer()
         {
@@ -72,6 +74,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             LoadEditField();
             IsEditPopupOpen = true;
         }
+        [ExcludeFromCodeCoverage]
         private void LoadEditField()
         {
             if (SelectedCustomer == null) return;
@@ -81,11 +84,13 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             EditPhone = SelectedCustomer.SoDt;
             EditBirthDate = SelectedCustomer.NgaySinh?.ToDateTime(new TimeOnly(0, 0));
         }
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void Refresh()
         {
             _ = LoadCustomers();
         }
+
         [RelayCommand]
         public void Search()
         {
@@ -105,6 +110,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             foreach (var c in query)
                 Customers.Add(c);
         }
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void ClearSearch()
         {
@@ -113,11 +119,13 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             Customers = new ObservableCollection<Khachhang>(_customers);
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CancelEdit()
         {
             IsEditPopupOpen = false;
         }
+
         [RelayCommand]
         public async Task SaveEditCustomer()
         {

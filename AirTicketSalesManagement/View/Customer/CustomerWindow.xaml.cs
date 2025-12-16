@@ -8,12 +8,14 @@ using Microsoft.Web.WebView2.Core;
 using AirTicketSalesManagement.ViewModel;
 using Microsoft.Web.WebView2.Wpf;
 using AirTicketSalesManagement.Messages;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.View.Customer
 {
     /// <summary>
     /// Interaction logic for CustomerWindow.xaml
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class CustomerWindow : Window
     {
         private readonly NotificationViewModel notification = new();

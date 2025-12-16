@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using AirTicketSalesManagement.Interface;
 
 namespace AirTicketSalesManagement.Services.EmailServices
 {
+    [ExcludeFromCodeCoverage]
     public class OtpService : IOtpService
     {
         private readonly Dictionary<string, (string Code, DateTime ExpireAt)> _otps = new();

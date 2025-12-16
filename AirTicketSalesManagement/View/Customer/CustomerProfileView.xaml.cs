@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace AirTicketSalesManagement.View.Customer
     /// <summary>
     /// Interaction logic for CustomerProfileView.xaml
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class CustomerProfileView : UserControl
     {
         public CustomerProfileView()

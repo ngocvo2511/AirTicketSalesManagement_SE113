@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace AirTicketSalesManagement.Converters
     /// <summary>
     /// Converter để kiểm tra giá trị có lớn hơn tham số không
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class GreaterThanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -42,6 +44,7 @@ namespace AirTicketSalesManagement.Converters
     /// <summary>
     /// Converter để kiểm tra giá trị có nhỏ hơn tham số không
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class LessThanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -74,6 +77,7 @@ namespace AirTicketSalesManagement.Converters
     /// Converter để kiểm tra giá trị có nằm trong khoảng không
     /// Parameter format: "min,max"
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class BetweenConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -109,7 +113,7 @@ namespace AirTicketSalesManagement.Converters
             throw new NotImplementedException();
         }
     }
-
+    [ExcludeFromCodeCoverage]
     public class NullToDefaultConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -131,6 +135,7 @@ namespace AirTicketSalesManagement.Converters
     /// <summary>
     /// Converter để format thời gian bay (tính từ giờ đi đến giờ đến)
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class FlightDurationConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -168,6 +173,7 @@ namespace AirTicketSalesManagement.Converters
     /// <summary>
     /// Converter để hiển thị trạng thái màu sắc cho số lượng vé
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class SeatAvailabilityColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -197,6 +203,7 @@ namespace AirTicketSalesManagement.Converters
     /// <summary>
     /// Converter để hiển thị icon trạng thái lịch bay
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class FlightStatusIconConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -221,6 +228,7 @@ namespace AirTicketSalesManagement.Converters
     /// <summary>
     /// Converter để format giá tiền VNĐ
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class CurrencyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -256,6 +264,7 @@ namespace AirTicketSalesManagement.Converters
     /// <summary>
     /// Converter để kiểm tra collection có rỗng không
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class CollectionEmptyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

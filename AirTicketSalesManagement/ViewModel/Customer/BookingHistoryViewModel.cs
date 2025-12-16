@@ -281,7 +281,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         }
 
         [RelayCommand]
-        private async Task CancelTicket(KQLichSuDatVe ve)
+        public async Task CancelTicket(KQLichSuDatVe ve)
         {
             var error = ValidateCancelTicket(ve);
             if (error != null)

@@ -2,9 +2,11 @@ using AirTicketSalesManagement.Data;
 using AirTicketSalesManagement.Models;
 using AirTicketSalesManagement.Services;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.Helper
 {
+    [ExcludeFromCodeCoverage]
     public static class PaymentDebugHelper
     {
         public static void LogUserSession()

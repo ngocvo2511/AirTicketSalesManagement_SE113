@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace AirTicketSalesManagement.View.Admin
     /// <summary>
     /// Interaction logic for AccountManagementView.xaml
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class AccountManagementView : UserControl
     {
         public AccountManagementView()
@@ -25,7 +27,7 @@ namespace AirTicketSalesManagement.View.Admin
             InitializeComponent();
         }
     }
-
+    [ExcludeFromCodeCoverage]
     public class RoleToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -43,7 +45,7 @@ namespace AirTicketSalesManagement.View.Admin
             throw new NotImplementedException();
         }
     }
-
+    [ExcludeFromCodeCoverage]
     public class AdminRoleToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

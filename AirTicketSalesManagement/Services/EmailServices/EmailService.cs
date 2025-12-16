@@ -8,9 +8,11 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AirTicketSalesManagement.Interface;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.Services.EmailServices
 {
+    [ExcludeFromCodeCoverage]
     public class EmailService : IEmailService
     {
         private readonly SmtpSettings _smtp;

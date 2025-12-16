@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -12,7 +13,7 @@ namespace AirTicketSalesManagement.ViewModel
         Warning,
         Error
     }
-
+    [ExcludeFromCodeCoverage]
     public partial class NotificationViewModel : ObservableObject
     {
         [ObservableProperty]

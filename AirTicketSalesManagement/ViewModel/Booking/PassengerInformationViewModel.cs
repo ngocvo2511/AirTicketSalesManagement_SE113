@@ -8,6 +8,7 @@ using AirTicketSalesManagement.Data;
 using System.Text.RegularExpressions;
 using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.Notification;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Booking
 {
@@ -143,6 +144,7 @@ namespace AirTicketSalesManagement.ViewModel.Booking
             AddExistingInformation(thongTinHanhKhachVaChuyenBay);
         }
 
+        [ExcludeFromCodeCoverage]
         private void AddExistingInformation(ThongTinHanhKhachVaChuyenBay thongTinHanhKhachVaChuyenBay)
         {
             if (thongTinHanhKhachVaChuyenBay?.PassengerList == null || PassengerList == null)

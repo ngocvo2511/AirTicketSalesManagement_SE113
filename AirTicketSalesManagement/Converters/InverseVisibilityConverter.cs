@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.Converters
 {
+    [ExcludeFromCodeCoverage]
     public class InverseVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

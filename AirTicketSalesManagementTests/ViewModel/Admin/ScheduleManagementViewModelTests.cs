@@ -1171,5 +1171,386 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
                 Assert.That(_viewModel.IsEditSchedulePopupOpen, Is.False);
             }
         }
+
+        [TestFixture]
+        public class SearchTests
+        {
+            private Mock<IAirTicketDbContextService> _dbContextServiceMock;
+            private Mock<INotificationService> _notificationServiceMock;
+            private Mock<AirTicketDbContext> _dbContextMock;
+            private ScheduleManagementViewModel _viewModel;
+
+            private Mock<DbSet<T>> CreateMockDbSet<T>(IQueryable<T> data) where T : class
+            {
+                var mockSet = new Mock<DbSet<T>>();
+                mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(data.Provider);
+                mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(data.Expression);
+                mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
+                mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
+                return mockSet;
+            }
+
+            [SetUp]
+            public void SetUp()
+            {
+                _dbContextServiceMock = new Mock<IAirTicketDbContextService>();
+                _notificationServiceMock = new Mock<INotificationService>();
+                _dbContextMock = new Mock<AirTicketDbContext>();
+
+                // Mock data
+                var sanbaySGN = new Sanbay { MaSb = "SGN", ThanhPho = "HCM", QuocGia = "VN" };
+                var sanbayHAN = new Sanbay { MaSb = "HAN", ThanhPho = "HN", QuocGia = "VN" };
+                var sanbayDAD = new Sanbay { MaSb = "DAD", ThanhPho = "ĐN", QuocGia = "VN" };
+
+                var chuyenbay1 = new Chuyenbay { SoHieuCb = "VN123", SbdiNavigation = sanbaySGN, SbdenNavigation = sanbayHAN };
+                var chuyenbay2 = new Chuyenbay { SoHieuCb = "VN456", SbdiNavigation = sanbayHAN, SbdenNavigation = sanbayDAD };
+
+                var lichbayList = new List<Lichbay>
+            {
+                new Lichbay
+                {
+                    MaLb = 1,
+                    SoHieuCb = "VN123",
+                    SoHieuCbNavigation = chuyenbay1,
+                    GioDi = new DateTime(2026, 1, 1, 8, 0, 0),
+                    GioDen = new DateTime(2026, 1, 1, 10, 0, 0),
+                    TtlichBay = "Chờ cất cánh"
+                },
+                new Lichbay
+                {
+                    MaLb = 2,
+                    SoHieuCb = "VN456",
+                    SoHieuCbNavigation = chuyenbay2,
+                    GioDi = new DateTime(2026, 1, 2, 9, 0, 0),
+                    GioDen = new DateTime(2026, 1, 2, 11, 0, 0),
+                    TtlichBay = "Hoàn thành"
+                }
+            }.AsQueryable();
+
+                var lichbayDbSet = CreateMockDbSet(lichbayList);
+                _dbContextMock.Setup(x => x.Lichbays).Returns(lichbayDbSet.Object);
+
+                var chuyenbayDbSet = CreateMockDbSet(new List<Chuyenbay> { chuyenbay1, chuyenbay2 }.AsQueryable());
+                _dbContextMock.Setup(x => x.Chuyenbays).Returns(chuyenbayDbSet.Object);
+
+                _dbContextServiceMock.Setup(x => x.CreateDbContext()).Returns(_dbContextMock.Object);
+
+                var sanbayDbSet = CreateMockDbSet(new List<Sanbay>().AsQueryable());
+                _dbContextMock.Setup(x => x.Sanbays).Returns(sanbayDbSet.Object);
+
+                _viewModel = new ScheduleManagementViewModel(_dbContextServiceMock.Object, _notificationServiceMock.Object)
+                {
+                    SanBayList = new ObservableCollection<string>
+                {
+                    "HCM (SGN), VN",
+                    "HN (HAN), VN",
+                    "ĐN (DAD), VN"
+                }
+                };
+            }
+
+            [Test]
+            public void Search_ByDiemDi_ShouldFilterCorrectly()
+            {
+                _viewModel.DiemDi = "HCM (SGN), VN";
+                _viewModel.DiemDen = null;
+                _viewModel.SoHieuCB = null;
+                _viewModel.TinhTrangLichBay = null;
+                _viewModel.NgayDi = null;
+
+                _viewModel.Search();
+
+                Assert.That(_viewModel.FlightSchedule.Count, Is.EqualTo(1));
+                Assert.That(_viewModel.FlightSchedule[0].SoHieuCb, Is.EqualTo("VN123"));
+            }
+
+            [Test]
+            public void Search_ByDiemDen_ShouldFilterCorrectly()
+            {
+                _viewModel.DiemDi = null;
+                _viewModel.DiemDen = "ĐN (DAD), VN";
+                _viewModel.SoHieuCB = null;
+                _viewModel.TinhTrangLichBay = null;
+                _viewModel.NgayDi = null;
+
+                _viewModel.Search();
+
+                Assert.That(_viewModel.FlightSchedule.Count, Is.EqualTo(1));
+                Assert.That(_viewModel.FlightSchedule[0].SoHieuCb, Is.EqualTo("VN456"));
+            }
+
+            [Test]
+            public void Search_BySoHieuCB_ShouldFilterCorrectly()
+            {
+                _viewModel.DiemDi = null;
+                _viewModel.DiemDen = null;
+                _viewModel.SoHieuCB = "VN123";
+                _viewModel.TinhTrangLichBay = null;
+                _viewModel.NgayDi = null;
+
+                _viewModel.Search();
+
+                Assert.That(_viewModel.FlightSchedule.Count, Is.EqualTo(1));
+                Assert.That(_viewModel.FlightSchedule[0].SoHieuCb, Is.EqualTo("VN123"));
+            }
+
+            [Test]
+            public void Search_ByTinhTrangLichBay_ShouldFilterCorrectly()
+            {
+                _viewModel.DiemDi = null;
+                _viewModel.DiemDen = null;
+                _viewModel.SoHieuCB = null;
+                _viewModel.TinhTrangLichBay = "Hoàn thành";
+                _viewModel.NgayDi = null;
+
+                _viewModel.Search();
+
+                Assert.That(_viewModel.FlightSchedule.Count, Is.EqualTo(1));
+                Assert.That(_viewModel.FlightSchedule[0].TtlichBay, Is.EqualTo("Hoàn thành"));
+            }
+
+            [Test]
+            public void Search_ByNgayDi_ShouldFilterCorrectly()
+            {
+                _viewModel.DiemDi = null;
+                _viewModel.DiemDen = null;
+                _viewModel.SoHieuCB = null;
+                _viewModel.TinhTrangLichBay = null;
+                _viewModel.NgayDi = new DateTime(2026, 1, 2);
+
+                _viewModel.Search();
+
+                Assert.That(_viewModel.FlightSchedule.Count, Is.EqualTo(1));
+                Assert.That(_viewModel.FlightSchedule[0].GioDi.Value.Date, Is.EqualTo(new DateTime(2026, 1, 2)));
+            }
+
+            [Test]
+            public void Search_NoFilter_ShouldReturnAll()
+            {
+                _viewModel.DiemDi = null;
+                _viewModel.DiemDen = null;
+                _viewModel.SoHieuCB = null;
+                _viewModel.TinhTrangLichBay = null;
+                _viewModel.NgayDi = null;
+
+                _viewModel.Search();
+
+                Assert.That(_viewModel.FlightSchedule.Count, Is.EqualTo(2));
+            }
+
+            [Test]
+            public void Search_NoMatch_ShouldReturnEmpty()
+            {
+                _viewModel.DiemDi = "HCM (SGN), VN";
+                _viewModel.DiemDen = "ĐN (DAD), VN";
+                _viewModel.SoHieuCB = "XXX";
+                _viewModel.TinhTrangLichBay = "Không tồn tại";
+                _viewModel.NgayDi = new DateTime(2020, 1, 1);
+
+                _viewModel.Search();
+
+                Assert.That(_viewModel.FlightSchedule.Count, Is.EqualTo(0));
+            }
+        }
+
+        [TestFixture]
+        public class DeleteScheduleTests
+        {
+            private Mock<IAirTicketDbContextService> _dbContextServiceMock;
+            private Mock<INotificationService> _notificationServiceMock;
+            private Mock<AirTicketDbContext> _dbContextMock;
+            private ScheduleManagementViewModel _viewModel;
+
+            private Mock<DbSet<T>> CreateMockDbSet<T>(IQueryable<T> data) where T : class
+            {
+                var mockSet = new Mock<DbSet<T>>();
+                mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(data.Provider);
+                mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(data.Expression);
+                mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
+                mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => data.GetEnumerator());
+                return mockSet;
+            }
+
+            [SetUp]
+            public void SetUp()
+            {
+                _dbContextServiceMock = new Mock<IAirTicketDbContextService>();
+                _notificationServiceMock = new Mock<INotificationService>();
+                _dbContextMock = new Mock<AirTicketDbContext>();
+
+                // Mock Sanbays để tránh lỗi constructor
+                var sanbayDbSet = CreateMockDbSet(new List<Sanbay>().AsQueryable());
+                _dbContextMock.Setup(x => x.Sanbays).Returns(sanbayDbSet.Object);
+
+                // Mock Chuyenbays, Hangvetheolichbays, Hangves để tránh lỗi Include/ThenInclude
+                var chuyenbayDbSet = CreateMockDbSet(new List<Chuyenbay>().AsQueryable());
+                _dbContextMock.Setup(x => x.Chuyenbays).Returns(chuyenbayDbSet.Object);
+
+                var hangveDbSet = CreateMockDbSet(new List<Hangve>().AsQueryable());
+                _dbContextMock.Setup(x => x.Hangves).Returns(hangveDbSet.Object);
+
+                var hangvetheolichbayDbSet = CreateMockDbSet(new List<Hangvetheolichbay>().AsQueryable());
+                _dbContextMock.Setup(x => x.Hangvetheolichbays).Returns(hangvetheolichbayDbSet.Object);
+
+                // Mock Lichbays (có thể rỗng)
+                var lichbayDbSet = CreateMockDbSet(new List<Lichbay>().AsQueryable());
+                _dbContextMock.Setup(x => x.Lichbays).Returns(lichbayDbSet.Object);
+
+                _dbContextServiceMock.Setup(x => x.CreateDbContext()).Returns(_dbContextMock.Object);
+
+                _notificationServiceMock
+                    .Setup(x => x.ShowNotificationAsync(It.IsAny<string>(), It.IsAny<NotificationType>(), It.IsAny<bool>()))
+                    .ReturnsAsync(true);
+
+                _viewModel = new ScheduleManagementViewModel(_dbContextServiceMock.Object, _notificationServiceMock.Object);
+            }
+
+            [Test]
+            public void DeleteSchedule_NullSelected_ShouldWarn()
+            {
+                _viewModel.DeleteSchedule(null);
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Vui lòng chọn một lịch bay")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void DeleteSchedule_UserCancelsConfirmation_ShouldNotDelete()
+            {
+                var lichbay = new Lichbay { MaLb = 1, SoHieuCb = "VN123" };
+
+                _notificationServiceMock
+                    .Setup(x => x.ShowNotificationAsync(It.IsAny<string>(), NotificationType.Warning, true))
+                    .ReturnsAsync(false);
+
+                _viewModel.DeleteSchedule(lichbay);
+
+                _dbContextMock.Verify(x => x.Lichbays.Remove(It.IsAny<Lichbay>()), Times.Never);
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.Never);
+            }
+
+            [Test]
+            public void DeleteSchedule_NotFoundInDb_ShouldWarn()
+            {
+                var lichbay = new Lichbay { MaLb = 1, SoHieuCb = "VN123" };
+
+                var lichbayDbSet = CreateMockDbSet(new List<Lichbay>().AsQueryable());
+                _dbContextMock.Setup(x => x.Lichbays).Returns(lichbayDbSet.Object);
+
+                _notificationServiceMock
+                    .Setup(x => x.ShowNotificationAsync(It.IsAny<string>(), NotificationType.Warning, true))
+                    .ReturnsAsync(true);
+
+                _viewModel.DeleteSchedule(lichbay);
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Không tìm thấy lịch bay")),
+                        NotificationType.Error,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void DeleteSchedule_HasDatVe_ShouldWarn()
+            {
+                var lichbay = new Lichbay
+                {
+                    MaLb = 1,
+                    SoHieuCb = "VN123",
+                    Datves = new List<Datve> { new Datve() }
+                };
+
+                var lichbayDbSet = CreateMockDbSet(new List<Lichbay> { lichbay }.AsQueryable());
+                _dbContextMock.Setup(x => x.Lichbays).Returns(lichbayDbSet.Object);
+
+                _notificationServiceMock
+                    .Setup(x => x.ShowNotificationAsync(It.IsAny<string>(), NotificationType.Warning, true))
+                    .ReturnsAsync(true);
+
+                _viewModel.DeleteSchedule(lichbay);
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Không thể xóa lịch bay đã có người đặt vé")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [TestCase("Đã cất cánh")]
+            [TestCase("Hoàn thành")]
+            public void DeleteSchedule_StatusNotAllowDelete_ShouldWarn(string status)
+            {
+                var lichbay = new Lichbay
+                {
+                    MaLb = 1,
+                    SoHieuCb = "VN123",
+                    TtlichBay = status,
+                    Datves = new List<Datve>()
+                };
+
+                var lichbayDbSet = CreateMockDbSet(new List<Lichbay> { lichbay }.AsQueryable());
+                _dbContextMock.Setup(x => x.Lichbays).Returns(lichbayDbSet.Object);
+
+                _notificationServiceMock
+                    .Setup(x => x.ShowNotificationAsync(It.IsAny<string>(), NotificationType.Warning, true))
+                    .ReturnsAsync(true);
+
+                _viewModel.DeleteSchedule(lichbay);
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Không thể xóa lịch bay đã ")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+            }
+
+            [Test]
+            public void DeleteSchedule_Valid_ShouldDeleteAndNotify()
+            {
+                var lichbay = new Lichbay
+                {
+                    MaLb = 1,
+                    SoHieuCb = "VN123",
+                    TtlichBay = "Chờ cất cánh",
+                    Datves = new List<Datve>(),
+                    Hangvetheolichbays = new List<Hangvetheolichbay> { new Hangvetheolichbay() }
+                };
+
+                var lichbayDbSet = CreateMockDbSet(new List<Lichbay> { lichbay }.AsQueryable());
+                _dbContextMock.Setup(x => x.Lichbays).Returns(lichbayDbSet.Object);
+
+                _notificationServiceMock
+                    .Setup(x => x.ShowNotificationAsync(It.IsAny<string>(), NotificationType.Warning, true))
+                    .ReturnsAsync(true);
+
+                _notificationServiceMock
+                    .Setup(x => x.ShowNotificationAsync(It.Is<string>(msg => msg.Contains("Đã xóa lịch bay thành công")), NotificationType.Information, false))
+                    .ReturnsAsync(true);
+
+                _dbContextMock.Setup(x => x.Hangvetheolichbays.RemoveRange(It.IsAny<IEnumerable<Hangvetheolichbay>>()));
+                _dbContextMock.Setup(x => x.Lichbays.Remove(It.IsAny<Lichbay>()));
+                _dbContextMock.Setup(x => x.SaveChanges());
+
+                _viewModel.DeleteSchedule(lichbay);
+
+                _dbContextMock.Verify(x => x.Hangvetheolichbays.RemoveRange(It.IsAny<IEnumerable<Hangvetheolichbay>>()), Times.Once);
+                _dbContextMock.Verify(x => x.Lichbays.Remove(It.IsAny<Lichbay>()), Times.Once);
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.Once);
+
+                _notificationServiceMock.Verify(
+                    x => x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("Đã xóa lịch bay thành công")),
+                        NotificationType.Information,
+                        false),
+                    Times.Once);
+            }
+        }
     }
 }

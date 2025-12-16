@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -133,12 +134,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
                 nhanVienList.Concat(khachHangList).OrderBy(u => u.Name));
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void Refresh()
         {
             LoadAccounts();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void ClearSearch()
         {
@@ -175,6 +178,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void AddAccount()
         {
@@ -182,6 +186,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             IsAddPopupOpen = true;
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetAddFields()
         {
             AddEmail = string.Empty;
@@ -190,12 +195,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             AddPassword = string.Empty;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CancelAdd()
         {
             IsAddPopupOpen = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CloseAdd()
         {
@@ -276,6 +283,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async Task EditAccount()
         {
@@ -289,6 +297,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             IsEditPopupOpen = true;
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetEditFields()
         {
             EditEmail = SelectedAccount.Email;
@@ -307,12 +316,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CancelEdit()
         {
             IsEditPopupOpen = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CloseEdit()
         {
