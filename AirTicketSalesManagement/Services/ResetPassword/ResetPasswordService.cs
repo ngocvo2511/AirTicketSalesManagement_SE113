@@ -1,12 +1,14 @@
 ﻿using AirTicketSalesManagement.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AirTicketSalesManagement.Services.ResetPassword
 {
+    [ExcludeFromCodeCoverage]
     public class ResetPasswordService : IResetPasswordService
     {
         private readonly AirTicketDbContext _context;

@@ -1,9 +1,11 @@
-﻿using System.Windows;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace AirTicketSalesManagement.Resources.User_Controls
 {
+    [ExcludeFromCodeCoverage]
     public partial class CustomTitleBar : UserControl
     {
         public CustomTitleBar()

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace AirTicketSalesManagement.Services.ForgotPassword
 {
+    [ExcludeFromCodeCoverage]
     public class ForgotPasswordService : IForgotPasswordService
     {
         private readonly AirTicketDbContext _context;

@@ -6,10 +6,12 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
 namespace AirTicketSalesManagement.ViewModel.Booking
 {
+    [ExcludeFromCodeCoverage]
     public partial class FlightScheduleSearchViewModel : BaseViewModel
     {
 

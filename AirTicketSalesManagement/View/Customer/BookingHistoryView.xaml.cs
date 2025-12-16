@@ -2,6 +2,7 @@
 using AirTicketSalesManagement.ViewModel.Customer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace AirTicketSalesManagement.View.Customer
     /// <summary>
     /// Interaction logic for BookingHistoryView.xaml
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class BookingHistoryView : UserControl
     {
         public BookingHistoryView()

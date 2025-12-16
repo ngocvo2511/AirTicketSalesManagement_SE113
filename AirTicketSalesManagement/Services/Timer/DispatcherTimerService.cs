@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Windows.Threading;
 
 namespace AirTicketSalesManagement.Services.Timer
 {
+    [ExcludeFromCodeCoverage]
     public class DispatcherTimerService : ITimerService
     {
         private DispatcherTimer? _timer;

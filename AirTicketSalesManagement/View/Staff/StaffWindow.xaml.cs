@@ -20,12 +20,14 @@ using VNPAY.NET.Models;
 using VNPAY.NET;
 using AirTicketSalesManagement.ViewModel;
 using AirTicketSalesManagement.Messages;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.View.Staff
 {
     /// <summary>
     /// Interaction logic for StaffWindow.xaml
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public partial class StaffWindow : Window
     {
         private readonly NotificationViewModel notification = new();

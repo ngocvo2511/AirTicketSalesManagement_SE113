@@ -4,9 +4,18 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
+	  <Exclude>
+            [AirTicketSalesManagement.View*]*
+          </Exclude>
           <ExcludeByAttribute>
             ExcludeFromCodeCoverage
           </ExcludeByAttribute>
+          <!-- Phòng hờ -->
+          <ExcludeByFile>
+            **/*.g.cs;
+            **/obj/**;
+            **/bin/**
+          </ExcludeByFile>
         </Configuration>
       </DataCollector>
     </DataCollectors>

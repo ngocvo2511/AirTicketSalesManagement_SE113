@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using System.Diagnostics.CodeAnalysis;
 
+[ExcludeFromCodeCoverage]
 public class BoolToWidthConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

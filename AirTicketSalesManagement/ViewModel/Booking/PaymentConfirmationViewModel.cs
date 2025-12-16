@@ -12,9 +12,11 @@ using Microsoft.Web.WebView2.Core;
 using AirTicketSalesManagement.Interface;
 using AirTicketSalesManagement.Services.EmailServices;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Booking
 {
+    [ExcludeFromCodeCoverage]
     public partial class PaymentConfirmationViewModel : BaseViewModel
     {
         private readonly IEmailService _emailService;

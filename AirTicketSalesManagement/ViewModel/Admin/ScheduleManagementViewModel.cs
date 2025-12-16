@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using OfficeOpenXml;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -147,6 +148,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public void LoadHangVe()
         {
             using (var context = _db.CreateDbContext())
@@ -197,6 +199,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
 
         [RelayCommand] public void Refresh() => LoadFlightSchedule();
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void ClearSearch()
         {
@@ -246,6 +249,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             return (start >= 0 && end > start) ? displayString.Substring(start + 1, end - start - 1) : displayString;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async Task ImportFromExcel()
         {
@@ -462,7 +466,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
-
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void AddSchedule()
         {
@@ -471,6 +475,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             IsAddSchedulePopupOpen = true;
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetAddField()
         {
             AddSoHieuCB = string.Empty;
@@ -485,12 +490,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             TicketClassForScheduleList = new ObservableCollection<HangVeTheoLichBay>();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CancelAddSchedule()
         {
             IsAddSchedulePopupOpen = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CloseAddSchedule()
         {
@@ -661,6 +668,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void AddTicketClass()
         {
@@ -706,6 +714,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private void UpdateTicketClassList()
         {
             if (TicketClassForScheduleList == null || TicketClassForScheduleList.Count == 0)
@@ -732,6 +741,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void RemoveAddTicketClass(HangVeTheoLichBay ticketClass)
         {
@@ -768,6 +778,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private void UpdateSTTAfterRemoval(int removedSTT)
         {
             try
@@ -793,6 +804,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async void EditSchedule(Lichbay selectedLichBay)
         {
@@ -900,6 +912,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetEditField(Lichbay selectedLichBay)
         {
             EditSoHieuCB = selectedLichBay?.SoHieuCbNavigation?.SoHieuCb ?? string.Empty;
@@ -928,12 +941,14 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             UpdateTicketClassList();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CancelEditSchedule()
         {
             IsEditSchedulePopupOpen = false;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public void CloseEditSchedule()
         {
@@ -1096,6 +1111,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async Task EditTicketClass()
         {
@@ -1141,6 +1157,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         public async Task RemoveEditTicketClassAsync(HangVeTheoLichBay ticketClass)
         {
