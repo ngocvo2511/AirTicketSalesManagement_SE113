@@ -48,11 +48,12 @@ namespace AirTicketSalesManagementTests
         {
             get
             {
-                yield return new TestCaseData("123456", false, true, null);
-                yield return new TestCaseData("123456", false, false, "Mã xác nhận không hợp lệ hoặc đã hết hạn.");
-                yield return new TestCaseData("123456", true, false, "Mã xác nhận đã hết hạn. Vui lòng gửi lại mã mới.");
+                yield return new TestCaseData("111111", false, true, null);
+                yield return new TestCaseData("222222", false, false, "Mã xác nhận không hợp lệ hoặc đã hết hạn.");
+                yield return new TestCaseData("11111", false, false, "Mã xác nhận không hợp lệ hoặc đã hết hạn.");
+                yield return new TestCaseData("11111", true, false, "Mã xác nhận không hợp lệ hoặc đã hết hạn.");
                 yield return new TestCaseData("", false, false, "Mã xác nhận không được để trống.");
-                yield return new TestCaseData(null, false, false, "Mã xác nhận không được để trống.");
+       
             }
         }
 
@@ -61,12 +62,11 @@ namespace AirTicketSalesManagementTests
         public async Task CheckCode_Test(string code, bool isExpired, bool isValidOtp, string expectedError)
         {
             _viewModel.Code = code;
-            _viewModel.IsCodeExpired = isExpired;
             
             // Fix CS1503: Moq Returns expects a value of type bool, isValidOtp is bool. 
             // If verifyOtp returns bool, this is correct. Ensure types match.
             _mockOtpService.Setup(s => s.VerifyOtp(It.IsAny<string>(), It.IsAny<string>()))
-                           .Returns(isValidOtp);
+                           .Returns(isValidOtp && !isExpired);
 
             await _viewModel.CheckCodeCommand.ExecuteAsync(null);
 

@@ -9,9 +9,15 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:views="clr-namespace:AirTicketSalesManagement.View.Notification"
-             xmlns:notification="clr-namespace:AirTicketSalesManagement.View.Notification"
+             xmlns:notification="clr-namespace:AirTicketSalesManagement.View.Notification" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1200">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction
+                Command="{Binding LoadUserListCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <UserControl.Resources>
         <!-- Custom Card Style -->

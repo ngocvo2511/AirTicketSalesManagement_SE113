@@ -2,13 +2,14 @@ using AirTicketSalesManagement.Data;
 using AirTicketSalesManagement.Models;
 using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.ViewModel;
 using AirTicketSalesManagement.ViewModel.Customer;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Moq.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Globalization;
 using System.Linq.Expressions;
-using AirTicketSalesManagement.ViewModel;
 
 namespace AirTicketSalesManagementTests
 {
@@ -18,8 +19,6 @@ namespace AirTicketSalesManagementTests
         private Mock<IAirTicketDbContextService> _mockDbContextService;
         private Mock<INotificationService> _mockNotificationService;
         private Mock<AirTicketDbContext> _mockContext;
-        private Mock<DbSet<Khachhang>> _mockKhachHangSet;
-        private Mock<DbSet<Taikhoan>> _mockTaiKhoanSet;
         private CustomerProfileViewModel _viewModel;
         private Khachhang _khachHangStub;
         private Taikhoan _taiKhoanStub;
@@ -30,15 +29,20 @@ namespace AirTicketSalesManagementTests
             AirTicketSalesManagement.Services.UserSession.Current.CustomerId = 1;
             _khachHangStub = new Khachhang { MaKh = 1, HoTenKh = "Old Name", SoDt = "0900000000", Cccd = "000000000000", GioiTinh = "Nam", NgaySinh = new DateOnly(1990, 1, 1) };
             _taiKhoanStub = new Taikhoan { MaKh = 1, Email = "old@example.com" };
-            var khachHangList = new List<Khachhang> { _khachHangStub };
-            var taiKhoanList = new List<Taikhoan> { _taiKhoanStub, new Taikhoan { MaKh = 2, Email = "exist@example.com" } };
 
-            _mockKhachHangSet = CreateMockDbSet(khachHangList);
-            _mockTaiKhoanSet = CreateMockDbSet(taiKhoanList);
             _mockContext = new Mock<AirTicketDbContext>();
-            _mockContext.Setup(c => c.Khachhangs).Returns(_mockKhachHangSet.Object);
-            _mockContext.Setup(c => c.Taikhoans).Returns(_mockTaiKhoanSet.Object);
-            _mockContext.Setup(c => c.SaveChangesAsync(default)).ReturnsAsync(1);
+            _mockContext.Setup(c => c.Khachhangs)
+                .ReturnsDbSet(new List<Khachhang> { _khachHangStub });
+
+            _mockContext.Setup(c => c.Taikhoans)
+                .ReturnsDbSet(new List<Taikhoan>
+                {
+                    _taiKhoanStub,
+                    new Taikhoan { MaKh = 2, Email = "exist@example.com" }
+                });
+
+            _mockContext.Setup(c => c.SaveChangesAsync(default))
+                .ReturnsAsync(1);
 
             _mockDbContextService = new Mock<IAirTicketDbContextService>();
             _mockDbContextService.Setup(s => s.CreateDbContext()).Returns(_mockContext.Object);
@@ -97,17 +101,5 @@ namespace AirTicketSalesManagementTests
             _mockNotificationService.Verify(n => n.ShowNotificationAsync(It.Is<string>(msg => msg.Contains(expectedMessage)), expectedType, It.IsAny<bool>()), Times.Once);
         }
 
-        private static Mock<DbSet<T>> CreateMockDbSet<T>(List<T> sourceList) where T : class
-        {
-            var queryable = sourceList.AsQueryable();
-            var mockSet = new Mock<DbSet<T>>();
-            mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
-            mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
-            mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
-            mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
-            mockSet.Setup(d => d.FirstOrDefaultAsync(It.IsAny<Expression<Func<T, bool>>>(), default)).ReturnsAsync((Expression<Func<T, bool>> p, CancellationToken t) => queryable.FirstOrDefault(p.Compile()));
-            mockSet.Setup(d => d.AnyAsync(It.IsAny<Expression<Func<T, bool>>>(), default)).ReturnsAsync((Expression<Func<T, bool>> p, CancellationToken t) => queryable.Any(p.Compile()));
-            return mockSet;
-        }
     }
 }

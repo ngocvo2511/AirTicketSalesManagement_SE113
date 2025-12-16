@@ -99,7 +99,6 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             if (!DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
                 LoadAccounts();
-                LoadUserList();
             }
         }
 
@@ -118,6 +117,7 @@ namespace AirTicketSalesManagement.ViewModel.Admin
             Accounts = new ObservableCollection<AccountModel>(danhSach);
         }
 
+        [RelayCommand]
         private void LoadUserList()
         {
             using var context = _createContext();

@@ -3,12 +3,13 @@ using AirTicketSalesManagement.Models;
 using AirTicketSalesManagement.Models.UIModels;
 using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.ViewModel;
 using AirTicketSalesManagement.ViewModel.Admin;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Moq.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Linq.Expressions;
-using AirTicketSalesManagement.ViewModel;
 
 namespace AirTicketSalesManagementTests
 {
@@ -25,24 +26,56 @@ namespace AirTicketSalesManagementTests
         public void Setup()
         {
             AirTicketSalesManagement.Services.UserSession.Current.AccountId = 1;
-            _accountStub = new Taikhoan { MaTk = 2, Email = "staff@example.com", VaiTro = "Nhân viên", MaNv = 1 };
-            var listAccount = new List<Taikhoan> { 
-                _accountStub, 
-                new Taikhoan { MaTk = 3, Email = "exist@example.com" } 
+
+            _accountStub = new Taikhoan
+            {
+                MaTk = 2,
+                Email = "staff@example.com",
+                VaiTro = "Nhân viên",
+                MaNv = 1
             };
 
+            var listAccount = new List<Taikhoan>
+    {
+        _accountStub,
+        new Taikhoan { MaTk = 3, Email = "exist@example.com" }
+    };
+
             _mockContext = new Mock<AirTicketDbContext>();
-            _mockContext.Setup(c => c.Taikhoans).Returns(CreateMockDbSet(listAccount).Object);
-            _mockContext.Setup(c => c.SaveChanges()).Returns(1);
+
+            // ✅ DbSet async-safe
+            _mockContext.Setup(c => c.Taikhoans)
+                .ReturnsDbSet(listAccount);
+
+            _mockContext.Setup(c => c.SaveChanges())
+                .Returns(1);
 
             _mockDbContextService = new Mock<IAirTicketDbContextService>();
-            _mockDbContextService.Setup(s => s.CreateDbContext()).Returns(_mockContext.Object);
-            _mockNotificationService = new Mock<INotificationService>();
-            _mockNotificationService.Setup(n => n.ShowNotificationAsync(It.IsAny<string>(), It.IsAny<NotificationType>(), It.IsAny<bool>())).ReturnsAsync(true);
+            _mockDbContextService
+                .Setup(s => s.CreateDbContext())
+                .Returns(_mockContext.Object);
 
-            _viewModel = new AccountManagementViewModel(_mockDbContextService.Object, _mockNotificationService.Object);
-            _viewModel.SelectedAccount = new AccountModel { Id = 2, Email = "staff@example.com", VaiTro = "Nhân viên", HoTen = "Staff Name" };
+            _mockNotificationService = new Mock<INotificationService>();
+            _mockNotificationService
+                .Setup(n => n.ShowNotificationAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<NotificationType>(),
+                    It.IsAny<bool>()))
+                .ReturnsAsync(true);
+
+            _viewModel = new AccountManagementViewModel(
+                _mockDbContextService.Object,
+                _mockNotificationService.Object);
+
+            _viewModel.SelectedAccount = new AccountModel
+            {
+                Id = 2,
+                Email = "staff@example.com",
+                VaiTro = "Nhân viên",
+                HoTen = "Staff Name"
+            };
         }
+
 
         public static IEnumerable<TestCaseData> SaveEditAccountTestCases
         {
@@ -82,19 +115,6 @@ namespace AirTicketSalesManagementTests
             _viewModel.SaveEditAccountCommand.Execute(null);
 
             _mockNotificationService.Verify(n => n.ShowNotificationAsync(It.Is<string>(msg => msg.Contains(expectedMessage)), expectedType, It.IsAny<bool>()), Times.Once);
-        }
-
-        private static Mock<DbSet<T>> CreateMockDbSet<T>(List<T> sourceList) where T : class
-        {
-            var queryable = sourceList.AsQueryable();
-            var mockSet = new Mock<DbSet<T>>();
-            mockSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
-            mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
-            mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
-            mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
-            mockSet.Setup(d => d.FirstOrDefault(It.IsAny<Expression<Func<T, bool>>>())).Returns((Expression<Func<T, bool>> p) => queryable.FirstOrDefault(p.Compile()));
-            mockSet.Setup(d => d.Any(It.IsAny<Expression<Func<T, bool>>>())).Returns((Expression<Func<T, bool>> p) => queryable.Any(p.Compile()));
-            return mockSet;
         }
     }
 }
