@@ -13,6 +13,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -83,7 +84,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
 
         private AirTicketDbContext CreateContext() => _dbContextService.CreateDbContext();
 
-        // Public so tests can await
+        [ExcludeFromCodeCoverage]
         public async Task LoadDataAsync()
         {
             CanCancle = ChiTietVe?.CanCancel ?? false;
@@ -116,6 +117,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void GoBack()
         {

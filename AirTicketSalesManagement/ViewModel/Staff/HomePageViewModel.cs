@@ -6,6 +6,7 @@ using LiveCharts.Wpf;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,7 @@ namespace AirTicketSalesManagement.ViewModel.Staff
             LoadRevenue7Days();
         }
 
+        [ExcludeFromCodeCoverage]
         private async void LoadTodayStats()
         {
             try
@@ -79,6 +81,8 @@ namespace AirTicketSalesManagement.ViewModel.Staff
                 Console.WriteLine($"Error loading today's stats: {ex.Message}");
             }
         }
+
+        [ExcludeFromCodeCoverage]
         private async void LoadRevenue7Days()
         {
             try

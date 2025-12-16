@@ -447,6 +447,12 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
                 {
                     new SBTG { STT = 1, MaSBTG = "Hà Nội (HAN), Việt Nam", ThoiGianDung = 40 }
                 };
+                // Setup RemoveRange and Add for Sanbaytrunggians
+                _dbContextMock.Setup(x => x.Sanbaytrunggians.RemoveRange(It.IsAny<IEnumerable<Sanbaytrunggian>>()));
+                _dbContextMock.Setup(x => x.Sanbaytrunggians.Add(It.IsAny<Sanbaytrunggian>()));
+
+                // Setup SaveChanges
+                _dbContextMock.Setup(x => x.SaveChanges());
 
                 // Setup RemoveRange and Add for Sanbaytrunggians
                 _dbContextMock.Setup(x => x.Sanbaytrunggians.RemoveRange(It.IsAny<IEnumerable<Sanbaytrunggian>>()));

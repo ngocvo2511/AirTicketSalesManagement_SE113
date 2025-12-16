@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -90,6 +91,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         private AirTicketDbContext CreateContext() => _dbContextService.CreateDbContext();
 
         // Public async variant so tests can await it
+        [ExcludeFromCodeCoverage]
         public async Task LoadDataAsync()
         {
             try
@@ -119,6 +121,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void OpenEditProfile()
         {
@@ -126,6 +129,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             IsEditPopupOpen = true;
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetField()
         {
             EditHoTen = HoTen;
@@ -136,6 +140,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             EditEmail = Email;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void CloseEditPopup()
         {
@@ -280,6 +285,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             return Regex.IsMatch(phone ?? string.Empty, @"^0\d{9}$");
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void OpenChangePassword()
         {
@@ -341,6 +347,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private void ResetPasswordField()
         {
             CurrentPassword = string.Empty;

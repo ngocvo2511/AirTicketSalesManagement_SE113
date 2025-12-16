@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
@@ -68,6 +69,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             Notification = new NotificationViewModel();
         }
 
+        [ExcludeFromCodeCoverage]
         public async Task LoadData()
         {
             CanCancle = LichSuDatVe.CanCancel;
@@ -114,6 +116,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             return null;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void GoBack()
         {

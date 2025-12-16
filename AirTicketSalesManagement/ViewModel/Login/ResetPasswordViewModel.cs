@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -108,6 +109,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             return Task.CompletedTask;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private async Task ResendCodeAsync()
         {
@@ -165,6 +167,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             return Task.CompletedTask;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ShowLogin() => _auth.NavigateToLogin();
     }

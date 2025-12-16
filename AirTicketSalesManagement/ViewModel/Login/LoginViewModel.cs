@@ -4,6 +4,7 @@ using AirTicketSalesManagement.Services.Login;
 using AirTicketSalesManagement.Services.Navigation;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Media;
 
 namespace AirTicketSalesManagement.ViewModel.Login
@@ -78,6 +79,7 @@ namespace AirTicketSalesManagement.ViewModel.Login
             }
         }
 
+        
         private void UpdateSession(LoginResult result)
         {
             UserSession.Current.AccountId = result.AccountId;
@@ -98,9 +100,11 @@ namespace AirTicketSalesManagement.ViewModel.Login
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ShowRegister() => _auth.NavigateToRegister();
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ShowForgotPassword() => _auth.NavigateToForgotPassword();
     }

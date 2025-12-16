@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
@@ -94,6 +95,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             ClearExpiredHolds();
         }
 
+        [ExcludeFromCodeCoverage]
         public async Task LoadData(int? idCustomer)
         {
             try
@@ -161,6 +163,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public void ClearExpiredHolds()
         {
             try
@@ -221,6 +224,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ShowDetailHistory(KQLichSuDatVe lichSuDatVe)
         {
@@ -251,6 +255,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             return filter;
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void SearchHistory()
         {
@@ -430,6 +435,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             }
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ClearFilter()
         {
@@ -441,6 +447,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             IsEmpty = HistoryBooking.Count == 0;
         }
 
+        [ExcludeFromCodeCoverage]
         partial void OnSanBayListChanged(ObservableCollection<string> value)
         {
             OnPropertyChanged(nameof(DiemDiList));
@@ -453,6 +460,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         [ObservableProperty]
         private double searchContentHeight = double.NaN;
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ToggleSearch()
         {

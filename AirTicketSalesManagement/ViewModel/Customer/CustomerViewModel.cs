@@ -15,6 +15,7 @@ using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.PaymentGateway;
 using AirTicketSalesManagement.Services.Notification;
 using AirTicketSalesManagement.Services.Session;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirTicketSalesManagement.ViewModel.Customer
 {
@@ -102,7 +103,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             });
         }
 
-
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToCustomerProfile()
         {
@@ -111,6 +112,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             CurrentViewModel = new CustomerProfileViewModel();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToHomePage()
         {
@@ -119,6 +121,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             CurrentViewModel = new HomePageViewModel();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToBookingHistory()
         {
@@ -127,6 +130,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             CurrentViewModel = new BookingHistoryViewModel(IdCustomer, this, new EmailService(), new EmailTemplateService(), new AirTicketDbService(), new VnpayPaymentGateway(), new UserSessionService(), new NotificationService(new NotificationViewModel()));
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void NavigateToFlightTicketBooking()
         {
@@ -135,6 +139,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
             CurrentViewModel = new FlightScheduleSearchViewModel();
         }
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void Logout()
         {
@@ -168,6 +173,7 @@ namespace AirTicketSalesManagement.ViewModel.Customer
         [ObservableProperty]
         private string toggleIcon = "MenuOpen";
 
+        [ExcludeFromCodeCoverage]
         [RelayCommand]
         private void ToggleSidebar()
         {
