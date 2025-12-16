@@ -1,17 +1,18 @@
-﻿using Moq;
+﻿using AirTicketSalesManagement.Data;
+using AirTicketSalesManagement.Models;
+using AirTicketSalesManagement.Services.DbContext;
+using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.ViewModel;
+using AirTicketSalesManagement.ViewModel.Admin;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using Moq;
+using Moq.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using AirTicketSalesManagement.ViewModel.Admin;
-using AirTicketSalesManagement.Services.DbContext;
-using AirTicketSalesManagement.Services.Notification;
-using AirTicketSalesManagement.Data;
-using AirTicketSalesManagement.Models;
-using AirTicketSalesManagement.ViewModel;
 
 namespace AirTicketSalesManagementTests.ViewModel.Admin
 {
@@ -212,16 +213,16 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
             public async Task SaveMaxAirports_TooManyAirports_ShouldWarn_AndNotSave()
             {
                 // Có 5 sân bay, giới hạn mới là 3
-                var sanbays = new List<Sanbay>
+                _dbContextMock
+                .Setup(x => x.Sanbays)
+                .ReturnsDbSet(new List<Sanbay>
                 {
                     new Sanbay { MaSb = "A" },
                     new Sanbay { MaSb = "B" },
                     new Sanbay { MaSb = "C" },
                     new Sanbay { MaSb = "D" },
                     new Sanbay { MaSb = "E" }
-                }.AsQueryable();
-                var sanbayDbSet = CreateMockDbSet(sanbays);
-                _dbContextMock.Setup(x => x.Sanbays).Returns(sanbayDbSet.Object);
+                });
 
                 _vm.EditMaxAirports = 3;
                 _vm.MaxAirports = 10;
@@ -245,6 +246,22 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
             [Test]
             public async Task SaveMaxAirports_Valid_ShouldUpdateAndPersist()
             {
+                _dbContextMock
+                .Setup(x => x.Sanbays)
+                .ReturnsDbSet(new List<Sanbay>
+                {
+                    new Sanbay { MaSb = "A" },
+                    new Sanbay { MaSb = "B" },
+                    new Sanbay { MaSb = "C" },
+                    new Sanbay { MaSb = "D" },
+                    new Sanbay { MaSb = "E" }
+                });
+                _dbContextMock.Setup(x => x.Quydinhs)
+                .ReturnsDbSet(new List<Quydinh>
+                {
+                    new Quydinh { Id = 1, SoSanBay = 10 }
+                });
+
                 _vm.EditMaxAirports = 6;
                 _vm.MaxAirports = 10;
                 _vm.IsEditingMaxAirports = true;
@@ -252,6 +269,7 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
                 await _vm.SaveMaxAirports();
 
                 _dbContextMock.Verify(x => x.SaveChanges(), Times.Once);
+                
                 Assert.That(_vm.MaxAirports, Is.EqualTo(6));
                 Assert.That(_vm.IsEditingMaxAirports, Is.False);
             }
