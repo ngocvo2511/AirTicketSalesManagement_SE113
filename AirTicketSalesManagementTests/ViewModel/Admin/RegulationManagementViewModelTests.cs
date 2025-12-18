@@ -1,17 +1,18 @@
-﻿using Moq;
+﻿using AirTicketSalesManagement.Data;
+using AirTicketSalesManagement.Models;
+using AirTicketSalesManagement.Services.DbContext;
+using AirTicketSalesManagement.Services.Notification;
+using AirTicketSalesManagement.ViewModel;
+using AirTicketSalesManagement.ViewModel.Admin;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using Moq;
+using Moq.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using AirTicketSalesManagement.ViewModel.Admin;
-using AirTicketSalesManagement.Services.DbContext;
-using AirTicketSalesManagement.Services.Notification;
-using AirTicketSalesManagement.Data;
-using AirTicketSalesManagement.Models;
-using AirTicketSalesManagement.ViewModel;
 
 namespace AirTicketSalesManagementTests.ViewModel.Admin
 {
@@ -204,6 +205,72 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
                 await _vm.SaveMaxAirports();
 
                 _dbContextMock.Verify(x => x.SaveChanges(), Times.Never);
+                Assert.That(_vm.IsEditingMaxAirports, Is.False);
+            }
+
+            // CASE 3: Số sân bay hiện tại lớn hơn giới hạn mới => Cảnh báo, không lưu
+            [Test]
+            public async Task SaveMaxAirports_TooManyAirports_ShouldWarn_AndNotSave()
+            {
+                // Có 5 sân bay, giới hạn mới là 3
+                _dbContextMock
+                .Setup(x => x.Sanbays)
+                .ReturnsDbSet(new List<Sanbay>
+                {
+                    new Sanbay { MaSb = "A" },
+                    new Sanbay { MaSb = "B" },
+                    new Sanbay { MaSb = "C" },
+                    new Sanbay { MaSb = "D" },
+                    new Sanbay { MaSb = "E" }
+                });
+
+                _vm.EditMaxAirports = 3;
+                _vm.MaxAirports = 10;
+                _vm.IsEditingMaxAirports = true;
+
+                await _vm.SaveMaxAirports();
+
+                _notificationServiceMock.Verify(x =>
+                    x.ShowNotificationAsync(
+                        It.Is<string>(msg => msg.Contains("lớn hơn giới hạn mới")),
+                        NotificationType.Warning,
+                        false),
+                    Times.Once);
+
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.Never);
+                Assert.That(_vm.MaxAirports, Is.EqualTo(10));
+                Assert.That(_vm.IsEditingMaxAirports, Is.True);
+            }
+
+            // CASE 4: Lưu thành công khi hợp lệ
+            [Test]
+            public async Task SaveMaxAirports_Valid_ShouldUpdateAndPersist()
+            {
+                _dbContextMock
+                .Setup(x => x.Sanbays)
+                .ReturnsDbSet(new List<Sanbay>
+                {
+                    new Sanbay { MaSb = "A" },
+                    new Sanbay { MaSb = "B" },
+                    new Sanbay { MaSb = "C" },
+                    new Sanbay { MaSb = "D" },
+                    new Sanbay { MaSb = "E" }
+                });
+                _dbContextMock.Setup(x => x.Quydinhs)
+                .ReturnsDbSet(new List<Quydinh>
+                {
+                    new Quydinh { Id = 1, SoSanBay = 10 }
+                });
+
+                _vm.EditMaxAirports = 6;
+                _vm.MaxAirports = 10;
+                _vm.IsEditingMaxAirports = true;
+
+                await _vm.SaveMaxAirports();
+
+                _dbContextMock.Verify(x => x.SaveChanges(), Times.Once);
+                
+                Assert.That(_vm.MaxAirports, Is.EqualTo(6));
                 Assert.That(_vm.IsEditingMaxAirports, Is.False);
             }
         }

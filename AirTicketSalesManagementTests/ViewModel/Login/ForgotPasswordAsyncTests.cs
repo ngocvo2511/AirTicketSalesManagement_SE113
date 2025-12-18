@@ -4,10 +4,10 @@ using AirTicketSalesManagement.ViewModel.Login;
 using Moq;
 using NUnit.Framework;
 
-namespace AirTicketSalesManagementTests
+namespace AirTicketSalesManagementTests.ViewModel.Login
 {
     [TestFixture]
-    public class ForgotPasswordAsync_test
+    public class ForgotPasswordAsyncTests
     {
         private Mock<AuthViewModel> _mockAuth;
         private Mock<IForgotPasswordService> _mockForgotPasswordService;

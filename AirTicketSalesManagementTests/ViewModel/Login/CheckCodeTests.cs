@@ -10,10 +10,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AirTicketSalesManagementTests
+namespace AirTicketSalesManagementTests.ViewModel.Login
 {
     [TestFixture]
-    public class CheckCode_test
+    public class CheckCodeTests
     {
         private Mock<IResetPasswordService> _mockResetPasswordService;
         private Mock<IEmailService> _mockEmailService;

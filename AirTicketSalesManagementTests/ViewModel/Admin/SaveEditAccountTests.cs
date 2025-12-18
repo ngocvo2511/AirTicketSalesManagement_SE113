@@ -11,10 +11,10 @@ using Moq.EntityFrameworkCore;
 using NUnit.Framework;
 using System.Linq.Expressions;
 
-namespace AirTicketSalesManagementTests
+namespace AirTicketSalesManagementTests.ViewModel.Admin
 {
     [TestFixture]
-    public class SaveEditAccount_test
+    public class SaveEditAccountTests
     {
         private Mock<IAirTicketDbContextService> _mockDbContextService;
         private Mock<INotificationService> _mockNotificationService;

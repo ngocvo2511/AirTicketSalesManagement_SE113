@@ -12,7 +12,7 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
     public class CustomerManagementViewModelTests
     {
         [TestFixture]
-        public class EditCustomer_test
+        public class EditCustomerTests
         {
             private Mock<ICustomerService> _mockCustomerService;
             private Mock<INotificationService> _mockNotificationService;

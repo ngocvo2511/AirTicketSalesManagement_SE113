@@ -4,17 +4,14 @@ using AirTicketSalesManagement.Services.DbContext;
 using AirTicketSalesManagement.Services.Notification;
 using AirTicketSalesManagement.ViewModel;
 using AirTicketSalesManagement.ViewModel.Customer;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
-using NUnit.Framework;
 using System.Globalization;
-using System.Linq.Expressions;
 
-namespace AirTicketSalesManagementTests
+namespace AirTicketSalesManagementTests.ViewModel.Customer
 {
     [TestFixture]
-    public class SaveProfile_test
+    public class SaveProfileTests
     {
         private Mock<IAirTicketDbContextService> _mockDbContextService;
         private Mock<INotificationService> _mockNotificationService;
@@ -95,7 +92,7 @@ namespace AirTicketSalesManagementTests
             _viewModel.EditEmail = email;
             _viewModel.EditCanCuoc = cccd;
             _viewModel.EditGioiTinh = gender;
-            
+
             if (DateTime.TryParseExact(dob, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDob))
                 _viewModel.EditNgaySinh = parsedDob;
 
