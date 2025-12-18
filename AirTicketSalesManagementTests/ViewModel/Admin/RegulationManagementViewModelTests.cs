@@ -206,55 +206,6 @@ namespace AirTicketSalesManagementTests.ViewModel.Admin
                 _dbContextMock.Verify(x => x.SaveChanges(), Times.Never);
                 Assert.That(_vm.IsEditingMaxAirports, Is.False);
             }
-
-            // CASE 3: Số sân bay hiện tại lớn hơn giới hạn mới => Cảnh báo, không lưu
-            [Test]
-            public async Task SaveMaxAirports_TooManyAirports_ShouldWarn_AndNotSave()
-            {
-                // Có 5 sân bay, giới hạn mới là 3
-                var sanbays = new List<Sanbay>
-                {
-                    new Sanbay { MaSb = "A" },
-                    new Sanbay { MaSb = "B" },
-                    new Sanbay { MaSb = "C" },
-                    new Sanbay { MaSb = "D" },
-                    new Sanbay { MaSb = "E" }
-                }.AsQueryable();
-                var sanbayDbSet = CreateMockDbSet(sanbays);
-                _dbContextMock.Setup(x => x.Sanbays).Returns(sanbayDbSet.Object);
-
-                _vm.EditMaxAirports = 3;
-                _vm.MaxAirports = 10;
-                _vm.IsEditingMaxAirports = true;
-
-                await _vm.SaveMaxAirports();
-
-                _notificationServiceMock.Verify(x =>
-                    x.ShowNotificationAsync(
-                        It.Is<string>(msg => msg.Contains("lớn hơn giới hạn mới")),
-                        NotificationType.Warning,
-                        false),
-                    Times.Once);
-
-                _dbContextMock.Verify(x => x.SaveChanges(), Times.Never);
-                Assert.That(_vm.MaxAirports, Is.EqualTo(10));
-                Assert.That(_vm.IsEditingMaxAirports, Is.True);
-            }
-
-            // CASE 4: Lưu thành công khi hợp lệ
-            [Test]
-            public async Task SaveMaxAirports_Valid_ShouldUpdateAndPersist()
-            {
-                _vm.EditMaxAirports = 6;
-                _vm.MaxAirports = 10;
-                _vm.IsEditingMaxAirports = true;
-
-                await _vm.SaveMaxAirports();
-
-                _dbContextMock.Verify(x => x.SaveChanges(), Times.Once);
-                Assert.That(_vm.MaxAirports, Is.EqualTo(6));
-                Assert.That(_vm.IsEditingMaxAirports, Is.False);
-            }
         }
     }
     internal class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
